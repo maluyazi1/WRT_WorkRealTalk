@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RealTalk - Figma Export</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --background: 220 20% 98%;
+            --foreground: 220 15% 15%;
+            --card: 0 0% 100%;
+            --card-foreground: 220 15% 15%;
+            --popover: 0 0% 100%;
+            --popover-foreground: 220 15% 15%;
+            --primary: 150 60% 50%;
+            --primary-foreground: 0 0% 100%;
+            --secondary: 200 25% 90%;
+            --secondary-foreground: 220 15% 15%;
+            --muted: 220 15% 95%;
+            --muted-foreground: 220 10% 45%;
+            --accent: 280 70% 92%;
+            --accent-foreground: 280 60% 40%;
+            --destructive: 0 72% 51%;
+            --destructive-foreground: 0 0% 100%;
+            --border: 220 15% 88%;
+            --input: 220 15% 88%;
+            --ring: 150 60% 50%;
+            --radius: 1rem;
+        }
+        .dark {
+            --background: 220 20% 10%;
+            --foreground: 220 10% 95%;
+            --card: 220 20% 12%;
+            --card-foreground: 220 10% 95%;
+            --popover: 220 20% 12%;
+            --popover-foreground: 220 10% 95%;
+            --primary: 150 60% 50%;
+            --primary-foreground: 0 0% 100%;
+            --secondary: 220 15% 18%;
+            --secondary-foreground: 220 10% 95%;
+            --muted: 220 15% 18%;
+            --muted-foreground: 220 10% 60%;
+            --accent: 280 50% 25%;
+            --accent-foreground: 280 60% 85%;
+            --destructive: 0 62% 40%;
+            --destructive-foreground: 0 0% 100%;
+            --border: 220 15% 20%;
+            --input: 220 15% 20%;
+            --ring: 150 60% 50%;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        border: "hsl(var(--border))",
+                        input: "hsl(var(--input))",
+                        ring: "hsl(var(--ring))",
+                        background: "hsl(var(--background))",
+                        foreground: "hsl(var(--foreground))",
+                        primary: {
+                            DEFAULT: "hsl(var(--primary))",
+                            foreground: "hsl(var(--primary-foreground))",
+                        },
+                        secondary: {
+                            DEFAULT: "hsl(var(--secondary))",
+                            foreground: "hsl(var(--secondary-foreground))",
+                        },
+                        destructive: {
+                            DEFAULT: "hsl(var(--destructive))",
+                            foreground: "hsl(var(--destructive-foreground))",
+                        },
+                        muted: {
+                            DEFAULT: "hsl(var(--muted))",
+                            foreground: "hsl(var(--muted-foreground))",
+                        },
+                        accent: {
+                            DEFAULT: "hsl(var(--accent))",
+                            foreground: "hsl(var(--accent-foreground))",
+                        },
+                        popover: {
+                            DEFAULT: "hsl(var(--popover))",
+                            foreground: "hsl(var(--popover-foreground))",
+                        },
+                        card: {
+                            DEFAULT: "hsl(var(--card))",
+                            foreground: "hsl(var(--card-foreground))",
+                        },
+                    },
+                    borderRadius: {
+                        lg: "var(--radius)",
+                        md: "calc(var(--radius) - 2px)",
+                        sm: "calc(var(--radius) - 4px)",
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="font-sans antialiased bg-background text-foreground">
+    <div class="min-h-screen bg-background">
+        <!-- Header -->
+        <header class="border-b border-border/50 backdrop-blur-sm sticky top-0 z-50 bg-background/80">
+            <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+                        <i data-lucide="message-square" class="w-5 h-5 text-primary-foreground"></i>
+                    </div>
+                    <h1 class="text-xl font-bold text-foreground">RealTalk</h1>
+                </div>
+                <nav class="hidden md:flex items-center gap-6">
+                    <a href="#features" class="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                        Features
+                    </a>
+                    <a href="#how-it-works" class="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                        How It Works
+                    </a>
+                    <a href="/freetalk">
+                        <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 rounded-full px-3">
+                            <i data-lucide="mic" class="w-4 h-4"></i>
+                            AI 口语对练
+                        </button>
+                    </a>
+                    <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-full px-3">
+                        Get Started
+                    </button>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="container mx-auto px-4 py-16 md:py-24">
+            <div class="max-w-4xl mx-auto text-center space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                <div class="inline-flex items-center gap-2 bg-accent/50 text-accent-foreground px-4 py-2 rounded-full text-sm font-medium backdrop-blur-sm border border-accent">
+                    <i data-lucide="sparkles" class="w-4 h-4"></i>
+                    职场英语实战平台
+                </div>
+                
+                <h2 class="text-4xl md:text-6xl font-bold text-foreground leading-tight text-balance">
+                    在真实对话中
+                    <br />
+                    <span class="text-primary">即学即用</span>
+                </h2>
+                
+                <p class="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto text-balance">
+                    通过 AI 驱动的角色扮演对话，模拟真实职场情境，让你在实战中提升英语表达能力
+                </p>
+            </div>
+
+            <!-- Mode Selection -->
+            <div class="max-w-5xl mx-auto mt-16 space-y-12">
+                <!-- Mode B: Custom Topic -->
+                <div class="space-y-4 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-200">
+                    <h3 class="text-center text-sm font-medium text-muted-foreground uppercase tracking-wider">
+                        定制练习场景
+                    </h3>
+                    <div class="rounded-lg border bg-card text-card-foreground shadow-sm p-6 md:p-8 hover:shadow-xl transition-all duration-300">
+                        <div class="flex flex-col md:flex-row gap-4">
+                            <div class="flex-1">
+                                <input type="text" placeholder="我想练习... (例如：向老板请病假)" class="flex h-12 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+                            </div>
+                            <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 w-full md:w-auto h-12 px-8 rounded-full">
+                                开始练习
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mode A: Difficulty Levels -->
+                <div class="space-y-4 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-300">
+                    <h3 class="text-center text-sm font-medium text-muted-foreground uppercase tracking-wider">
+                        或选择难度开始
+                    </h3>
+                    <div class="grid md:grid-cols-3 gap-4 md:gap-6">
+                        <!-- Beginner -->
+                        <a href="#">
+                            <div class="rounded-lg bg-card text-card-foreground shadow-sm p-6 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/30 dark:to-cyan-950/30 border border-blue-200 dark:border-blue-800 hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer group h-full">
+                                <div class="space-y-4">
+                                    <div class="text-4xl">🌱</div>
+                                    <div>
+                                        <h4 class="text-2xl font-bold text-foreground group-hover:text-primary transition-colors">
+                                            初级
+                                        </h4>
+                                        <p class="text-sm text-muted-foreground font-medium">Beginner</p>
+                                    </div>
+                                    <p class="text-sm text-muted-foreground leading-relaxed">
+                                        基础日常对话场景
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                        <!-- Intermediate -->
+                        <a href="#">
+                            <div class="rounded-lg bg-card text-card-foreground shadow-sm p-6 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 border border-purple-200 dark:border-purple-800 hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer group h-full">
+                                <div class="space-y-4">
+                                    <div class="text-4xl">🚀</div>
+                                    <div>
+                                        <h4 class="text-2xl font-bold text-foreground group-hover:text-primary transition-colors">
+                                            进阶
+                                        </h4>
+                                        <p class="text-sm text-muted-foreground font-medium">Intermediate</p>
+                                    </div>
+                                    <p class="text-sm text-muted-foreground leading-relaxed">
+                                        常见职场交流场景
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                        <!-- Advanced -->
+                        <a href="#">
+                            <div class="rounded-lg bg-card text-card-foreground shadow-sm p-6 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200 dark:border-amber-800 hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer group h-full">
+                                <div class="space-y-4">
+                                    <div class="text-4xl">⚡</div>
+                                    <div>
+                                        <h4 class="text-2xl font-bold text-foreground group-hover:text-primary transition-colors">
+                                            高阶
+                                        </h4>
+                                        <p class="text-sm text-muted-foreground font-medium">Advanced</p>
+                                    </div>
+                                    <p class="text-sm text-muted-foreground leading-relaxed">
+                                        复杂商务沟通场景
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Mode C: Free Talk -->
+                <div class="space-y-4 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-400">
+                    <h3 class="text-center text-sm font-medium text-muted-foreground uppercase tracking-wider">
+                        自由对话练习
+                    </h3>
+                    <a href="/freetalk">
+                        <div class="rounded-lg bg-card text-card-foreground shadow-sm p-6 md:p-8 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-200 dark:border-green-800 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer group">
+                            <div class="flex items-center gap-6">
+                                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
+                                    <i data-lucide="mic" class="w-8 h-8 text-white"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-2xl font-bold text-foreground group-hover:text-green-600 transition-colors flex items-center gap-2">
+                                        AI 口语对练
+                                        <span class="text-xs bg-green-500 text-white px-2 py-0.5 rounded-full">NEW</span>
+                                    </h4>
+                                    <p class="text-sm text-muted-foreground mt-1">Free Talk · 纠音 · 润色 · 生词本</p>
+                                    <p class="text-sm text-muted-foreground mt-2 leading-relaxed">
+                                        与 AI 母语者自由对话，实时纠正语法错误，学习地道表达，自动收集生词
+                                    </p>
+                                </div>
+                                <div class="hidden md:flex items-center gap-2 text-green-600">
+                                    <span class="text-sm font-medium">开始对话</span>
+                                    <span class="text-xl">→</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="container mx-auto px-4 py-16 bg-muted/30">
+            <div class="max-w-5xl mx-auto">
+                <h3 class="text-3xl md:text-4xl font-bold text-center mb-12 text-balance">
+                    为什么选择 RealTalk？
+                </h3>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Feature 1 -->
+                    <div class="rounded-lg border bg-card text-card-foreground shadow-sm p-6 hover:shadow-lg transition-shadow duration-300">
+                        <div class="space-y-4">
+                            <div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
+                                <i data-lucide="message-square" class="w-8 h-8 text-primary"></i>
+                            </div>
+                            <h4 class="text-xl font-semibold text-foreground">真实场景模拟</h4>
+                            <p class="text-muted-foreground leading-relaxed">基于真实职场情境的对话练习，学以致用</p>
+                        </div>
+                    </div>
+                    <!-- Feature 2 -->
+                    <div class="rounded-lg border bg-card text-card-foreground shadow-sm p-6 hover:shadow-lg transition-shadow duration-300">
+                        <div class="space-y-4">
+                            <div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
+                                <i data-lucide="sparkles" class="w-8 h-8 text-primary"></i>
+                            </div>
+                            <h4 class="text-xl font-semibold text-foreground">AI 智能反馈</h4>
+                            <p class="text-muted-foreground leading-relaxed">即时获得地道的英文表达和关键短语解析</p>
+                        </div>
+                    </div>
+                    <!-- Feature 3 -->
+                    <div class="rounded-lg border bg-card text-card-foreground shadow-sm p-6 hover:shadow-lg transition-shadow duration-300">
+                        <div class="space-y-4">
+                            <div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
+                                <i data-lucide="trending-up" class="w-8 h-8 text-primary"></i>
+                            </div>
+                            <h4 class="text-xl font-semibold text-foreground">渐进式学习</h4>
+                            <p class="text-muted-foreground leading-relaxed">从基础到高级，循序渐进提升表达能力</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section id="how-it-works" class="container mx-auto px-4 py-16">
+            <div class="max-w-4xl mx-auto">
+                <h3 class="text-3xl md:text-4xl font-bold text-center mb-12 text-balance">
+                    学习流程
+                </h3>
+                <div class="space-y-8">
+                    <div class="flex gap-6 items-start group">
+                        <div class="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xl font-bold flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                            1
+                        </div>
+                        <div class="flex-1 pt-1">
+                            <h4 class="text-xl font-semibold mb-2 text-foreground">查看中文提示</h4>
+                            <p class="text-muted-foreground leading-relaxed">了解对话情境和你需要表达的内容</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-6 items-start group">
+                        <div class="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xl font-bold flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                            2
+                        </div>
+                        <div class="flex-1 pt-1">
+                            <h4 class="text-xl font-semibold mb-2 text-foreground">组织英文表达</h4>
+                            <p class="text-muted-foreground leading-relaxed">思考如何用地道的英文表达你的意思</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-6 items-start group">
+                        <div class="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xl font-bold flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                            3
+                        </div>
+                        <div class="flex-1 pt-1">
+                            <h4 class="text-xl font-semibold mb-2 text-foreground">录音回答</h4>
+                            <p class="text-muted-foreground leading-relaxed">点击麦克风按钮，说出你的答案</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-6 items-start group">
+                        <div class="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xl font-bold flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                            4
+                        </div>
+                        <div class="flex-1 pt-1">
+                            <h4 class="text-xl font-semibold mb-2 text-foreground">翻牌核对</h4>
+                            <p class="text-muted-foreground leading-relaxed">查看参考答案和关键短语，学习地道表达</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="container mx-auto px-4 py-16 bg-gradient-to-br from-primary/5 via-accent/5 to-background">
+            <div class="max-w-3xl mx-auto text-center space-y-6">
+                <h3 class="text-3xl md:text-4xl font-bold text-foreground text-balance">
+                    开始你的英语实战之旅
+                </h3>
+                <p class="text-lg text-muted-foreground text-balance">
+                    无需等待，立即体验 AI 驱动的职场英语学习
+                </p>
+                <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-12 px-8 rounded-full text-base">
+                    免费开始练习
+                </button>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="border-t border-border/50 mt-16">
+            <div class="container mx-auto px-4 py-8">
+                <div class="text-center text-sm text-muted-foreground">
+                    <p>© 2024 RealTalk. 让英语学习更高效.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

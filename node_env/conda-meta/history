@@ -1,0 +1,10 @@
+==> 2026-02-08 16:21:20 <==
+# cmd: C:\Users\86188\miniconda3\Scripts\conda-script.py create -p ./node_env nodejs -y
+# conda version: 22.11.1
++defaults/win-64::icu-73.1-h6c2663c_0
++defaults/win-64::nodejs-24.13.0-hbad1749_0
++defaults/win-64::ucrt-10.0.22621.0-haa95532_0
++defaults/win-64::vc-14.3-h2df5915_10
++defaults/win-64::vc14_runtime-14.44.35208-h4927774_10
++defaults/win-64::vs2015_runtime-14.44.35208-ha6b5a95_10
+# update specs: ['nodejs']

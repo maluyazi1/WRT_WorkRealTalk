@@ -1,0 +1,2858 @@
+{
+  "meta": {
+    "version": "2.0",
+    "lastUpdated": "2026-02-12",
+    "description": "外企职场英语语料库 - 包含任务描述、语气建议和黑话池"
+  },
+  "corpus": [
+    {
+      "id": "disagree-with-boss-01",
+      "category": "High EQ Communication",
+      "task_description": "Politely disagree with a superior's suggestion due to valid technical or practical constraints.",
+      "mood_suggestion": "Professional, respectful, constructive, but firm on facts.",
+      "keywords_pool": ["push back", "loss of momentum", "edge cases", "soft launch", "feasibility", "risk mitigation", "bandwidth", "trade-off", "align on expectations"],
+      "tags": ["disagreeing", "managing up", "diplomacy"],
+      "level": "advanced",
+      "example": {
+        "title": "委婉反驳老板的提案",
+        "scenario": "Your boss suggests launching the new feature next week, but you know the backend isn't ready. You need to push back without damaging the relationship.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "I think we should push this feature live by next Monday. The client's been waiting, and I don't want us to lose momentum.",
+            "chinese": "我觉得我们应该在下周一把这个功能上线。客户已经等很久了，我不想让我们失去势头。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "你理解老板的出发点，但需要委婉指出后端还没准备好，建议稍微延期",
+            "reference": {
+              "answer": "I totally get where you're coming from, and I agree the client's been patient. That said, I'm a bit concerned about the backend stability — we're still seeing some edge cases in testing. Would it make sense to do a soft launch first, maybe to a smaller group?",
+              "keyPhrases": ["I get where you're coming from", "That said", "I'm a bit concerned about", "Would it make sense to"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Hmm, what kind of edge cases are we talking about? Is it something we can hotfix if it comes up?",
+            "chinese": "嗯，具体是什么边界情况？如果出现问题我们能紧急修复吗？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "你需要解释风险，但不要显得在找借口，同时提出一个折中方案",
+            "reference": {
+              "answer": "It's mainly around the payment flow — we've seen some timeout issues under heavy load. We could hotfix, but honestly, I'd hate for it to blow up during peak hours. How about we target Wednesday instead? That gives us two more days to button things up.",
+              "keyPhrases": ["I'd hate for it to blow up", "How about we target", "button things up"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "chasing-deliverable-01",
+      "category": "Cross-functional Collaboration",
+      "task_description": "Follow up on a delayed deliverable from another team member or department without damaging the relationship.",
+      "mood_suggestion": "Friendly urgency, empathetic but persistent.",
+      "keywords_pool": ["circle back", "ETA", "on your plate", "blocker", "dependencies", "timeline", "ping you", "gentle reminder", "status update"],
+      "tags": ["follow-up", "chasing", "polite pressure"],
+      "level": "intermediate",
+      "example": {
+        "title": "礼貌催促其他部门交付",
+        "scenario": "The design team promised you the mockups last Friday. It's now Wednesday and you still haven't received them. You need to follow up without burning bridges.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Hey! Just saw your Slack message. Sorry, been swamped with the rebrand project. What's up?",
+            "chinese": "嘿！刚看到你的Slack消息。抱歉，最近被品牌重塑项目忙疯了。怎么了？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "你需要礼貌地提醒对方mockup已经晚了，同时表示理解对方很忙",
+            "reference": {
+              "answer": "No worries, I know you've got a lot on your plate! I just wanted to circle back on the homepage mockups — I think they were due last Friday? Just checking if there's a revised ETA so I can plan accordingly on my end.",
+              "keyPhrases": ["a lot on your plate", "circle back on", "revised ETA", "plan accordingly"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Oh shoot, you're right. I completely dropped the ball on that. Can I get them to you by end of day tomorrow?",
+            "chinese": "哎呀，你说得对。这事我完全搞忘了。我明天下班前给你行吗？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "明天太晚了，你需要今天就拿到，但要委婉地表达紧迫性",
+            "reference": {
+              "answer": "I really appreciate it! The thing is, I've got a stakeholder review first thing Friday morning, so I'll need some buffer time to integrate them. Any chance you could squeeze it in by EOD today? Even a rough version would help me get started.",
+              "keyPhrases": ["I really appreciate it", "The thing is", "buffer time", "Any chance you could squeeze it in", "EOD"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "deflect-salary-question-01",
+      "category": "Deflecting Personal Questions",
+      "task_description": "Deflect a sensitive personal question (like salary) from a colleague without making the situation awkward.",
+      "mood_suggestion": "Casual, vague, light-hearted redirect, non-committal.",
+      "keywords_pool": ["ballpark", "market rate", "package", "confidential", "total comp", "standard range", "above my pay grade", "comfortable"],
+      "tags": ["privacy", "awkward situations", "deflecting"],
+      "level": "intermediate",
+      "example": {
+        "title": "同事问薪资如何优雅回避",
+        "scenario": "A colleague you're friendly with casually asks how much you make. You don't want to share but also don't want to make things awkward.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "So I heard you got that promotion last month — congrats! If you don't mind me asking, what's the package like now?",
+            "chinese": "听说你上个月升职了——恭喜！方便问一下现在package怎么样吗？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "你不想透露具体数字，但要优雅地转移话题，不让对方尴尬",
+            "reference": {
+              "answer": "Ha, thanks! Honestly, I'm not super comfortable talking numbers — you know how it is. But yeah, I'm happy with how it turned out. Have you thought about going for the senior role? I heard they're opening up a few spots.",
+              "keyPhrases": ["I'm not super comfortable talking numbers", "you know how it is", "I'm happy with how it turned out"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "asking-for-help-01",
+      "category": "Asking for Help Gracefully",
+      "task_description": "Ask a busy or senior colleague for assistance or guidance on a specific task.",
+      "mood_suggestion": "Humble, concise, appreciative, respectful of time.",
+      "keywords_pool": ["bandwidth", "quick sync", "walkthrough", "pick your brain", "best practice", "point me in the right direction", "stuck on", "guidance"],
+      "tags": ["requesting help", "humility", "rapport"],
+      "level": "beginner",
+      "example": {
+        "title": "向忙碌的同事请求帮助",
+        "scenario": "You need help understanding a legacy codebase, but your colleague who knows it best always seems busy. You want to ask without being a burden.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Hey, what's up? I've got like 5 minutes before my next call.",
+            "chinese": "嘿，什么事？我下个会议前还有5分钟。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "你需要请教对方一个技术问题，但要表明你已经做过功课，只是卡住了",
+            "reference": {
+              "answer": "I'll be quick! I've been digging into the payment module and I think I've got most of it figured out. But there's one part around the retry logic that's got me stuck. When you have a sec, could you point me in the right direction? Even a 10-minute walkthrough would be super helpful.",
+              "keyPhrases": ["I've been digging into", "got me stuck", "When you have a sec", "point me in the right direction"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "buying-time-data-01",
+      "category": "Buying Time & Managing Requests",
+      "task_description": "Stall or buy time when asked for information or data that is not immediately available.",
+      "mood_suggestion": "Confident, proactive, reassuring, not apologetic.",
+      "keywords_pool": ["topline", "drill down", "double-check", "verify", "breakdown", "circle back", "follow up with", "get back to you", "pull the numbers"],
+      "tags": ["stalling", "managing expectations", "professionalism"],
+      "level": "intermediate",
+      "example": {
+        "title": "突然被要数据但没准备好",
+        "scenario": "Your boss pings you in a meeting asking for Q3 sales numbers on the spot, but you don't have the latest figures handy.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Oh hey, before we move on — can you pull up the Q3 numbers real quick? I want to show the team where we landed.",
+            "chinese": "对了，在我们继续之前——你能快速调出Q3的数据吗？我想给团队看看我们的成绩。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "你手上没有最新数据，需要争取时间，但不能显得没准备",
+            "reference": {
+              "answer": "I've got the topline numbers in my head — we're looking at around 2.3M, which is up 15% QoQ. But let me double-check the breakdown and send over a clean version right after this meeting. I want to make sure we're showing the most up-to-date figures.",
+              "keyPhrases": ["topline numbers", "QoQ", "double-check", "send over a clean version", "most up-to-date"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "work-handover-01",
+      "category": "Work Handover & Documentation",
+      "task_description": "Hand over responsibilities and ongoing projects to a colleague before a period of absence.",
+      "mood_suggestion": "Organized, clear, directive, reassuring.",
+      "keywords_pool": ["keep an eye on", "handover", "point of contact", "escalate", "loop in", "documentation", "coverage", "pending items", "autopilot"],
+      "tags": ["handover", "accountability", "documentation"],
+      "level": "intermediate",
+      "example": {
+        "title": "休假前工作交接确认职责",
+        "scenario": "You're going on vacation next week and need to hand over an ongoing project to a colleague. You want to make sure responsibilities are crystal clear.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "So you're out all of next week, right? Just walk me through what I need to keep an eye on.",
+            "chinese": "所以你下周整周都不在对吧？跟我说说我需要关注什么。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "你需要清晰地交代工作内容，并明确哪些事情需要对方决策，哪些只需要监控",
+            "reference": {
+              "answer": "Yeah, thanks for covering! So there are basically two things: First, the vendor contract — they should send over the revised terms by Wednesday. You'll need to loop in Legal if anything looks off. Second, the dashboard migration — that's mostly on autopilot, but if QA flags anything critical, just ping me on Slack and I'll jump in. I'll send you a doc with all the details and key contacts after this.",
+              "keyPhrases": ["thanks for covering", "loop in Legal", "on autopilot", "flags anything critical", "I'll send you a doc"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "phone-etiquette-01",
+      "category": "Phone Etiquette",
+      "task_description": "Initialize a phone conversation respectfully, checking for availability.",
+      "mood_suggestion": "Polite, considerate, concise.",
+      "keywords_pool": ["catch you at a bad time", "quick minute", "heads up", "schedule", "ping", "convenient", "brief chat"],
+      "tags": ["phone call", "politeness", "timing"],
+      "level": "beginner",
+      "example": {
+        "title": "打电话前确认对方是否方便",
+        "scenario": "You need to call a colleague to discuss something urgent, but you're not sure if they're in a meeting or busy.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Hello?",
+            "chinese": "喂？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "你需要礼貌地确认对方现在是否方便接电话",
+            "reference": {
+              "answer": "Hey Sarah, it's Mike from Product. Hope I'm not catching you at a bad time — do you have a quick minute? I wanted to run something by you about the launch timeline.",
+              "keyPhrases": ["Hope I'm not catching you at a bad time", "do you have a quick minute", "run something by you"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Oh hey Mike! Actually, I'm about to jump into a client call in like 2 minutes. Can it wait?",
+            "chinese": "哦嘿Mike！其实我2分钟后有个客户电话。能等一下吗？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "你需要表示理解，并询问什么时候回电比较方便",
+            "reference": {
+              "answer": "No problem at all! When's a good time to reconnect? I can work around your schedule.",
+              "keyPhrases": ["No problem at all", "When's a good time to reconnect", "work around your schedule"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "lowering-expectations-01",
+      "category": "Managing Expectations",
+      "task_description": "Reset or manage a stakeholder's unrealistic expectations regarding timelines or scope.",
+      "mood_suggestion": "Diplomatic, solution-oriented, realistic, professional.",
+      "keywords_pool": ["manage expectations", "aggressive timeline", "commit to", "scope creep", "quality assurance", "realistic", "push out", "deploy", "milestone"],
+      "tags": ["managing up", "timeline", "negotiation"],
+      "level": "advanced",
+      "example": {
+        "title": "降低老板对时间线的预期",
+        "scenario": "Your boss expects the project done in 2 weeks, but realistically you need 4. You need to reset expectations without looking incompetent.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "So we're aligned on having this wrapped up by the 15th, right? I already told the client we'd be ready.",
+            "chinese": "那我们就定15号之前完成对吧？我已经跟客户说了我们会准备好。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "你需要诚实地说明为什么15号不现实，同时提供一个可行的替代方案",
+            "reference": {
+              "answer": "I hear you, and I know the client's eager. But I want to flag something — based on where we are now, the 15th is pretty aggressive. We're still waiting on the API specs from the vendor, and without those, we're kind of blocked. What I can commit to is having a working prototype by the 15th for internal review, and then the full rollout by end of month. That way we're not shipping something half-baked.",
+              "keyPhrases": ["I want to flag something", "pretty aggressive", "kind of blocked", "What I can commit to is", "not shipping something half-baked"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "meeting-tech-issue-01",
+      "category": "Meeting Tech Issues",
+      "task_description": "Handle technical failures (audio, video, screen share) during a meeting or presentation professionally.",
+      "mood_suggestion": "Calm, humorous, adaptable, composed.",
+      "keywords_pool": ["glitch", "technical difficulties", "reschedule", "share deck", "offline", "lagging", "frozen", "rejoin", "bear with me"],
+      "tags": ["technical difficulties", "video call", "professionalism"],
+      "level": "beginner",
+      "example": {
+        "title": "视频会议中屏幕共享失败",
+        "scenario": "You're presenting to the team but your screen share isn't working. You need to handle the awkward pause professionally.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Alright, whenever you're ready to share your screen, go ahead.",
+            "chinese": "好的，你准备好共享屏幕就开始吧。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "屏幕共享不work，你需要请大家稍等，同时不要显得太慌张",
+            "reference": {
+              "answer": "Hmm, give me one sec — it's not cooperating. Let me try rejoining the call real quick. Sorry about this, tech gremlins!",
+              "keyPhrases": ["give me one sec", "not cooperating", "Let me try rejoining", "tech gremlins"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "No rush, we've all been there. Take your time.",
+            "chinese": "不急，我们都遇到过。慢慢来。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "重新进入后还是不行，你决定先口头讲，稍后再发slides",
+            "reference": {
+              "answer": "Okay, still not working — you know what, let me just walk you through it verbally for now, and I'll drop the deck in the chat right after. Sound good?",
+              "keyPhrases": ["you know what", "walk you through it verbally", "drop the deck in the chat", "Sound good?"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "first-meeting-formal-01",
+      "category": "Formal First Meetings",
+      "task_description": "Introduce yourself to a senior executive or important stakeholder for the first time.",
+      "mood_suggestion": "Formal, enthusiastic, professional, polished.",
+      "keywords_pool": ["put a face to the name", "background", "responsibility", "synergy", "look forward to", "role", "oversee", "initiative", "pleasure"],
+      "tags": ["introduction", "first impression", "networking"],
+      "level": "beginner",
+      "example": {
+        "title": "正式场合首次见面自我介绍",
+        "scenario": "You're meeting a senior executive from the US headquarters for the first time during their visit to your office.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Hi there! You must be from the Shanghai team. I'm Jennifer, VP of Global Operations. Great to finally put a face to the name!",
+            "chinese": "嗨！你一定是上海团队的吧。我是Jennifer，全球运营副总裁。很高兴终于见到真人了！"
+          },
+          {
+            "role": "user",
+            "userPrompt": "你需要自我介绍，表示很高兴见面，并简短提一个你们之前邮件沟通过的事情",
+            "reference": {
+              "answer": "Hi Jennifer, so nice to meet you in person! I'm David from the Product team — we actually exchanged a few emails about the APAC rollout last month. How's your trip been so far?",
+              "keyPhrases": ["so nice to meet you in person", "we actually exchanged", "How's your trip been so far"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "clarification-repeat-01",
+      "category": "Clarification & Repetition",
+      "task_description": "Politely ask someone to repeat information that you missed or did not understand.",
+      "mood_suggestion": "Apologetic, attentive, eager to understand.",
+      "keywords_pool": ["clarify", "catch that", "reiterate", "on the same page", "misunderstanding", "break up", "run that by me again", "missed that"],
+      "tags": ["misheard", "asking to repeat", "active listening"],
+      "level": "beginner",
+      "example": {
+        "title": "没听清关键信息请对方再说一遍",
+        "scenario": "In a video call, your colleague mentioned an important deadline but the audio cut out for a second and you missed it.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "...so we'll need everything submitted by [audio cuts out] at the latest. Otherwise we'll miss the review window.",
+            "chinese": "……所以我们最迟需要在[声音断了]之前提交完。否则就错过审核窗口了。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "你没听清deadline是哪天，需要礼貌地请对方再说一遍",
+            "reference": {
+              "answer": "Sorry, I think my audio glitched for a sec — could you repeat the deadline? I want to make sure I've got it right.",
+              "keyPhrases": ["my audio glitched", "could you repeat", "I want to make sure I've got it right"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Oh sure, no problem! It's next Thursday, the 23rd, by 5pm local time.",
+            "chinese": "哦当然没问题！是下周四，23号，当地时间下午5点。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "你需要确认你理解正确了",
+            "reference": {
+              "answer": "Got it — Thursday the 23rd, 5pm. I'll make sure it's in by then. Thanks for clarifying!",
+              "keyPhrases": ["Got it", "I'll make sure", "Thanks for clarifying"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "polite-followup-01",
+      "category": "Polite Follow-ups & Chasing",
+      "task_description": "Follow up on a previous request or email that has seemingly been ignored.",
+      "mood_suggestion": "Persistent, polite, understanding, value-driven.",
+      "keywords_pool": ["bump", "buried in inbox", "follow up", "urgent", "action required", "top of inbox", "touch base", "awaiting feedback"],
+      "tags": ["email follow-up", "gentle reminder", "patience"],
+      "level": "intermediate",
+      "example": {
+        "title": "礼貌跟进未回复的邮件",
+        "scenario": "You sent an important email 4 days ago asking for approval, but haven't heard back. You need to follow up without sounding passive-aggressive.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Oh hey, sorry I've been MIA — crazy week. What did you need?",
+            "chinese": "哦嘿，抱歉我一直没回——这周太疯狂了。你需要什么？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "你需要礼貌地提醒对方你等的是什么，并说明为什么比较紧急",
+            "reference": {
+              "answer": "No worries, I figured you had a lot going on! I just wanted to bump my email from last Tuesday — it was about the budget approval for the Q4 campaign. I need to lock in the vendor by Friday, so if you could take a look when you get a chance, that would be amazing.",
+              "keyPhrases": ["I figured you had a lot going on", "bump my email", "lock in", "when you get a chance", "that would be amazing"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "chasing-status-update-02",
+      "category": "Cross-functional Collaboration",
+      "task_description": "Formally check in on the progress of previously discussed action points, specifically focusing on a key deliverable.",
+      "mood_suggestion": "Polite, appreciative, professional, and clear.",
+      "keywords_pool": ["action points", "in progress", "latest progress", "quick update", "efficient communication"],
+      "tags": ["follow-up", "status update", "client deck"],
+      "level": "beginner",
+      "example": {
+        "title": "询问行动点进展",
+        "scenario": "You need to follow up with a colleague named Olivia regarding the action points from yesterday's meeting, especially the client presentation deck.",
+        "messages": [
+          {
+            "role": "user",
+            "userPrompt": "给Olivia写一段话，询问昨天讨论的行动点进展，特别是客户演示文稿，并表达对她一贯高效沟通的感谢",
+            "reference": {
+              "answer": "Good morning, Olivia, Hope you’re doing well. Just wanted to confirm if the action points we discussed yesterday are already in progress. Especially the client deck — if there’s any latest progress, could you please give me a quick update? Really appreciate your efficient communication as always.",
+              "keyPhrases": ["Hope you’re doing well", "in progress", "quick update", "appreciate your efficient communication"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "deflect-personal-blind-date-01",
+      "category": "Deflecting Personal Questions",
+      "task_description": "Politely decline a colleague's attempt to set you up on a blind date while maintaining professional boundaries.",
+      "mood_suggestion": "Firm but appreciative, professional, boundary-setting.",
+      "keywords_pool": ["flattering", "work life", "personal life", "completely separate", "strict rule", "appreciate the thought"],
+      "tags": ["privacy", "boundaries", "soft refusal"],
+      "level": "intermediate",
+      "example": {
+        "title": "优雅拒绝同事的相亲介绍",
+        "scenario": "A colleague mentions their cousin and suggests you two would hit it off. You want to decline without being rude.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Hey, I was wondering, are you single? My cousin just moved to the city and I think you two would really hit it off.",
+            "chinese": "嘿，我在想，你是单身吗？我表弟刚搬到这个城市，我觉得你们俩会很合得来。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示受宠若惊，但明确表示你倾向于把工作和生活完全分开",
+            "reference": {
+              "answer": "Oh, that is very flattering, thank you. But I prefer to keep my work life and my personal life completely separate.",
+              "keyPhrases": ["very flattering", "prefer to keep", "completely separate"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Come on, it is just a coffee. He is a really nice guy and works in tech too.",
+            "chinese": "别这样嘛，只是喝个咖啡而已。他人真的很好，而且他也在科技行业工作。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "坚持你的原则，解释你有一条不通过同事相亲的“硬规定”，然后顺势转移回工作话题",
+            "reference": {
+              "answer": "I am sure he is great, but I actually have a strict rule about not doing blind dates set up by colleagues. I appreciate the thought. Anyway, did you get a chance to review that budget draft yet?",
+              "keyPhrases": ["strict rule", "appreciate the thought", "Anyway", "get a chance to"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "deflect-salary-range-02",
+      "category": "Deflecting Personal Questions",
+      "task_description": "Decline to share specific salary or raise details with a peer who is aiming for the same role.",
+      "mood_suggestion": "Diplomatic, private, helpful redirect.",
+      "keywords_pool": ["package", "specific numbers", "private", "ballpark idea", "less complicated", "accurate"],
+      "tags": ["salary privacy", "peer pressure", "negotiation"],
+      "level": "advanced",
+      "example": {
+        "title": "拒绝透露具体的调薪数额",
+        "scenario": "A colleague congratulates you on your promotion but asks for your specific raise amount to help their own negotiation.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Congrats on the promotion! I'm aiming for the same role. Do you mind sharing what kind of raise they gave you?",
+            "chinese": "恭喜你升职了！我也在争取同样的职位。介意透个底，他们给你涨了多少吗？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示对package很满意，但委婉表示具体的数字需要保密",
+            "reference": {
+              "answer": "Thanks! I'm really happy with the package, but honestly, I prefer to keep the specific numbers private.",
+              "keyPhrases": ["happy with the package", "prefer to keep", "private"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "I get that, but I just wanted a ballpark idea so I know what to ask for when I negotiate.",
+            "chinese": "我懂，但我只是想大概了解一下范围，这样我谈判的时候心里有数。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "解释不在团队聊工资能让事情简单化，并建议对方去Glassdoor查看更准确的数据",
+            "reference": {
+              "answer": "I totally understand, but I find it keeps things less complicated if I don't discuss salary within the team. You should check Glassdoor though; their data is actually more accurate.",
+              "keyPhrases": ["keeps things less complicated", "within the team", "more accurate"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "negotiate-deadline-quality-01",
+      "category": "Managing Expectations",
+      "task_description": "Negotiate a more realistic deadline when a superior's request risks compromising quality.",
+      "mood_suggestion": "Understanding, quality-focused, realistic.",
+      "keywords_pool": ["tight deadline", "rush", "compromise quality", "make sure", "ready by"],
+      "tags": ["negotiation", "deadline", "quality control"],
+      "level": "intermediate",
+      "example": {
+        "title": "因质量问题申请延长截止日期",
+        "scenario": "Your boss wants five videos published tomorrow, but the team needs more time to ensure they aren't 'bad videos'.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "But I want them online this week. It is important.",
+            "chinese": "但是我心想让它们这周上线。这很重要。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示理解，但指出赶工会导致质量变差，并明确提出需要三天时间",
+            "reference": {
+              "answer": "I understand, but if we rush, the quality will be bad. We need three days. Thanks for understanding. I will make sure they are ready by Wednesday.",
+              "keyPhrases": ["if we rush", "quality will be bad", "make sure they are ready"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "push-back-high-risk-01",
+      "category": "High EQ Communication",
+      "task_description": "Push back on a high-risk, unrealistic technical suggestion by highlighting potential disasters and proposing a staged approach.",
+      "mood_suggestion": "Serious, risk-averse, analytical, constructive.",
+      "keywords_pool": ["ambitious", "realistically", "lose client info", "take that risk", "in stages", "staged approach"],
+      "tags": ["risk mitigation", "technical constraints", "pushing back"],
+      "level": "advanced",
+      "example": {
+        "title": "反驳高风险的数据库重写提议",
+        "scenario": "A colleague suggests rewriting the whole database over a weekend. You need to explain why this is a 'recipe for disaster'.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "I have a great idea. Why don't we rewrite the whole database by this weekend?",
+            "chinese": "我有个好主意。我们为什么不在这周末之前把整个数据库重写一遍呢？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "指出这是一个很有野心的想法，但从现实角度看不是两天就能搞定的事",
+            "reference": {
+              "answer": "That is an ambitious idea, but realistically, it is not a two-day job.",
+              "keyPhrases": ["ambitious idea", "realistically", "not a two-day job"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Really? I thought it would be simple. It is just copying data.",
+            "chinese": "真的吗？我觉得应该很简单。只是复制粘贴数据而已。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "解释风险：一旦出错会丢失所有客户信息，并建议分阶段进行",
+            "reference": {
+              "answer": "It looks like that, but if we make one mistake during the process, we lose all client info. We definitely cannot take that risk. Let's do it in stages instead.",
+              "keyPhrases": ["lose all client info", "cannot take that risk", "in stages"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "daily-task-update-01",
+      "category": "Task Delegation",
+      "task_description": "Delegate a daily task to a colleague and set clear expectations for completion.",
+      "mood_suggestion": "Clear, professional, supportive.",
+      "keywords_pool": ["take over", "update", "deadline", "make sure", "complete"],
+      "tags": ["delegation", "task management", "responsibility"],
+      "level": "beginner",
+      "example": {
+        "title": "交接每日任务",
+        "scenario": "You need to delegate a daily task to a colleague and ensure they understand the requirements and deadlines.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "From today, I need you to take over this task.",
+            "chinese": "从今天起，这份工作就由你接手了。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "确认需要完成的具体内容",
+            "reference": {
+              "answer": "Okay. What do I need to do?",
+              "keyPhrases": ["What do I need to do?"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "You’ll update the file every day.",
+            "chinese": "你每天负责更新这个文件。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "询问是否有固定的截止时间",
+            "reference": {
+              "answer": "Got it. Is there a deadline?",
+              "keyPhrases": ["Got it", "Is there a deadline?"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Yes, by 5 p.m. each day.",
+            "chinese": "嗯，每天下午5点前完成就行。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "确认会按时完成任务",
+            "reference": {
+              "answer": "Okay, I’ll make sure it’s done.",
+              "keyPhrases": ["I’ll make sure it’s done"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "feature-availability-check-01",
+      "category": "Client Communication",
+      "task_description": "Respond to a client inquiry about feature availability and provide a timeline.",
+      "mood_suggestion": "Professional, responsive, clear.",
+      "keywords_pool": ["feature availability", "timeline", "confirm", "check with team", "reply soon"],
+      "tags": ["client inquiry", "timeline", "follow-up"],
+      "level": "beginner",
+      "example": {
+        "title": "确认功能上线时间",
+        "scenario": "A client asks if a feature will be available next week. You need to confirm the timeline and provide a prompt response.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Will we be able to use this feature next week?",
+            "chinese": "这个功能我们下周能用吗？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "需要确认时间线",
+            "reference": {
+              "answer": "Oh, that’s a good question. I need to confirm the timeline.",
+              "keyPhrases": ["that’s a good question", "confirm the timeline"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "How long will it take?",
+            "chinese": "需要多久？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示会尽快确认并回复",
+            "reference": {
+              "answer": "I’ll check with the team today and get back to you right away.",
+              "keyPhrases": ["check with the team", "get back to you right away"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Okay, please let me know soon.",
+            "chinese": "好的，请尽快。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "承诺尽快回复",
+            "reference": {
+              "answer": "Sure, I’ll reply as soon as I can.",
+              "keyPhrases": ["reply as soon as I can"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "after-sales-support-01",
+      "category": "Client Communication",
+      "task_description": "Clarify details about after-sales support included in a package.",
+      "mood_suggestion": "Helpful, clear, professional.",
+      "keywords_pool": ["after-sales support", "details", "breakdown", "package", "included"],
+      "tags": ["client inquiry", "support details", "clarification"],
+      "level": "intermediate",
+      "example": {
+        "title": "澄清售后支持范围",
+        "scenario": "A client asks if after-sales support is included in the price. You need to clarify what is included and provide a detailed breakdown.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Can I ask something that just came to mind? Is after-sales support included in this price?",
+            "chinese": "我能突然想到个问题想问你一下，这个价格包含售后支持吗？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "需要确认细节",
+            "reference": {
+              "answer": "Ah, that’s an important question. Let me confirm the details.",
+              "keyPhrases": ["important question", "confirm the details"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "I need to know what’s included and what isn’t.",
+            "chinese": "我需要知道范围，有什么包含，什么不包含。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "提供大概方向并承诺整理详细信息",
+            "reference": {
+              "answer": "Got it. A quick overview: basic support is included, and advanced support depends on the package you select. I’ll put the full breakdown into a table for you.",
+              "keyPhrases": ["quick overview", "basic support", "advanced support", "put the full breakdown"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Great, send it over once you have it.",
+            "chinese": "好，那你整理好发我看看。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "承诺尽快发送整理好的信息",
+            "reference": {
+              "answer": "Will do — I’ll send it today.",
+              "keyPhrases": ["Will do", "send it today"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "scaling-system-check-01",
+      "category": "Technical Consultation",
+      "task_description": "Address a client’s concern about system scalability and provide a reliable assessment.",
+      "mood_suggestion": "Reassuring, analytical, professional.",
+      "keywords_pool": ["scalability", "peak load", "stress test", "options", "cost and risk"],
+      "tags": ["scalability", "technical consultation", "client concern"],
+      "level": "advanced",
+      "example": {
+        "title": "评估系统扩展能力",
+        "scenario": "A client asks if your system can handle a sudden increase in demand. You need to provide a reliable assessment and propose options.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Sorry, one thing just popped into my head. If we need to scale up suddenly, can your system handle it?",
+            "chinese": "不好意思，我突然想到一个问题。如果我们临时要扩容，你们的系统能撑得住吗？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "提供初步判断",
+            "reference": {
+              "answer": "That’s a great question. Let me give you a quick initial read.",
+              "keyPhrases": ["great question", "quick initial read"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Sure, go ahead.",
+            "chinese": "好，你说。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "解释当前架构的稳定性，并说明需要进一步测试",
+            "reference": {
+              "answer": "With the current architecture, we’re stable under normal load. If you mean a sharp spike, we’ll need to assess the peak load. I don’t want to throw out a number without checking, so I’ll have the engineering team run a fast stress test.",
+              "keyPhrases": ["current architecture", "stable under normal load", "sharp spike", "assess the peak load", "run a fast stress test"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Fair enough. I just need a reliable range.",
+            "chinese": "可以，只要你们能给我一个可靠的范围就行了。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "承诺提供选项并说明成本和风险",
+            "reference": {
+              "answer": "Absolutely. I’ll lay out two or three options today so you can see the cost and risk of each approach clearly.",
+              "keyPhrases": ["lay out two or three options", "cost and risk", "clearly"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "tech-support-request-01",
+      "category": "Asking for Help Gracefully",
+      "task_description": "Report a technical issue and request assistance from a colleague or IT support.",
+      "mood_suggestion": "Direct, clear, appreciative.",
+      "keywords_pool": ["keeps freezing", "restarting", "update issue", "check in with IT"],
+      "tags": ["technical support", "troubleshooting", "IT assistance"],
+      "level": "beginner",
+      "example": {
+        "title": "向同事或IT反馈电脑故障",
+        "scenario": "Your computer is having performance issues, and you need to ask Mark for help or advice.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Mark, my computer keeps freezing. I don't know what's wrong.",
+            "chinese": "Mark，我的电脑一直卡住，我不知道怎么回事。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "说明你已经试过重启但没用，请求进一步建议",
+            "reference": {
+              "answer": "Yeah, I did, but it's still super slow. It might be an update issue. Could you check in with IT for me?",
+              "keyPhrases": ["I did, but", "still super slow", "check in with"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "resource-sharing-request-01",
+      "category": "Cross-functional Collaboration",
+      "task_description": "Ask a colleague for a template or resource to improve efficiency under a tight deadline.",
+      "mood_suggestion": "Empathetic, collaborative, grateful.",
+      "keywords_pool": ["tight deadline", "similar template", "save some time", "tweak it as needed", "formatting from scratch"],
+      "tags": ["resource sharing", "efficiency", "collaboration"],
+      "level": "intermediate",
+      "example": {
+        "title": "请求同事分享工作模板",
+        "scenario": "You have a tight deadline for a report and want to see if Lisa has a template you can reuse.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Lisa, my manager just asked me to put together a sales data report by the end of the day.",
+            "chinese": "Lisa，经理刚刚让我今天下班前整理一份销售数据分析报告。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "指出时间很紧，询问是否有类似的模板可以借用以节省时间",
+            "reference": {
+              "answer": "Yeah, so I was wondering if you have a similar template I could use to save some time. That way, I can focus on the analysis instead of formatting from scratch.",
+              "keyPhrases": ["I was wondering if", "save some time", "formatting from scratch"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "crisis-management-01",
+      "category": "High EQ Communication",
+      "task_description": "Discuss a major client complaint with a colleague and develop an urgent action plan.",
+      "mood_suggestion": "Serious, analytical, proactive, decisive.",
+      "keywords_pool": ["unhappy with", "oversold the features", "can't afford to lose", "solid game plan", "root cause", "get ahead of this"],
+      "tags": ["crisis management", "client relations", "problem solving"],
+      "level": "advanced",
+      "example": {
+        "title": "处理重大客户投诉并制定计划",
+        "scenario": "A major client is unhappy with a new product. You and Rachel need to coordinate an internal response.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Rachel, we've got a situation. Just heard that our biggest client is unhappy and went straight to senior management.",
+            "chinese": "Rachel，我们碰到个问题。刚听说我们最大的客户很不满，直接投诉到高层了。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "分析原因（可能夸大了功能），并建议在联系客户前先制定一个稳健的方案",
+            "reference": {
+              "answer": "Mainly that the product's performance isn't meeting their expectations. They feel we oversold the features. I think we need a solid game plan before reaching out.",
+              "keyPhrases": ["isn't meeting expectations", "oversold the features", "solid game plan"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Agreed. Let's first figure out if this is a product issue or a miscommunication.",
+            "chinese": "同意。我们先弄清楚是产品本身的问题还是沟通出了偏差。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "提议安排紧急会议并强调要在失去信任前主动出击",
+            "reference": {
+              "answer": "Right. We should set up an urgent meeting with sales and product teams to go over this together. We have to get ahead of this before we lose their trust completely.",
+              "keyPhrases": ["set up an urgent meeting", "go over this together", "get ahead of this"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "project-status-tracking-01",
+      "category": "Buying Time & Managing Requests",
+      "task_description": "Provide a quick progress update and negotiate an extra day for quality control.",
+      "mood_suggestion": "Reassuring, transparent, professional.",
+      "keywords_pool": ["quick update", "on track", "extra day", "revisions", "keep me posted"],
+      "tags": ["status update", "negotiation", "marketing project"],
+      "level": "intermediate",
+      "example": {
+        "title": "提供项目简报并争取修改时间",
+        "scenario": "You are updating a stakeholder on a marketing project and need one more day for final touches.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Nice. Are we still on track for the deadline?",
+            "chinese": "不错。我们的截止日期还能赶上吗？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示基本没问题，但提出可能需要额外一天时间做修改",
+            "reference": {
+              "answer": "Pretty much, but we might need an extra day for revisions. I'll send a full update by Friday.",
+              "keyPhrases": ["Pretty much", "extra day for revisions", "full update"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "push-back-unrealistic-timeline-01",
+      "category": "Managing Expectations",
+      "task_description": "Challenge an unrealistic deadline by highlighting quality risks and proposing a phased approach.",
+      "mood_suggestion": "Realistic, constructive, firm on quality.",
+      "keywords_pool": ["not realistic", "rush everything", "quality's gonna take a hit", "lay out the risks", "doable timeline", "phased approach"],
+      "tags": ["negotiation", "timeline", "quality assurance"],
+      "level": "advanced",
+      "example": {
+        "title": "反驳不切实际的时间表并建议分阶段交付",
+        "scenario": "The updated timeline requires a Friday finish, which you believe will compromise the project quality.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Hey, I saw the updated timeline. Are we seriously supposed to finish this by Friday?",
+            "chinese": "嘿，我看了新的时间表。咱们真的要在周五之前搞定？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "明确指出这不现实，并解释赶工会导致质量受损",
+            "reference": {
+              "answer": "That's not realistic. We'd have to rush everything, and the quality's gonna take a hit.",
+              "keyPhrases": ["not realistic", "rush everything", "take a hit"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "I hear you. Have you talked to the manager about it?",
+            "chinese": "我理解。你和经理谈过了吗？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示你会去谈，并打算提出一个更可行的分阶段交付方案",
+            "reference": {
+              "answer": "Not yet, but I will. I'll lay out the risks and suggest a more doable timeline, maybe a phased approach so we can at least deliver part of it on time.",
+              "keyPhrases": ["lay out the risks", "doable timeline", "phased approach"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "reschedule-meeting-01",
+      "category": "Meeting Etiquette",
+      "task_description": "Propose rescheduling a meeting to a different time and confirm the update with participants.",
+      "mood_suggestion": "Casual, efficient, proactive.",
+      "keywords_pool": ["reschedule", "afternoon", "works for me", "update the invitation", "let everyone know"],
+      "tags": ["scheduling", "meeting management", "coordination"],
+      "level": "beginner",
+      "example": {
+        "title": "临时调整会议时间",
+        "scenario": "You need to change tomorrow's meeting time and check if the afternoon works for your colleague.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Hey, do you have a second? We need to reschedule tomorrow's meeting.",
+            "chinese": "嘿，有空吗？咱们得改一下明天的会议时间。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "询问下午两点是否方便，并确认对方是否可以更新会议邀请",
+            "reference": {
+              "answer": "How about the afternoon? 2 PM? That works for me. Let me update the meeting Invitation.",
+              "keyPhrases": ["How about", "works for me", "update the meeting Invitation"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "vendor-negotiation-01",
+      "category": "Negotiation Skills",
+      "task_description": "Discuss a vendor's quote and strategize a counter-offer based on market rates and long-term value.",
+      "mood_suggestion": "Strategic, professional, firm but collaborative.",
+      "keywords_pool": ["room for negotiation", "market rate", "counter with", "willing to budge", "flexible", "lock in the deal", "common ground"],
+      "tags": ["negotiation", "vendor management", "procurement"],
+      "level": "advanced",
+      "example": {
+        "title": "与供应商谈判价格",
+        "scenario": "You and Mike are reviewing a vendor's quote that is higher than the market rate. You want to push for a discount.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Mike, we got the vendor's quote, but I think there's still room for negotiation. Their price is at least 10% higher than the market rate.",
+            "chinese": "Mike，我们收到供应商的报价了，但我觉得还有谈判的空间。他们的价格比市场价高了至少10%。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "提议先要求15%的折扣，并建议强调长期合作伙伴关系的价值来劝说对方",
+            "reference": {
+              "answer": "I'd say we push for a 15% discount first and see how they respond. We can highlight the value of a long-term partnership to convince them. If they're flexible, we can lock in the deal.",
+              "keyPhrases": ["push for a discount", "highlight the value", "long-term partnership", "lock in the deal"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "project-wrap-up-01",
+      "category": "Project Management",
+      "task_description": "Give a progress update on a project phase and mention remaining minor tasks.",
+      "mood_suggestion": "Positive, reassuring, organized.",
+      "keywords_pool": ["first phase", "on track", "minor things", "wrap up", "nothing major", "full report"],
+      "tags": ["status update", "project completion", "reporting"],
+      "level": "intermediate",
+      "example": {
+        "title": "项目阶段性收尾汇报",
+        "scenario": "The first phase of your project is nearly done. You need to reassure your colleague that the deadline is safe.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "That's great! Are we still on track for the deadline?",
+            "chinese": "太好了！我们还能赶上截止日期吗？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示基本没问题，提到还有些小事要收尾，并承诺下班前发详细报告",
+            "reference": {
+              "answer": "Pretty much. There are a few minor things to wrap up, but nothing major. I'll send a full report by the end of the day.",
+              "keyPhrases": ["Pretty much", "minor things to wrap up", "nothing major", "by the end of the day"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "client-complaint-logistics-01",
+      "category": "High EQ Communication",
+      "task_description": "Address a client complaint regarding shipping delays and missing items.",
+      "mood_suggestion": "Action-oriented, serious, responsible.",
+      "keywords_pool": ["latest delivery", "shipment was delayed", "items were missing", "get in touch with", "looking into it"],
+      "tags": ["customer service", "problem solving", "logistics"],
+      "level": "intermediate",
+      "example": {
+        "title": "处理客户关于物流的投诉",
+        "scenario": "A client is unhappy because their shipment was delayed and items are missing. You need to take immediate action.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "We just got an email from the client. They're not happy with the latest delivery. The shipment was delayed and some items were missing.",
+            "chinese": "客户刚发邮件过来，他们对最新的货不太满意。物流延迟了，而且有些东西少了。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "建议联系物流团队查明情况，并表示你会拟一个回复让客户知道我们正在处理",
+            "reference": {
+              "answer": "That's not good. Let's get in touch with the logistics team and see what happened. I'll also draft a response to let the client know we're looking into it.",
+              "keyPhrases": ["get in touch with", "see what happened", "draft a response", "looking into it"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "team-meeting-prioritization-01",
+      "category": "Cross-functional Collaboration",
+      "task_description": "Initiate a quick meeting to address project delays and prioritize tasks.",
+      "mood_suggestion": "Urgent, collaborative, decisive.",
+      "keywords_pool": ["running behind", "jump on a meeting", "prioritize", "holdup", "haven't heard back", "where things stand"],
+      "tags": ["prioritization", "team alignment", "bottleneck"],
+      "level": "advanced",
+      "example": {
+        "title": "针对进度滞后发起优先排级会议",
+        "scenario": "The project is running behind due to the dev team. You need to figure out what to prioritize.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Tom, we're running behind. I think we should jump on a quick meeting. We need to figure out what to prioritize.",
+            "chinese": "Tom，我们的进度有点滞后了。我觉得我们需要开个快速会议，得优先安排一下任务。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "说明卡点在开发团队，并决定直接打电话询问最新进展而不是死等邮件",
+            "reference": {
+              "answer": "The holdup is with the dev team—they're still working on the last feature. I shot them an email this morning but haven't heard back yet. No point waiting—I'll give them a quick call and see where things stand.",
+              "keyPhrases": ["holdup is with", "haven't heard back yet", "no point waiting", "see where things stand"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "meeting-agenda-budget-01",
+      "category": "Meeting Etiquette",
+      "task_description": "Discuss the preparation of a meeting agenda, emphasizing a focus on budget and customer feedback.",
+      "mood_suggestion": "Organized, focused, collaborative.",
+      "keywords_pool": ["meeting agenda", "focus on the budget", "cover marketing", "customer feedback", "go over in detail"],
+      "tags": ["agenda", "budgeting", "planning"],
+      "level": "intermediate",
+      "example": {
+        "title": "准备会议议程并强调预算重点",
+        "scenario": "You and a colleague are finalizing the topics for an upcoming meeting. You want to ensure the budget is the main focus.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Have you prepared the meeting agenda? I want to make sure we don't miss anything.",
+            "chinese": "你准备好会议议程了吗？我想确保我们没有遗漏任何内容。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "确认你已经列出了所有主题，并强调这次需要重点讨论预算问题",
+            "reference": {
+              "answer": "Yes, I’ve listed all the topics we need to discuss. Great, we need to focus on the budget this time.",
+              "keyPhrases": ["listed all the topics", "focus on the budget"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Got it. What about marketing and the latest customer feedback?",
+            "chinese": "明白了。那市场推广和最新的客户反馈呢？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "确认也会涵盖这些部分，并承诺会详细讨论每一个环节",
+            "reference": {
+              "answer": "We’ll also cover marketing and customer feedback. I’ll make sure we go over each section in detail.",
+              "keyPhrases": ["cover marketing", "go over each section", "in detail"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "client-satisfaction-strategy-01",
+      "category": "High EQ Communication",
+      "task_description": "Analyze client dissatisfaction regarding quality control and propose resource allocation to solve it.",
+      "mood_suggestion": "Analytical, responsible, solution-oriented.",
+      "keywords_pool": ["not very happy with", "quality control", "prevent similar issues", "allocate more resources", "regular updates"],
+      "tags": ["quality management", "client relations", "resource allocation"],
+      "level": "advanced",
+      "example": {
+        "title": "针对质量控制问题制定客户挽留方案",
+        "scenario": "The client is unhappy with project progress. You need to identify the root cause and suggest improvements.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "We need to discuss the performance of the project, especially the client’s feedback.",
+            "chinese": "我们需要讨论一下项目的表现，特别是客户的反馈。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "承认客户对进度不满意，指出核心问题在于质量控制",
+            "reference": {
+              "answer": "Yes, the client is not very happy with our progress. I know, the main issue they mentioned was quality control.",
+              "keyPhrases": ["not very happy with", "main issue", "quality control"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "I agree. We can't let this happen again.",
+            "chinese": "我同意。我们不能让这种事再次发生。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "提议增加资源以加强质量管理，并建议定期向客户汇报进展",
+            "reference": {
+              "answer": "Right, we need to improve that to prevent similar issues from happening again. I think we need to allocate more resources to strengthen quality management and provide regular updates to the client.",
+              "keyPhrases": ["prevent similar issues", "allocate more resources", "regular updates"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "handling-last-minute-request-01",
+      "category": "Managing Expectations",
+      "task_description": "Respond to a last-minute report request from the boss by splitting the workload with a teammate.",
+      "mood_suggestion": "Resilient, cooperative, action-oriented.",
+      "keywords_pool": ["last-minute", "it is what it is", "split the work", "speed things up", "push through", "knock it out"],
+      "tags": ["urgency", "teamwork", "efficiency"],
+      "level": "intermediate",
+      "example": {
+        "title": "应对老板的紧急（Last-minute）需求",
+        "scenario": "The boss just requested a report to be finished by the end of today. It's tight, but you and your colleague need to get it done.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Just got an email from the boss—he wants this report done by today.",
+            "chinese": "刚收到老板的邮件——他要求今天之内完成这份报告。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表达时间太紧，但意识到必须完成，建议和同事分工合作以加快进度",
+            "reference": {
+              "answer": "Are you serious? That’s so last-minute! I know, but it is what it is. We just gotta get it done. Let’s split the work to speed things up.",
+              "keyPhrases": ["so last-minute", "it is what it is", "split the work", "speed things up"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Good call. You take the first part, I'll do the second.",
+            "chinese": "好主意。你负责第一部分，我来做第二部分。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示赞同，并鼓励大家一鼓作气把工作搞定",
+            "reference": {
+              "answer": "Exactly. Let’s push through and knock it out!",
+              "keyPhrases": ["push through", "knock it out"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "reassuring-impatient-client-01",
+      "category": "High EQ Communication",
+      "task_description": "Draft a professional response to a client who is complaining about waiting too long for a delivery.",
+      "mood_suggestion": "Empathetic, professional, reassuring.",
+      "keywords_pool": ["waiting too long", "reassure him", "moving as fast as we can", "draft an email", "feels heard"],
+      "tags": ["client communication", "conflict resolution", "empathy"],
+      "level": "advanced",
+      "example": {
+        "title": "安抚催促交付的焦虑客户",
+        "scenario": "A client is complaining about the delivery time despite being told the schedule. You need to respond without being defensive.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "That client emailed us again—he’s saying he’s been waiting too long.",
+            "chinese": "那个客户又发邮件了——他说他等了太久。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "指出虽然已经告知过时间表，但对方仍不满意，询问应如何专业地回复",
+            "reference": {
+              "answer": "But we already told him delivery’s scheduled for next week! Yeah, but he’s still not happy. How should we respond?",
+              "keyPhrases": ["scheduled for", "still not happy", "How should we respond"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Reassure him first, then remind him we’re moving as fast as we can.",
+            "chinese": "先安抚他一下，然后提醒他我们已经在尽可能快地处理了。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "同意拟定邮件，并请同事帮忙把关，确保客户感到被重视",
+            "reference": {
+              "answer": "Got it. I’ll draft an email—can you check it before I send it? I want to make sure he feels heard.",
+              "keyPhrases": ["draft an email", "check it before I send", "feels heard"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "wifi-issue-01",
+      "category": "Technical Support",
+      "task_description": "Discuss a Wi-Fi issue and suggest alternative solutions to stay productive.",
+      "mood_suggestion": "Helpful, resourceful, calm.",
+      "keywords_pool": ["Wi-Fi down", "hotspot", "break room", "signal", "important email"],
+      "tags": ["troubleshooting", "connectivity", "problem solving"],
+      "level": "beginner",
+      "example": {
+        "title": "讨论Wi-Fi问题并提出解决方案",
+        "scenario": "The office Wi-Fi is down, and you need to send an important email. You discuss the issue with a colleague and explore alternatives.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Is your Wi-Fi down too?",
+            "chinese": "你的网也断了吗？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "确认问题并表达担忧",
+            "reference": {
+              "answer": "Yeah, I just tried opening a page, and it froze. Ugh, this is bad. I need to send an important email.",
+              "keyPhrases": ["tried opening a page", "this is bad", "send an important email"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Have you tried using your phone’s hotspot?",
+            "chinese": "你试过用手机热点吗？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示会尝试并感谢建议",
+            "reference": {
+              "answer": "Good idea, let me try that.",
+              "keyPhrases": ["Good idea", "let me try that"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Or you could go to the break room—the signal’s usually better there.",
+            "chinese": "要不你也可以去茶水间，哪里的信号通常好点。"
+          }
+        ]
+      }
+    },
+    {
+      "id": "presentation-check-01",
+      "category": "Meeting Preparation",
+      "task_description": "Assist a colleague in finalizing a presentation before a meeting.",
+      "mood_suggestion": "Supportive, collaborative, detail-oriented.",
+      "keywords_pool": ["presentation ready", "tweaking slides", "double-check", "keep an eye", "go smoothly"],
+      "tags": ["presentation", "teamwork", "meeting preparation"],
+      "level": "intermediate",
+      "example": {
+        "title": "帮助同事检查会议演示文稿",
+        "scenario": "Your colleague is finalizing a presentation, and you offer to help double-check the details before the meeting.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Is your presentation ready? The boss is about to walk in.",
+            "chinese": "你PPT弄好了吗？老板马上就要进来了。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示还在调整最后几页，并请求同事帮忙检查数据",
+            "reference": {
+              "answer": "Almost, just tweaking the last few slides. Yes, please! Can you double-check the numbers for me?",
+              "keyPhrases": ["tweaking the last few slides", "double-check the numbers"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "No problem, I’ll keep an eye on them.",
+            "chinese": "没问题，我帮你盯着点。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "感谢同事的帮助，并表示会议需要顺利进行",
+            "reference": {
+              "answer": "Thanks so much. This meeting has to go smoothly.",
+              "keyPhrases": ["Thanks so much", "has to go smoothly"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "contract-renewal-01",
+      "category": "Negotiation Skills",
+      "task_description": "Discuss a client’s hesitation to renew a contract and propose potential concessions.",
+      "mood_suggestion": "Strategic, proactive, solution-oriented.",
+      "keywords_pool": ["contract renewal", "client feedback", "considering terms", "make concessions", "finalize the deal"],
+      "tags": ["negotiation", "client retention", "contract management"],
+      "level": "advanced",
+      "example": {
+        "title": "讨论客户续约犹豫并提出解决方案",
+        "scenario": "Your contract with a client is about to expire, and they haven’t responded about renewing. You need to discuss next steps with a colleague.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Our contract is about to expire, and the client hasn’t responded about renewing it.",
+            "chinese": "我们的合同快到期了，客户还没回应续签的事。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "询问客户是否有反馈，并分析可能的原因",
+            "reference": {
+              "answer": "Not yet. I think they might be considering whether to accept our terms.",
+              "keyPhrases": ["Not yet", "might be considering", "accept our terms"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "What should we do if they don’t accept our proposal?",
+            "chinese": "如果他们不接受我们的提议，我们应该怎么应对？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "建议可以考虑做出让步，比如调整价格或增加服务",
+            "reference": {
+              "answer": "We could consider making some concessions, like adjusting the price or adding more services.",
+              "keyPhrases": ["making some concessions", "adjusting the price", "adding more services"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Alright, I’ll follow up with them and see if we can finalize the renewal soon.",
+            "chinese": "好的，我会再跟他们确认一下，看看能不能尽快敲定续签合同。"
+          }
+        ]
+      }
+    },
+    {
+      "id": "team-agreement-01",
+      "category": "Team Alignment",
+      "task_description": "Confirm team agreement on a plan and establish a start date.",
+      "mood_suggestion": "Collaborative, decisive, inclusive.",
+      "keywords_pool": ["agree on the plan", "everyone nodded", "start next week", "sounds good", "ready"],
+      "tags": ["team alignment", "decision making", "planning"],
+      "level": "beginner",
+      "example": {
+        "title": "确认团队一致同意计划",
+        "scenario": "You are discussing a new plan with your team and need to confirm everyone is on board before setting a start date.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Do we all agree on this plan?",
+            "chinese": "我们都同意这个计划吗？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示同意并询问其他人意见",
+            "reference": {
+              "answer": "I agree. Does everyone else agree?",
+              "keyPhrases": ["I agree", "Does everyone else agree"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Yes, everyone nodded.",
+            "chinese": "是的，大家都点头了。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "确认开始时间并表示准备就绪",
+            "reference": {
+              "answer": "Great, we’ll start next week. Sounds good, I’m ready.",
+              "keyPhrases": ["start next week", "Sounds good", "I’m ready"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "schedule-alignment-01",
+      "category": "Team Alignment",
+      "task_description": "Confirm team alignment on a new schedule and address any concerns.",
+      "mood_suggestion": "Inclusive, collaborative, decisive.",
+      "keywords_pool": ["new schedule", "works for me", "no conflict", "move forward", "aligned"],
+      "tags": ["team alignment", "scheduling", "decision making"],
+      "level": "intermediate",
+      "example": {
+        "title": "确认团队对新时间表的共识",
+        "scenario": "You are discussing a new schedule with your team and need to ensure everyone agrees before proceeding.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Just to confirm, does everyone agree with the new schedule?",
+            "chinese": "为了确认一下，大家都同意这个新的时间表吗？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示同意并询问其他人是否有异议",
+            "reference": {
+              "answer": "Works for me. Lisa, are you okay with it?",
+              "keyPhrases": ["Works for me", "are you okay with it"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Yes, no conflict on my end.",
+            "chinese": "可以的，对我来说没有冲突。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "确认所有人都同意并表示可以继续推进",
+            "reference": {
+              "answer": "Looks like we’re all aligned, so we can move forward.",
+              "keyPhrases": ["we’re all aligned", "move forward"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "final-proposal-consensus-01",
+      "category": "Team Alignment",
+      "task_description": "Verify team consensus on a final proposal and document the agreement.",
+      "mood_suggestion": "Formal, inclusive, decisive.",
+      "keywords_pool": ["final proposal", "fully on board", "aligned with the timeline", "document the agreement", "consensus"],
+      "tags": ["team alignment", "decision making", "execution"],
+      "level": "advanced",
+      "example": {
+        "title": "确认团队对最终提案的共识",
+        "scenario": "Before finalizing a proposal, you need to ensure everyone is in agreement and document the decision.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Before we wrap up, I’d like to verify—are we all in consensus on this final proposal?",
+            "chinese": "在结束前，我想确认一下——我们是否都认同这个最终方案？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示完全支持，并询问其他团队是否有顾虑",
+            "reference": {
+              "answer": "I’m fully on board. David, does your team have any concerns?",
+              "keyPhrases": ["fully on board", "any concerns"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "None—we’re aligned with the timeline.",
+            "chinese": "没有，我们和时间线一致。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "确认是否还有需要讨论的分歧，并建议记录共识",
+            "reference": {
+              "answer": "Sounds like everyone’s on the same page. I suggest we document the agreement and move into execution.",
+              "keyPhrases": ["on the same page", "document the agreement", "move into execution"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Perfect, I’ll note in the minutes that full consensus has been reached.",
+            "chinese": "好，我会在会议纪要中写明所有人已达成一致。"
+          }
+        ]
+      }
+    },
+    {
+      "id": "early-start-project-01",
+      "category": "Project Management",
+      "task_description": "Discuss starting a project earlier to avoid last-minute rush.",
+      "mood_suggestion": "Proactive, logical, collaborative.",
+      "keywords_pool": ["start earlier", "rush at the end", "more time", "arrange schedule", "advance"],
+      "tags": ["project planning", "time management", "teamwork"],
+      "level": "beginner",
+      "example": {
+        "title": "讨论提前开始项目",
+        "scenario": "You and your colleague discuss the benefits of starting a project earlier to avoid last-minute stress.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "I think we should start this project earlier.",
+            "chinese": "我觉得我们应该早点开始这个项目。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "询问原因",
+            "reference": {
+              "answer": "Can you explain why?",
+              "keyPhrases": ["explain why"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Last time, we were in a rush at the end.",
+            "chinese": "上次项目，我们拖到最后很紧张。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示同意并提出解决方案",
+            "reference": {
+              "answer": "Right, I remember it was really busy. So starting earlier gives us more time.",
+              "keyPhrases": ["really busy", "gives us more time"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Good idea, we can arrange the schedule in advance.",
+            "chinese": "好主意，我们可以提前安排时间。"
+          }
+        ]
+      }
+    },
+    {
+      "id": "analyze-data-first-01",
+      "category": "Data Analysis",
+      "task_description": "Discuss the importance of analyzing data before making decisions.",
+      "mood_suggestion": "Analytical, logical, supportive.",
+      "keywords_pool": ["analyze data", "reference data", "decision accuracy", "data support", "prepare data table"],
+      "tags": ["data analysis", "decision making", "teamwork"],
+      "level": "intermediate",
+      "example": {
+        "title": "讨论分析数据的重要性",
+        "scenario": "You and your colleague discuss the importance of analyzing data before making decisions and plan the next steps.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "I suggest we analyze last quarter’s data first.",
+            "chinese": "我建议我们先分析上季度的数据。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "询问原因",
+            "reference": {
+              "answer": "Why is that?",
+              "keyPhrases": ["Why is that"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Because last time we didn’t have reference data, so the decision wasn’t accurate.",
+            "chinese": "因为上次我们没有参考数据，结果决策不够准确。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示同意并提出数据支持的好处",
+            "reference": {
+              "answer": "Right, having data support makes it more convincing.",
+              "keyPhrases": ["data support", "more convincing"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Yes, if we organize the numbers, the team can better understand the situation.",
+            "chinese": "对，如果我们把数字整理出来，团队可以更好理解情况。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "提出具体行动计划",
+            "reference": {
+              "answer": "Good idea, we can prepare a data table before the meeting.",
+              "keyPhrases": ["Good idea", "prepare a data table"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "market-trend-analysis-01",
+      "category": "Market Analysis",
+      "task_description": "Present a market trend analysis and discuss its implications with a colleague.",
+      "mood_suggestion": "Confident, data-driven, strategic.",
+      "keywords_pool": ["market trends", "sales data", "customer behavior", "growth products", "execution plan"],
+      "tags": ["market analysis", "strategy", "data presentation"],
+      "level": "advanced",
+      "example": {
+        "title": "分析市场趋势并讨论执行计划",
+        "scenario": "You present a detailed market trend analysis to a colleague and discuss the next steps for execution.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "I’ve prepared detailed data to support my analysis of market trends.",
+            "chinese": "我准备了一份详细数据，能支持我对市场趋势的分析。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示感兴趣并请求分享数据",
+            "reference": {
+              "answer": "Excellent, please share it.",
+              "keyPhrases": ["Excellent", "please share"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Based on the past six months’ sales data and customer behavior indicators, we can see sustained growth in certain product lines while competitors’ market share slightly declined.",
+            "chinese": "根据过去六个月的销售数据和客户行为指标，我们可以看到特定产品的需求持续增长，同时竞争对手的市场份额有下降。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示数据有说服力并认可策略的可行性",
+            "reference": {
+              "answer": "I see, your data provides strong evidence, showing your strategy is feasible.",
+              "keyPhrases": ["strong evidence", "strategy is feasible"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Yes, I suggest we focus on these growth products next quarter while keeping risk monitoring in place.",
+            "chinese": "是的，我建议我们在下季度重点投入这些增长产品，同时保持风险监控。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示同意并提出进一步讨论执行计划",
+            "reference": {
+              "answer": "Makes sense, we can discuss the execution plan further in the team meeting.",
+              "keyPhrases": ["Makes sense", "execution plan"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "equipment-check-01",
+      "category": "Meeting Preparation",
+      "task_description": "Ensure all equipment is functioning properly before starting a virtual meeting.",
+      "mood_suggestion": "Proactive, collaborative, detail-oriented.",
+      "keywords_pool": ["microphone", "volume", "video", "background", "screen sharing"],
+      "tags": ["equipment check", "virtual meeting", "technical setup"],
+      "level": "beginner",
+      "example": {
+        "title": "检查设备是否正常工作",
+        "scenario": "Before starting a virtual meeting, you and a colleague ensure that all equipment, including microphone, video, and screen sharing, is functioning properly.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Hi everyone, let’s make sure all the equipment is working before we start.",
+            "chinese": "大家好，在开始之前我们先确认一下所有设备是否正常工作。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "建议先测试麦克风和音量",
+            "reference": {
+              "answer": "Sure, test your microphone and volume first.",
+              "keyPhrases": ["test your microphone", "volume first"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Can you hear me clearly?",
+            "chinese": "你能听清楚我说话吗？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "确认声音清晰无背景噪音",
+            "reference": {
+              "answer": "Yes, very clear, no background noise. How’s your video and background?",
+              "keyPhrases": ["very clear", "no background noise", "video and background"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Video’s fine, background looks clear. Can we try sharing the screen?",
+            "chinese": "视频没问题，背景看起来很清楚。我们可以试一下屏幕共享吗？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "确认屏幕共享正常",
+            "reference": {
+              "answer": "Yes, I can see it, everything works fine.",
+              "keyPhrases": ["I can see it", "everything works fine"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "report-help-01",
+      "category": "Workplace Communication",
+      "task_description": "Ask a colleague for help understanding unfamiliar terms in a report.",
+      "mood_suggestion": "Curious, polite, collaborative.",
+      "keywords_pool": ["report", "terms", "confusing", "net profit", "expenses", "revenue"],
+      "tags": ["asking for help", "clarification", "business terms"],
+      "level": "beginner",
+      "example": {
+        "title": "请求同事帮助理解报告中的术语",
+        "scenario": "You are unsure about some terms in a report and ask your colleague Jane for clarification.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Jane, could you help me with this report?",
+            "chinese": "简，你能帮我看看这份报告吗？"
+          },
+          {
+            "role": "ai",
+            "english": "I'm not sure about some of the terms.",
+            "chinese": "有些术语我不太确定。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "同意提供帮助并询问具体困惑的部分",
+            "reference": {
+              "answer": "Sure, which parts are confusing?",
+              "keyPhrases": ["which parts are confusing"]
+            }
+          },
+          {
+            "role": "user",
+            "userPrompt": "指出具体不懂的术语（净利润）并询问含义",
+            "reference": {
+              "answer": "This one, Net profit, what does this mean?",
+              "keyPhrases": ["what does this mean"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Net profit is the earnings left after all expenses from revenue are deducted.",
+            "chinese": "净利润是从总收入中扣除所有费用后剩余的收益。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示理解并感谢",
+            "reference": {
+              "answer": "Oh, I see. Thank you.",
+              "keyPhrases": ["I see", "Thank you"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "No problem. If you don't understand something, just ask.",
+            "chinese": "不客气。要是你还有不明白的地方，尽管问就行。"
+          }
+        ]
+      }
+    },
+    {
+      "id": "project-progress-01",
+      "category": "Meeting Management",
+      "task_description": "Conduct a quick project progress check-in with team members.",
+      "mood_suggestion": "Professional, encouraging, efficient.",
+      "keywords_pool": ["project progress", "market research", "double-check", "presentation materials", "time-consuming", "on track", "client presentation"],
+      "tags": ["project update", "team check-in", "progress report"],
+      "level": "intermediate",
+      "example": {
+        "title": "快速过一下项目进度",
+        "scenario": "You are leading a quick team meeting to check on project progress before a client presentation next week.",
+        "messages": [
+          {
+            "role": "user",
+            "userPrompt": "开场并询问团队成员 Tom 的工作进展",
+            "reference": {
+              "answer": "Hi, everyone. Let's quickly go over the project progress. Tom, how's your part going?",
+              "keyPhrases": ["go over the project progress", "how's your part going"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Well, I've almost completed the market research. Just need to double-check some data.",
+            "chinese": "嗯，我几乎完成了市场调研。只需要再核实一些数据。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "确认完成时间并询问另一位成员 Lily 的进展",
+            "reference": {
+              "answer": "Great. Make sure to finish it by tomorrow. What about you, Lily?",
+              "keyPhrases": ["finish it by tomorrow", "What about you"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "I'm still working on the presentation materials. It's a bit time-consuming, but I'm on track.",
+            "chinese": "我还在做演示材料。有点耗时，但我进度正常。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "鼓励团队并提醒下周客户展示的时间节点",
+            "reference": {
+              "answer": "Alright. Keep up the good work. We need to present the whole project to the client next week.",
+              "keyPhrases": ["Keep up the good work", "present to the client next week"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Got it. We'll do our best.",
+            "chinese": "明白了。我们会尽力的。"
+          }
+        ]
+      }
+    },
+    {
+      "id": "new-market-entry-01",
+      "category": "Business Strategy",
+      "task_description": "Discuss plans for entering a new market with a colleague.",
+      "mood_suggestion": "Curious, collaborative, forward-thinking.",
+      "keywords_pool": ["new market", "Southeast Asian market", "e-commerce platforms", "test the market"],
+      "tags": ["market entry", "business expansion", "strategy discussion"],
+      "level": "beginner",
+      "example": {
+        "title": "讨论进入新市场的计划",
+        "scenario": "You and a colleague discuss entering the Southeast Asian market through e-commerce platforms.",
+        "messages": [
+          {
+            "role": "user",
+            "userPrompt": "确认是否进入新市场",
+            "reference": {
+              "answer": "We're entering a new market, right?",
+              "keyPhrases": ["entering a new market"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Yes, the Southeast Asian market.",
+            "chinese": "是的，是东南亚市场。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "询问具体计划",
+            "reference": {
+              "answer": "So what's our plan?",
+              "keyPhrases": ["what's our plan"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "We'll start by selling on e-commerce platforms.",
+            "chinese": "我们先从电商平台开始卖产品。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示赞同并认为更方便",
+            "reference": {
+              "answer": "Sounds good. That's easier.",
+              "keyPhrases": ["Sounds good", "easier"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Yep, just to test the market first.",
+            "chinese": "对，先测试一下市场反应。"
+          }
+        ]
+      }
+    },
+    {
+      "id": "swot-analysis-01",
+      "category": "Business Strategy",
+      "task_description": "Review SWOT analysis results and discuss market entry strategy.",
+      "mood_suggestion": "Analytical, strategic, solution-oriented.",
+      "keywords_pool": ["SWOT analysis", "strengths", "weaknesses", "product quality", "competitive pricing", "brand awareness", "social media", "offline distribution"],
+      "tags": ["SWOT analysis", "market strategy", "competitive analysis"],
+      "level": "intermediate",
+      "example": {
+        "title": "回顾SWOT分析并制定市场进入策略",
+        "scenario": "You review the SWOT analysis with a colleague and discuss how to enter the market strategically.",
+        "messages": [
+          {
+            "role": "user",
+            "userPrompt": "询问SWOT分析是否已完成",
+            "reference": {
+              "answer": "Has the SWOT analysis from last week been finalized?",
+              "keyPhrases": ["SWOT analysis", "finalized"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Yes. Our strengths are high product quality and competitive pricing.",
+            "chinese": "出来了。我们的优势是产品质量高，价格有竞争力。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "询问弱点是什么",
+            "reference": {
+              "answer": "What about weaknesses?",
+              "keyPhrases": ["weaknesses"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "The brand isn't well-known yet, and we still need to build local channels.",
+            "chinese": "品牌在新市场还不够知名，渠道也需要慢慢建立。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "确认市场进入策略是否从线上开始",
+            "reference": {
+              "answer": "So the market entry plan is to start online first?",
+              "keyPhrases": ["market entry plan", "start online first"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Right. We'll focus on social media and e-commerce, then move into offline distribution later.",
+            "chinese": "对，先靠社交媒体和电商，再慢慢谈线下分销。"
+          }
+        ]
+      }
+    },
+    {
+      "id": "swot-advanced-01",
+      "category": "Strategic Planning",
+      "task_description": "Conduct an in-depth SWOT analysis and develop a niche market entry strategy.",
+      "mood_suggestion": "Strategic, analytical, innovative.",
+      "keywords_pool": ["SWOT analysis", "product innovation", "supply chain flexibility", "niche segment", "eco-conscious", "brand story", "sustainability", "word-of-mouth", "premium perception"],
+      "tags": ["advanced strategy", "niche marketing", "supply chain", "brand positioning"],
+      "level": "advanced",
+      "example": {
+        "title": "深度SWOT分析与细分市场进入策略",
+        "scenario": "You analyze SWOT results in depth with a colleague and decide to target a niche market segment first.",
+        "messages": [
+          {
+            "role": "user",
+            "userPrompt": "指出SWOT分析中的优势与风险",
+            "reference": {
+              "answer": "Our SWOT analysis shows that while we have strong product innovation, supply chain flexibility remains a major risk.",
+              "keyPhrases": ["product innovation", "supply chain flexibility", "major risk"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Right—especially when entering multiple national markets, inventory and last-mile delivery can be challenging.",
+            "chinese": "对，尤其是在进入多个国家市场时，库存和本地交付是挑战。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "建议从细分市场切入",
+            "reference": {
+              "answer": "I'm thinking maybe we start with a niche segment, like eco-conscious middle-class consumers.",
+              "keyPhrases": ["niche segment", "eco-conscious", "middle-class consumers"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "That's a smart angle. They care about brand stories and sustainability, which helps build premium perception.",
+            "chinese": "这思路不错，他们对品牌故事和可持续性有兴趣，可以拉高品牌溢价。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "提出用该群体做口碑并扩展",
+            "reference": {
+              "answer": "Then we can use that base for word-of-mouth and gradually expand into broader regions.",
+              "keyPhrases": ["word-of-mouth", "gradually expand", "broader regions"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Exactly. Starting small lets us test and tweak the product mix with lower risk.",
+            "chinese": "没错，前期用小市场试错更安全，也方便调整产品组合。"
+          }
+        ]
+      }
+    },
+    {
+      "id": "competitor-pricing-advanced-01",
+      "category": "Market Strategy",
+      "task_description": "Analyze major competitors' pricing strategies and develop a value-for-money positioning.",
+      "mood_suggestion": "Strategic, analytical, persuasive.",
+      "keywords_pool": ["competitors' pricing", "10% cheaper", "low pricing", "quality", "after-sales service", "value-for-money", "promo", "warranty", "good deal"],
+      "tags": ["competitive analysis", "value proposition", "pricing strategy", "customer acquisition"],
+      "level": "intermediate",
+      "example": {
+        "title": "深度竞品定价分析与价值主张制定",
+        "scenario": "You analyze major competitors' pricing and decide to emphasize value-for-money and warranty to attract customers.",
+        "messages": [
+          {
+            "role": "user",
+            "userPrompt": "说明竞品定价比我们低约10%",
+            "reference": {
+              "answer": "I've been looking at some major competitors' pricing. Most of them are about 10% cheaper than us.",
+              "keyPhrases": ["competitors' pricing", "10% cheaper"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Yeah, they probably focus on low pricing, but we have stronger quality and after-sales service.",
+            "chinese": "嗯，他们可能是走低价路线。但他们在品质和售后上没我们强。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "指出客户仍会被价格吸引",
+            "reference": {
+              "answer": "True, but customers are still drawn to the price at first glance.",
+              "keyPhrases": ["drawn to the price", "first glance"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Then maybe we can promote our value-for-money image and run a small promo to attract new buyers.",
+            "chinese": "那我们可以主打'高性价比'，同时做点促销来吸引新客户。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "建议在广告中强调保修服务",
+            "reference": {
+              "answer": "Great idea. We can also highlight our warranty in the ads.",
+              "keyPhrases": ["highlight our warranty", "in the ads"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Exactly. That helps people feel they're getting a good deal.",
+            "chinese": "对，那样能让客户觉得物超所值。"
+          }
+        ]
+      }
+    },
+    {
+      "id": "sample-shipping-discussion-01",
+      "category": "Client Communication",
+      "task_description": "Discuss sample shipping and contract review with a client.",
+      "mood_suggestion": "Professional, clear, collaborative.",
+      "tags": ["sample shipping", "contract review", "client communication"],
+      "level": "intermediate",
+      "example": {
+        "title": "讨论样品寄送与合同审核",
+        "scenario": "You are discussing sample shipping and contract review with a client.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "If the proposal looks good, we can send out the samples tomorrow along with a preliminary contract for your internal review.",
+            "chinese": "如果提案您对方案没问题，我们可以明天安排发样，同时把初步合同一并寄出，供您内部先确认一轮审核。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示需要先与采购经理确认，但对寄送样品没有问题",
+            "reference": {
+              "answer": "Okay. I’ll need to check with our procurement manager first, but shipping the samples is totally fine.",
+              "keyPhrases": ["check with our procurement manager", "shipping the samples is totally fine"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "No problem — I’ll mark the contract as 'for reference only,' so you can discuss it internally and review the terms in detail.",
+            "chinese": "没问题，我这边会把合同标记为“非正式文件”，供您内部讨论条款，详细审核。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "询问预计交货时间",
+            "reference": {
+              "answer": "Got it. How soon can I expect the delivery?",
+              "keyPhrases": ["How soon can I expect the delivery"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "We’ll ship via DHL — it should arrive within three business days. We’ll send you the tracking number right after.",
+            "chinese": "我们会通过“DHL”发货，预计三个工作日内送达。我们会在发货后第一时间将物流单号发给您。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示满意并承诺内部确认后尽快回复",
+            "reference": {
+              "answer": "Perfect. I’ll get back to you as soon as I get internal confirmation.",
+              "keyPhrases": ["get back to you", "internal confirmation"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "client-extension-request-01",
+      "category": "Client Communication",
+      "task_description": "Discuss a client's request for an unrealistic deadline and propose a reasonable extension.",
+      "mood_suggestion": "Professional, collaborative, solution-oriented.",
+      "tags": ["client communication", "deadline negotiation", "problem solving"],
+      "level": "intermediate",
+      "example": {
+        "title": "与客户讨论延长截止日期",
+        "scenario": "You and a colleague discuss how to handle a client's request for an unrealistic deadline and propose a reasonable extension.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "I think we have a small issue with the client’s request.",
+            "chinese": "我觉得客户的要求有点小问题。"
+          },
+          {
+            "role": "ai",
+            "english": "The client wants us to finish everything by Friday, but that’s not possible.",
+            "chinese": "客户希望我们在周五前完成所有工作，但这不太可能。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "询问是否已经告知客户",
+            "reference": {
+              "answer": "Did you tell them that?",
+              "keyPhrases": ["Did you tell them that"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Not yet.",
+            "chinese": "还没。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "建议向客户提出合理的延期请求",
+            "reference": {
+              "answer": "How about we ask for an extension? A reasonable one.",
+              "keyPhrases": ["ask for an extension", "reasonable one"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "That could work. I’ll draft an email. I’ll send them a revised version of the contract.",
+            "chinese": "这可能行。我来起草封邮件。我会发送一个修改版的合同给他们。"
+          }
+        ]
+      }
+    },
+    {
+      "id": "pricing-discussion-01",
+      "category": "Client Communication",
+      "task_description": "Discuss pricing with a client and explore flexible options to meet their budget.",
+      "mood_suggestion": "Professional, collaborative, solution-oriented.",
+      "tags": ["pricing discussion", "client communication", "negotiation"],
+      "level": "intermediate",
+      "example": {
+        "title": "与客户讨论价格并探索灵活方案",
+        "scenario": "You are discussing pricing with a client and need to explore flexible options to meet their budget.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Before we move forward, we need to discuss pricing.",
+            "chinese": "在推进之前，我们需要谈谈价格问题。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "确认价格并说明标准方案",
+            "reference": {
+              "answer": "Absolutely. Our standard package is $50,000 annually, which includes full access to our platform.",
+              "keyPhrases": ["standard package", "full access to our platform"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "That's a bit over our budget. Is there any flexibility?",
+            "chinese": "这个价格有点超出我们的预算。有没有调整的空间？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示理解预算问题，并提出可以探索定制方案",
+            "reference": {
+              "answer": "We understand budget concerns. If pricing is a key factor, we can explore a customized plan that meets your needs while staying within your budget.",
+              "keyPhrases": ["budget concerns", "customized plan", "staying within your budget"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "That would be helpful. What adjustments can you offer?",
+            "chinese": "这很有帮助。你们可以提供哪些调整方案？"
+          }
+        ]
+      }
+    },
+    {
+      "id": "meeting-wrap-up-01",
+      "category": "Meeting Management",
+      "task_description": "Wrap up a meeting and confirm action items with team members.",
+      "mood_suggestion": "Professional, concise, collaborative.",
+      "tags": ["meeting wrap-up", "action items", "team alignment"],
+      "level": "beginner",
+      "example": {
+        "title": "会议总结与行动点确认",
+        "scenario": "You are wrapping up a meeting and confirming action items with your team.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Let’s wrap up here. Does anyone have anything else to add?",
+            "chinese": "我们就到这里结束吧。还有什么需要补充的吗？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示没有其他补充并承诺发送会议记录",
+            "reference": {
+              "answer": "Nothing from my side. I’ll send out the meeting notes afterward.",
+              "keyPhrases": ["send out the meeting notes", "nothing from my side"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Great. Let’s move forward based on the action items we aligned on.",
+            "chinese": "很好。我们就按照商定的行动点继续推进吧。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示同意并提出后续同步的建议",
+            "reference": {
+              "answer": "Sounds good. We can sync online if anything comes up.",
+              "keyPhrases": ["sync online", "if anything comes up"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "project-discussion-01",
+      "category": "Project Management",
+      "task_description": "Discuss a recent project and its challenges with a colleague.",
+      "mood_suggestion": "Professional, reflective, collaborative.",
+      "tags": ["project discussion", "teamwork", "problem solving"],
+      "level": "intermediate",
+      "example": {
+        "title": "讨论最近完成的项目及其挑战",
+        "scenario": "You are discussing a recent project with a colleague and reflecting on its challenges and solutions.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Could you briefly walk me through a recent project you worked on?",
+            "chinese": "你能简单说一下你最近做的一个项目吗？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "描述一个跨部门项目及其成果",
+            "reference": {
+              "answer": "Sure. I led a cross-functional project involving marketing and product, and we managed to move the launch two weeks earlier.",
+              "keyPhrases": ["cross-functional project", "move the launch two weeks earlier"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Sounds challenging. What was the biggest difficulty?",
+            "chinese": "听起来很有挑战性。最大的困难是什么？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "描述主要的困难及解决方法",
+            "reference": {
+              "answer": "Mainly misaligned communication. Once I increased the sync frequency, things started to smooth out.",
+              "keyPhrases": ["misaligned communication", "increased the sync frequency", "smooth out"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "request-day-off-01",
+      "category": "Workplace Communication",
+      "task_description": "Request a day off from your manager and explain the reason.",
+      "mood_suggestion": "Polite, professional, respectful.",
+      "tags": ["request day off", "manager communication", "work-life balance"],
+      "level": "beginner",
+      "example": {
+        "title": "向经理请假并说明原因",
+        "scenario": "You need to request a day off from your manager and explain why you need it.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "May I come in?",
+            "chinese": "我能进来吗？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "允许进入并请对方坐下",
+            "reference": {
+              "answer": "Sure, please sit down.",
+              "keyPhrases": ["please sit down"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Mr. Harris, do you have a moment? I need to talk to you about something important.",
+            "chinese": "Harris先生，你有时间吗？我有点重要的事情想和你说。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示愿意倾听并询问对方想说什么",
+            "reference": {
+              "answer": "Sure. What’s on your mind?",
+              "keyPhrases": ["What’s on your mind"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "I’d like to take next Friday off. I’ve been very busy lately, a day off will help me recharge.",
+            "chinese": "下个星期五，我想休假。最近很忙，休一天假能帮我调整一下。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "同意请假并提醒完成任务",
+            "reference": {
+              "answer": "OK, just make sure to finish your tasks before you leave.",
+              "keyPhrases": ["make sure to finish your tasks"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "cover-shift-01",
+      "category": "Team Collaboration",
+      "task_description": "Offer to help a colleague by covering their shift temporarily.",
+      "mood_suggestion": "Helpful, supportive, collaborative.",
+      "tags": ["teamwork", "shift coverage", "helping a colleague"],
+      "level": "beginner",
+      "example": {
+        "title": "帮助同事临时顶班",
+        "scenario": "You offer to help a colleague by covering their shift temporarily while they handle a personal matter.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Did everything go all right? I’m just checking to see if there’s anything I can do to help.",
+            "chinese": "进展还顺利吗？我只是想看看我是否能帮上忙？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "请求对方帮忙顶班一小时",
+            "reference": {
+              "answer": "Actually, you are just the man I want to see. Can you cover me for an hour?",
+              "keyPhrases": ["cover me for an hour"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Sure, let me take care of it.",
+            "chinese": "好，让我来处理。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示感谢并承诺尽快回来",
+            "reference": {
+              "answer": "Thanks a lot. I really appreciate it. I’ll be back as soon as possible.",
+              "keyPhrases": ["really appreciate it", "be back as soon as possible"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "No problem. Take your time. I’ll handle things here.",
+            "chinese": "没问题。别着急。我会处理好这儿的事情。"
+          }
+        ]
+      }
+    },
+    {
+      "id": "job-interview-experience-01",
+      "category": "Job Interview",
+      "task_description": "Discuss previous work experience and career plans during a job interview.",
+      "mood_suggestion": "Professional, confident, concise.",
+      "tags": ["job interview", "work experience", "career plans"],
+      "level": "intermediate",
+      "example": {
+        "title": "面试中讨论工作经验与职业规划",
+        "scenario": "You are in a job interview and need to discuss your previous work experience and career plans.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Good morning. Thank you for coming in today. Could you briefly introduce your previous work experience?",
+            "chinese": "早上好。感谢你今天前来面试。你能简要介绍一下你之前的工作经验吗？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "描述之前的工作经验",
+            "reference": {
+              "answer": "Good morning. I worked at ABC Company for three years as a marketing specialist. I was responsible for developing marketing strategies and executing campaigns.",
+              "keyPhrases": ["marketing specialist", "developing marketing strategies", "executing campaigns"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "That’s quite impressive. Now, could you share your career plans for the next five years?",
+            "chinese": "听起来很不错。那么，你能分享一下你未来五年的职业规划吗？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "描述未来五年的职业规划",
+            "reference": {
+              "answer": "In the next five years, I hope to continuously improve my professional skills and take on more challenging tasks. Eventually, I’d like to become a marketing manager.",
+              "keyPhrases": ["improve my professional skills", "challenging tasks", "marketing manager"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "report-review-request-01",
+      "category": "Team Collaboration",
+      "task_description": "Request a colleague to review and adjust a report before a meeting.",
+      "mood_suggestion": "Professional, polite, collaborative.",
+      "tags": ["report review", "team collaboration", "meeting preparation"],
+      "level": "intermediate",
+      "example": {
+        "title": "请求同事在会议前调整报告数据",
+        "scenario": "You need a colleague to review and adjust some numbers in a report before an important meeting.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Hey John, have you reviewed the latest report? I think we need to adjust some numbers before the meeting.",
+            "chinese": "嘿，约翰，你看过最近的报告吗？我觉得我们需要在会议前调整一些数据。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示还未查看并询问是否紧急",
+            "reference": {
+              "answer": "I haven’t had the chance yet. I’ll take a look in the next hour. Do you need it urgently?",
+              "keyPhrases": ["haven’t had the chance", "take a look", "do you need it urgently"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Yes, it would be great if you could. We need to finalize everything by 3 PM.",
+            "chinese": "是的，如果你能尽快处理太好了。我们需要在下午3点之前完成所有工作。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示会优先处理并尽快发送更新版本",
+            "reference": {
+              "answer": "Got it. I’ll prioritize it and send you the updated version soon.",
+              "keyPhrases": ["prioritize it", "send you the updated version"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Thanks, John! Let me know if you need anything from my side.",
+            "chinese": "谢谢，约翰！如果你需要这边的帮助，随时告诉我。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示感谢并承诺完成",
+            "reference": {
+              "answer": "Will do, thanks Emma!",
+              "keyPhrases": ["Will do", "thanks"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "report-review-request-01",
+      "category": "Team Collaboration",
+      "task_description": "Request a colleague to review and adjust a report before a meeting.",
+      "mood_suggestion": "Professional, polite, collaborative.",
+      "tags": ["report review", "team collaboration", "meeting preparation"],
+      "level": "intermediate",
+      "example": {
+        "title": "请求同事在会议前调整报告数据",
+        "scenario": "You need a colleague to review and adjust some numbers in a report before an important meeting.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Hey John, have you reviewed the latest report? I think we need to adjust some numbers before the meeting.",
+            "chinese": "嘿，约翰，你看过最近的报告吗？我觉得我们需要在会议前调整一些数据。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示还未查看并询问是否紧急",
+            "reference": {
+              "answer": "I haven’t had the chance yet. I’ll take a look in the next hour. Do you need it urgently?",
+              "keyPhrases": ["haven’t had the chance", "take a look", "do you need it urgently"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Yes, it would be great if you could. We need to finalize everything by 3 PM.",
+            "chinese": "是的，如果你能尽快处理太好了。我们需要在下午3点之前完成所有工作。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示会优先处理并尽快发送更新版本",
+            "reference": {
+              "answer": "Got it. I’ll prioritize it and send you the updated version soon.",
+              "keyPhrases": ["prioritize it", "send you the updated version"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Thanks, John! Let me know if you need anything from my side.",
+            "chinese": "谢谢，约翰！如果你需要这边的帮助，随时告诉我。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示感谢并承诺完成",
+            "reference": {
+              "answer": "Will do, thanks Emma!",
+              "keyPhrases": ["Will do", "thanks"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "project-progress-check-01",
+      "category": "Project Management",
+      "task_description": "Check on the progress of a project and encourage team members to meet deadlines.",
+      "mood_suggestion": "Encouraging, professional, supportive.",
+      "tags": ["project progress", "teamwork", "deadline management"],
+      "level": "intermediate",
+      "example": {
+        "title": "检查项目进度并鼓励团队",
+        "scenario": "You are leading a quick team meeting to check on project progress and encourage team members to meet deadlines.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Hi, everyone. Let’s quickly go over the project progress. Tom, how’s your part going?",
+            "chinese": "嗨，大家好。我们快速过一下项目进度。汤姆，你的部分进展如何？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "描述市场调研的进展并表示需要核实数据",
+            "reference": {
+              "answer": "Well, I’ve almost completed the market research. Just need to double-check some data.",
+              "keyPhrases": ["market research", "double-check some data"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Great. Make sure to finish it by tomorrow. What about you, Lily?",
+            "chinese": "很好。确保明天之前完成。你呢，莉莉？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "描述演示材料的进展并表示进度正常",
+            "reference": {
+              "answer": "I’m still working on the presentation materials. It’s a bit time-consuming, but I’m on track.",
+              "keyPhrases": ["presentation materials", "time-consuming", "on track"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Alright. Keep up the good work. We need to present the whole project to the client next week.",
+            "chinese": "好的。继续加油。我们下周需要向客户展示整个项目。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示理解并承诺尽力完成",
+            "reference": {
+              "answer": "Got it. We’ll do our best.",
+              "keyPhrases": ["Got it", "do our best"]
+            }
+          }
+        ]
+      }
+    },
+        {
+      "id": "data-analysis-discussion-01",
+      "category": "Data Analysis",
+      "task_description": "Discuss the results of data analysis and identify key focus areas.",
+      "mood_suggestion": "Analytical, collaborative, professional.",
+      "tags": ["data analysis", "results discussion", "key focus areas"],
+      "level": "intermediate",
+      "example": {
+        "title": "讨论数据分析结果并确定重点",
+        "scenario": "You are discussing the results of a data analysis with a colleague and identifying key areas to focus on.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "What’s your view on these results?",
+            "chinese": "你对这些结果怎么看？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示问题很好",
+            "reference": {
+              "answer": "That’s a good question.",
+              "keyPhrases": ["good question"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Do you think the current trend is normal?",
+            "chinese": "你觉得当前的趋势正常吗？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "根据观察结果给出分析",
+            "reference": {
+              "answer": "Based on what we see so far, it aligns with expectations.",
+              "keyPhrases": ["aligns with expectations"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Is there anything we should pay special attention to?",
+            "chinese": "有没有什么需要我们特别注意的？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "建议关注特定数据",
+            "reference": {
+              "answer": "We should keep a close eye on the Q3 data.",
+              "keyPhrases": ["keep a close eye", "Q3 data"]
+            }
+          }
+        ]
+      }
+    },
+        {
+      "id": "urgent-task-negotiation-01",
+      "category": "Task Management",
+      "task_description": "Negotiate a more realistic timeline for an urgent task.",
+      "mood_suggestion": "Professional, understanding, solution-oriented.",
+      "tags": ["task management", "timeline negotiation", "workload prioritization"],
+      "level": "intermediate",
+      "example": {
+        "title": "为紧急任务协商更合理的时间表",
+        "scenario": "You are discussing an urgent task with a colleague and need to negotiate a more realistic timeline.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Could you also finish this extra task by the end of today?",
+            "chinese": "你能在今天结束前完成这个额外的任务吗？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示理解任务紧急性",
+            "reference": {
+              "answer": "I understand this is urgent.",
+              "keyPhrases": ["understand this is urgent"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Yes, the timeline is quite tight.",
+            "chinese": "是的，时间确实很紧。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "说明当前任务优先级较高，可能无法完成",
+            "reference": {
+              "answer": "But my current tasks have higher priority, so I might not make it.",
+              "keyPhrases": ["higher priority", "might not make it"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Do you have any suggestions then?",
+            "chinese": "那你有什么建议吗？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "建议将任务延迟到明早以保证质量",
+            "reference": {
+              "answer": "We could move it to tomorrow morning for better quality.",
+              "keyPhrases": ["move it to tomorrow morning", "better quality"]
+            }
+          }
+        ]
+      }
+    },
+        {
+      "id": "cost-perspective-discussion-01",
+      "category": "Decision Making",
+      "task_description": "Share a different perspective on a decision and discuss its implications.",
+      "mood_suggestion": "Analytical, constructive, collaborative.",
+      "tags": ["decision making", "cost analysis", "team discussion"],
+      "level": "intermediate",
+      "example": {
+        "title": "从成本角度讨论决策",
+        "scenario": "You are discussing a decision with a colleague and want to share a different perspective based on cost analysis.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "I’d like to share a different perspective.",
+            "chinese": "我想分享一个不同的观点。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示同意并让对方继续",
+            "reference": {
+              "answer": "Sure, go ahead.",
+              "keyPhrases": ["go ahead"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "From a cost perspective, this option might not be ideal.",
+            "chinese": "从成本角度来看，这个选项可能不太理想。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "请求对方详细说明",
+            "reference": {
+              "answer": "Could you elaborate on that?",
+              "keyPhrases": ["elaborate on that"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "It could exceed our budget if we proceed this way.",
+            "chinese": "如果我们这样做，可能会超出预算。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示认同并建议进一步讨论",
+            "reference": {
+              "answer": "That’s a good point. Let’s review it further.",
+              "keyPhrases": ["good point", "review it further"]
+            }
+          }
+        ]
+      }
+    },
+        {
+      "id": "report-help-request-01",
+      "category": "Team Collaboration",
+      "task_description": "Ask a colleague for help reviewing a report.",
+      "mood_suggestion": "Polite, appreciative, collaborative.",
+      "tags": ["asking for help", "report review", "team collaboration"],
+      "level": "beginner",
+      "example": {
+        "title": "请求同事帮助审阅报告",
+        "scenario": "You encounter an issue with a report and need a colleague’s help to review it.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Sorry to bother you, do you have a few minutes?",
+            "chinese": "不好意思打扰一下，你有几分钟时间吗？"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示有时间并询问对方需要什么帮助",
+            "reference": {
+              "answer": "Sure, what’s up?",
+              "keyPhrases": ["what’s up"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "I ran into an issue with this report and was wondering if you could take a look.",
+            "chinese": "我在这份报告上遇到了一些问题，想知道你是否能帮我看一下。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示愿意帮助并让对方发送报告",
+            "reference": {
+              "answer": "Of course, just send it over.",
+              "keyPhrases": ["just send it over"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "Thanks a lot, it won’t take much of your time.",
+            "chinese": "太感谢了，不会占用你太多时间的。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示不介意并愿意帮助",
+            "reference": {
+              "answer": "No problem, happy to help.",
+              "keyPhrases": ["No problem", "happy to help"]
+            }
+          }
+        ]
+      }
+    },
+        {
+      "id": "feedback-on-decision-01",
+      "category": "High EQ Communication",
+      "task_description": "Provide constructive feedback on a rushed decision made during a meeting.",
+      "mood_suggestion": "Constructive, respectful, solution-oriented.",
+      "tags": ["feedback", "decision making", "process improvement"],
+      "level": "advanced",
+      "example": {
+        "title": "对会议中的决策提供反馈",
+        "scenario": "You want to provide constructive feedback on a rushed decision made during a meeting and suggest improvements for the future.",
+        "messages": [
+          {
+            "role": "ai",
+            "english": "Regarding the decision made in yesterday’s meeting, I have some different thoughts I’d like to share with you privately.",
+            "chinese": "关于昨天会议做出的决定，我有一些不同的想法，想私下和你分享。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示愿意倾听并让对方直言",
+            "reference": {
+              "answer": "Okay, please be candid.",
+              "keyPhrases": ["please be candid"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "I understand the need for quick decisions, but I feel the pre-read materials were sent out too late, leaving insufficient time for everyone to digest them.",
+            "chinese": "我理解快速决策的必要性，但我觉得会前材料发得太晚了，大家没有足够的时间消化。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "承认准备时间确实仓促",
+            "reference": {
+              "answer": "I acknowledge that; the preparation time was indeed rushed.",
+              "keyPhrases": ["acknowledge", "preparation time", "rushed"]
+            }
+          },
+          {
+            "role": "ai",
+            "english": "This could affect the quality of subsequent execution. I suggest sharing materials at least 24 hours in advance for similar meetings in the future.",
+            "chinese": "这可能会影响后续执行的质量。我建议未来类似会议至少提前24小时发送材料。"
+          },
+          {
+            "role": "user",
+            "userPrompt": "表示同意并感谢反馈",
+            "reference": {
+              "answer": "You’re right; we need to improve this process. Thank you for the feedback.",
+              "keyPhrases": ["improve this process", "thank you for the feedback"]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} 
