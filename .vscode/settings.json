@@ -1,3 +1,10 @@
 {
-    "python.pythonPath": "c:\\Users\\86188\\Desktop\\vibe coding\\vibecode\\Scripts\\python.exe"
+    "python.pythonPath": "c:\\Users\\86188\\Desktop\\vibe coding\\vibecode\\Scripts\\python.exe",
+    "python-envs.pythonProjects": [
+        {
+            "path": ".",
+            "envManager": "ms-python.python:conda",
+            "packageManager": "ms-python.python:conda"
+        }
+    ]
 }

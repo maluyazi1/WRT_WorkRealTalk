@@ -1,0 +1,54 @@
+{
+  "id": "69a818ee000000001a0226f0",
+  "category": "High EQ Communication",
+  "task_description": "Express warm, inclusive encouragement to a new colleague during onboarding while reinforcing team support and psychological safety.",
+  "mood_suggestion": "Professional and empathetic",
+  "keywords_pool": [
+    "onboarding",
+    "psychological safety",
+    "team inclusion"
+  ],
+  "tags": [
+    "高情商沟通",
+    "新人融入"
+  ],
+  "level": "intermediate",
+  "example": {
+    "title": "欢迎新同事",
+    "scenario": "Lisa, a seasoned team member, warmly welcomes Ryan, a newly onboarded colleague, over lunch in the office cafeteria.",
+    "messages": [
+      {
+        "role": "ai",
+        "english": "Starting a new job can feel overwhelming at first — we’ve all been there. Our team is really supportive, and you’re always welcome to ask questions, anytime.",
+        "chinese": "刚开始一份新工作总会有点压力——我们都经历过。我们团队非常支持彼此，你随时都可以来提问。"
+      },
+      {
+        "role": "user",
+        "userPrompt": "我很感激大家的友善，也想尽快为团队做点贡献。",
+        "reference": {
+          "answer": "I truly appreciate everyone’s kindness — I’m also eager to contribute meaningfully to the team as soon as possible.",
+          "keyPhrases": [
+            "appreciate everyone’s kindness",
+            "eager to contribute"
+          ]
+        }
+      },
+      {
+        "role": "ai",
+        "english": "That’s exactly the spirit we love! We value both your fresh perspective and your willingness to learn — growth happens together.",
+        "chinese": "这正是我们最欣赏的态度！我们既看重你的新视角，也珍视你的学习意愿——成长从来都是共同发生的。"
+      },
+      {
+        "role": "user",
+        "userPrompt": "谢谢！能加入这样一个轻松又靠谱的团队，真的让我很安心。",
+        "reference": {
+          "answer": "Thank you! It really puts my mind at ease knowing I’m joining such a relaxed yet reliable team.",
+          "keyPhrases": [
+            "puts my mind at ease",
+            "relaxed yet reliable team"
+          ]
+        }
+      }
+    ]
+  }
+}

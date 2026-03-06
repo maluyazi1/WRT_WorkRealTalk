@@ -1,0 +1,56 @@
+{
+  "id": "69a6ae08000000001a02f837",
+  "category": "High EQ Communication",
+  "task_description": "Politely invite a colleague to join you for lunch while respecting their time and preferences.",
+  "mood_suggestion": "Friendly, respectful, and low-pressure",
+  "keywords_pool": [
+    "lunch invitation",
+    "flexible timing",
+    "colleague rapport"
+  ],
+  "tags": [
+    "高情商邀约",
+    "职场社交"
+  ],
+  "level": "intermediate",
+  "example": {
+    "title": "午餐邀约",
+    "scenario": "You want to build rapport with a new teammate and casually invite them to lunch during work hours.",
+    "messages": [
+      {
+        "role": "ai",
+        "english": "Hey [Name], I'm planning to grab lunch around 12:30 — would you like to join me? No pressure at all if you're busy or prefer to eat separately!",
+        "chinese": "嘿[姓名]，我打算12:30左右去吃午饭——你愿意一起来吗？如果你忙或者更喜欢自己用餐，完全没关系！"
+      },
+      {
+        "role": "user",
+        "userPrompt": "我想和同事一起吃午饭，但不想让他觉得有压力。",
+        "reference": {
+          "answer": "I'd love to have lunch with you sometime — just let me know what works for your schedule!",
+          "keyPhrases": [
+            "I'd love to",
+            "just let me know",
+            "what works for your schedule"
+          ]
+        }
+      },
+      {
+        "role": "ai",
+        "english": "That sounds great! How about tomorrow at noon? Or feel free to suggest another time that fits better.",
+        "chinese": "太好了！明天中午怎么样？或者你也可以推荐一个更适合你的时间。"
+      },
+      {
+        "role": "user",
+        "userPrompt": "好的，那我们明天中午见！",
+        "reference": {
+          "answer": "Perfect — see you tomorrow at noon! 😊",
+          "keyPhrases": [
+            "Perfect",
+            "see you",
+            "at noon"
+          ]
+        }
+      }
+    ]
+  }
+}

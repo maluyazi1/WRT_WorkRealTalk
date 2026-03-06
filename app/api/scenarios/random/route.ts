@@ -1,10 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
-// 假设你把上面的 JSON 存成了这个文件
-import unifiedCorpus from '@/lib/scenario-corpus.json'
+import { BigQuery } from '@google-cloud/bigquery'
 
-const QWEN_API_KEY = process.env.DASHSCOPE_API_KEY || ''
+const QWEN_API_KEY = process.env.DASHSCOPE_API_KEY || process.env.QWEN_API_KEY || ''
 const QWEN_API_URL = 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions'
 
+// Initialize BigQuery client
+// Note: In production, consider using environment variables for the credentials path or JSON content.
+const bigquery = new BigQuery({
+  projectId: 'sturdy-lore-480006-e6',
+  keyFilename: './sturdy-lore-480006-e6-72d725e6eec7.json',
+});
 
 // ==========================================
 
@@ -18,12 +23,34 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams
     const level = (searchParams.get('level') || 'intermediate')
 
-    // step 1: 筛选符合难度的语料种子 (The Seed)
-    const validSeeds = unifiedCorpus.corpus.filter(item => item.level === level);
-    
-    // 容错：如果该难度没数据，就从所有数据里抽
-    const pool = validSeeds.length > 0 ? validSeeds : unifiedCorpus.corpus;
-    
+    // step 1: 筛选符合难度的语料种子 (The Seed) from BigQuery
+    let pool = [];
+    try {
+      const query = `
+        SELECT *
+        FROM \`sturdy-lore-480006-e6.corpus_data.xhs_structured_corpus\`
+      `;
+      // We process filtering in memory to avoid query complexity if dataset is small, 
+      // or we can query directly by level.
+      const [rows] = await bigquery.query({ query });
+
+      const parsedRows = rows.map((row: any) => ({
+        ...row,
+        // Parse the example_json string back into an object
+        example: row.example_json ? JSON.parse(row.example_json) : null
+      }));
+
+      const validSeeds = parsedRows.filter((item: any) => item.level === level);
+      pool = validSeeds.length > 0 ? validSeeds : parsedRows;
+    } catch (bqError) {
+      console.error("BigQuery fetch error:", bqError);
+      return NextResponse.json({ error: 'Failed to fetch corpus data from database' }, { status: 500 });
+    }
+
+    if (pool.length === 0) {
+      return NextResponse.json({ error: 'No corpus data available' }, { status: 500 });
+    }
+
     // step 2: 随机抽取一颗种子
     const seed = pool[Math.floor(Math.random() * pool.length)];
 
@@ -116,7 +143,7 @@ export async function GET(request: NextRequest) {
     } else if (content.includes('```')) {
       content = content.replace(/```\n?|\n?```/g, '');
     }
-    
+
     return NextResponse.json(JSON.parse(content));
 
   } catch (error) {

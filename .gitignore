@@ -10,3 +10,8 @@ node_modules/
 .next/
 .env*.local
 .DS_Store
+
+# Google Cloud Key
+sturdy-lore-480006-e6-72d725e6eec7.json
+# Local documentation
+技术方案.md
