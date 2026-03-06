@@ -1,4 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { BigQuery } from '@google-cloud/bigquery'
+
+// Initialize BigQuery client
+const initGoogleCredentials = () => {
+  if (!process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON) return undefined;
+  try {
+    const creds = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
+    if (creds.private_key) {
+      creds.private_key = creds.private_key.replace(/\\n/g, '\n');
+    }
+    return creds;
+  } catch (e) {
+    console.error("Failed to parse GOOGLE_APPLICATION_CREDENTIALS_JSON", e);
+    return undefined;
+  }
+};
+
+const bigquery = new BigQuery({
+  projectId: 'sturdy-lore-480006-e6',
+  credentials: initGoogleCredentials(),
+});
 
 // Qwen API 配置（OpenAI 兼容模式）
 const QWEN_API_KEY = process.env.DASHSCOPE_API_KEY || process.env.QWEN_API_KEY || ''
@@ -21,119 +42,130 @@ interface Scenario {
   title: string
   scenario: string
   messages: Message[]
+  keywords_pool?: string[]
 }
 
-// System Prompt for Mode B: 定向练习模式
+// System Prompt for Custom Scenario Generation
 const SYSTEM_PROMPT_CUSTOM = `# 角色定义
-你是 **RealTalk 定制场景引擎**，一个专为生成**定向职场英语练习场景**而设计的后端 AI。
-你以 API 方式工作，**不进行闲聊**。你只接收输入，并输出结构化的 JSON 数据。
+你是 **RealTalk 定制场景引擎**，专为生成**职场英语练习场景**的后端 AI。
+你只输出结构化 JSON，不闲聊。
+
+---
+
+# ⚠️ 最高优先级规则：userPrompt 必须是 reference.answer 的逐字中文翻译
+
+**这是本系统最重要的规则，违反此规则的输出将被视为无效。**
+
+## 规则详解
+- userPrompt 的作用：显示在用户屏幕上，用户看着这段中文来说出对应的英文。
+- 因此 userPrompt **必须是 reference.answer 的逐字、逐句中文翻译**。
+- **绝对禁止**：指令式（如"告诉他你很忙"）、概括式（如"确认需要完成的具体内容"）、描述式（如"你需要婉拒"）。
+
+## 正确示例
+| reference.answer | userPrompt (✅ 正确) |
+|---|---|
+| "I'd love to help, but I'm swamped this week." | "我很乐意帮忙，但我这周忙得不可开交。" |
+| "Could we push the deadline to next Wednesday?" | "我们能把截止日期推迟到下周三吗？" |
+| "Let me circle back on that after the meeting." | "会后我再回头跟进这件事。" |
+
+## 错误示例
+| reference.answer | userPrompt (❌ 错误) | 错误原因 |
+|---|---|---|
+| "I'd love to help, but I'm swamped this week." | "婉拒同事的请求" | 指令式概括 |
+| "Could we push the deadline to next Wednesday?" | "请求延长截止日期" | 内容大意 |
+| "Let me circle back on that after the meeting." | "告诉对方会后再讨论" | 描述式指令 |
 
 ---
 
 # 任务描述
-用户将输入一个**具体想练习的职场主题**（例如：“向老板请病假”、“婉拒同事的请求”、“向客户介绍产品”）。
-你必须**严格围绕该主题**生成一段真实、自然的角色扮演对话，不得偏离主题。
+用户输入一个**职场主题**，你围绕该主题生成角色扮演对话。
 
-## 难度确定规则
-- **默认难度**：**进阶（Intermediate）**。
-- **用户指定**：如果用户在输入中明确包含难度关键词（初级/中级/高级，或 Beginner/Intermediate/Advanced），则使用用户指定的难度；否则保持默认。
-
----
-
-# 难度标准
-- **初级（Beginner）**：使用简单词汇（CEFR A2）和短句。聚焦日常/办公室基础交流（问候、简单请求、请假、感谢）。
-- **进阶（Intermediate）**：使用中等复杂度词汇（CEFR B1/B2）。聚焦常见职场沟通（进度同步、日程安排、婉拒、协调）。
-- **高级（Advanced）**：使用专业词汇及复杂句式（CEFR C1）。聚焦高层次职场沟通（说服、委婉批评、总结、提议）。
-
----
-
-# 内容风格指南
-- **自然、简洁**：模仿真实同事的对话风格，直接、高效，杜绝教科书式的生硬表达。
-- **短语动词优先**：优先使用 \`reach out\`、\`follow up\`、\`wrap up\`、\`run by\`、\`touch base\`、\`push it to\` 等地道短语动词。
-- **职场惯用语**：使用 \`on the same page\`、\`see eye to eye\`、\`long story short\`、\`circle back\` 等类似的口语化自然表达。
-- **严禁专业术语**：**禁止**使用金融、法律、技术等垂直领域的冷僻术语，所有词汇必须是职场日常高频词。
+## 综合生成逻辑
+如果 Prompt 附带 "SEED CONTEXT"（种子语料）：
+1. 参考种子的地道表达风格。
+2. 将地道表达应用到用户主题中。
+3. 不直接复制种子内容。
 
 ---
 
 # 对话生成要求
-1. **对话轮次**：生成 **4-6 轮** AI ↔ 用户交替对话。
-2. **AI 回合**：必须包含英文原文 + 中文翻译。
-3. **用户回合 - 重要规则**：
-   - 先写英文参考答案 (reference.answer)
-   - 然后把英文答案**逐字翻译**成中文作为 userPrompt
-   - userPrompt **必须是** reference.answer 的直接中文翻译
-   - 正确示例：answer="I'd love to help, but I'm swamped this week" → userPrompt="我很乐意帮忙，但我这周忙爆了"
-   - 错误示例："告诉他你很忙"(指令式)、"你需要婉拒"(描述式) ← 这些都是绝对禁止的
-4. **参考回答**：每个用户回合必须附带**参考答案**和 **2-4 个关键短语**。
-5. **上下文逻辑**：对话必须连贯自然，像真实聊天一样有来有回，不可生硬转折。
+1. 生成 **4-6 轮** AI ↔ 用户交替对话。
+2. **AI 回合**：包含 english（英文原文）+ chinese（中文翻译，同样必须是逐字翻译）。
+3. **用户回合**：
+   - 先写 reference.answer（英文参考答案）
+   - 再把 reference.answer **逐字翻译**成中文，填入 userPrompt
+   - userPrompt 和 reference.answer 必须一一对应
+4. 包含 keywords_pool（3-5 个核心关键词/短语）。
 
 ---
 
 # 输出格式（严格 JSON）
-**只返回 JSON 对象，不包含任何 Markdown 代码块标记（如 \`\`\`json）。**
-
 { 
   "title": "场景标题（中文）",
-  "level": "初级/进阶/高级（根据实际难度）",
+  "level": "初级/进阶/高级",
   "scenario": "一句话场景描述（英文）",
+  "keywords_pool": ["keyword1", "keyword2", "keyword3"],
   "messages": [
     {
       "role": "ai",
-      "english": "AI 发言英文",
-      "chinese": "AI 发言中文翻译"
+      "english": "AI 发言（英文）",
+      "chinese": "AI 发言（逐字中文翻译）"
     },
     {
       "role": "user",
-      "userPrompt": "【必须是 reference.answer 的逐字中文翻译】",
+      "userPrompt": "reference.answer 的逐字中文翻译",
       "reference": {
-        "answer": "参考答案英文",
-        "keyPhrases": ["关键短语1", "关键短语2", "关键短语3"]
+        "answer": "参考答案（英文）",
+        "keyPhrases": ["关键短语1", "关键短语2"]
       }
     }
   ]
 }
-
 `;
 
 export async function GET(request: NextRequest) {
   try {
-    // 获取参数
     const searchParams = request.nextUrl.searchParams
     const topic = searchParams.get('topic')
-    const level = searchParams.get('level') || 'intermediate' // 默认为进阶
+    const level = searchParams.get('level') || 'intermediate'
 
-    // 验证主题参数
     if (!topic || topic.trim() === '') {
-      return NextResponse.json(
-        { error: 'Topic is required for custom scenario generation.' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Topic is required' }, { status: 400 })
     }
 
-    // 验证难度参数
-    const validLevels = ['beginner', 'intermediate', 'advanced']
-    if (!validLevels.includes(level)) {
-      return NextResponse.json(
-        { error: 'Invalid level. Must be beginner, intermediate, or advanced.' },
-        { status: 400 }
-      )
+    // step 1: 寻找种子语料辅助生成
+    let seedContext = "";
+    try {
+      const query = `SELECT task_description, example_json, keywords_pool FROM \`sturdy-lore-480006-e6.corpus_data.xhs_structured_corpus\` LIMIT 50`;
+      const [rows] = await bigquery.query({ query });
+
+      const keywords = topic.split(/\s+/).filter(w => w.length > 1);
+      const matched = rows.filter((r: any) =>
+        keywords.some(kw => (r.task_description || "").toLowerCase().includes(kw.toLowerCase()))
+      );
+      const seed = matched.length > 0 ? matched[0] : rows[Math.floor(Math.random() * rows.length)];
+
+      if (seed) {
+        seedContext = `
+### SEED CONTEXT (For inspiration):
+- Style Reference: ${seed.task_description}
+- Example Patterns: ${seed.example_json}
+- Featured Keywords: ${seed.keywords_pool?.join(", ")}
+        `;
+      }
+    } catch (e: any) {
+      console.warn("Seed fetch skip", e);
+      // 可选：如果希望即便种子失败也要让前端知道详情，可以在这里记录或调整逻辑
     }
 
-    // 构建用户 Prompt - 简化版本，让 System Prompt 处理大部分逻辑
-    const levelChinese = level === 'beginner' ? '初级' : level === 'intermediate' ? '进阶' : '高阶'
-    const userPrompt = `User Input: "${topic}"
-Requested Level: ${level} (${levelChinese})
+    const userPrompt = `User Topic: "${topic}"
+Level: ${level}
+${seedContext}
 
-Generate a scenario based on the above input following all rules in the system prompt.`
+Generate a scenario following all system rules.`;
 
-    if (!QWEN_API_KEY) {
-      return NextResponse.json(
-        { error: 'Qwen API Key 未配置' },
-        { status: 500 }
-      )
-    }
+    if (!QWEN_API_KEY) return NextResponse.json({ error: 'Missing API Key' }, { status: 500 })
 
-    // 调用 Qwen-3-Max API（Chat Completions）
     const response = await fetch(QWEN_API_URL, {
       method: 'POST',
       headers: {
@@ -146,17 +178,15 @@ Generate a scenario based on the above input following all rules in the system p
           { role: 'system', content: SYSTEM_PROMPT_CUSTOM },
           { role: 'user', content: userPrompt }
         ],
-        temperature: 1.1,
-        top_p: 0.95,
-        max_tokens: 2048,
-        stream: false
+        temperature: 1.0,
+        response_format: { type: 'json_object' }
       })
     })
 
     if (!response.ok) {
       const errorText = await response.text()
       console.error('Qwen API Error:', errorText)
-      
+
       let errorMessage = 'AI 服务请求失败'
       if (response.status === 401 || response.status === 403) {
         errorMessage = 'API Key 无效或已过期，请检查 DASHSCOPE_API_KEY 配置'
@@ -165,7 +195,7 @@ Generate a scenario based on the above input following all rules in the system p
       } else if (response.status >= 500) {
         errorMessage = 'AI 服务暂时不可用，请稍后重试'
       }
-      
+
       return NextResponse.json(
         { error: errorMessage },
         { status: response.status }
@@ -200,11 +230,30 @@ Generate a scenario based on the above input following all rules in the system p
       )
     }
 
+    // 格式标准化，兼容由于 Prompt 跟随 BQ 种子导致的字段变量 (en/zh -> english/chinese)
+    scenario.messages = scenario.messages.map((msg: any) => {
+      const english = msg.english || msg.en || msg.english_text || '';
+      const chinese = msg.chinese || msg.zh || msg.chinese_text || '';
+      let reference = msg.reference;
+      if (!reference && msg.referenceAnswer) {
+        reference = {
+          answer: msg.referenceAnswer,
+          keyPhrases: msg.keyPhrases || []
+        };
+      }
+      return {
+        ...msg,
+        english,
+        chinese,
+        reference
+      };
+    });
+
     return NextResponse.json(scenario)
 
   } catch (error) {
     console.error('API Error:', error)
-    
+
     let errorMessage = '场景生成失败，请重试'
     if (error instanceof Error) {
       if (error.message.includes('fetch') || error.message.includes('network') || error.name === 'TypeError') {
@@ -213,7 +262,7 @@ Generate a scenario based on the above input following all rules in the system p
         errorMessage = '请求超时，请检查网络速度或稍后重试'
       }
     }
-    
+
     return NextResponse.json(
       { error: errorMessage },
       { status: 500 }

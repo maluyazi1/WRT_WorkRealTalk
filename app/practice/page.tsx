@@ -25,6 +25,7 @@ interface Scenario {
   title: string
   scenario: string
   messages: Message[]
+  keywords_pool?: string[]
 }
 
 function PracticeContent() {
@@ -33,7 +34,7 @@ function PracticeContent() {
   const mode = searchParams.get('mode')
   const level = searchParams.get('level') || 'beginner'
   const topic = searchParams.get('topic')
-  
+
   // 使用全局生词本 hook
   const { isWordSaved, addWord, vocabList } = useVocabulary()
   const { toast } = useToast()
@@ -56,7 +57,7 @@ function PracticeContent() {
       })
 
       if (!res.ok) throw new Error('Enrich API failed')
-      
+
       const enrichedData = await res.json()
       addWord({
         ...enrichedData,
@@ -83,6 +84,46 @@ function PracticeContent() {
     }
   }
 
+  // 新增：高亮关键词并支持点击收藏
+  const renderHighlightedText = (text: string, keywords: string[] = []) => {
+    if (!text) return ''
+    if (!keywords || keywords.length === 0) return text
+
+    // 将关键词按长度倒序排列，优先匹配长词
+    const sortedKeywords = [...keywords].sort((a, b) => b.length - a.length)
+    const pattern = sortedKeywords
+      .map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')) // 转义正则特殊字符
+      .join('|')
+
+    if (!pattern) return text
+    const regex = new RegExp(`(${pattern})`, 'gi')
+    const parts = text.split(regex)
+
+    return (
+      <>
+        {parts.map((part, i) => {
+          const isMatch = keywords.some(k => k.toLowerCase() === part.toLowerCase())
+          if (isMatch) {
+            return (
+              <span
+                key={i}
+                className="bg-amber-100 dark:bg-amber-900/40 text-amber-900 dark:text-amber-100 px-1 rounded cursor-pointer border-b border-amber-400 hover:bg-amber-200 dark:hover:bg-amber-800 transition-colors inline-block"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleAddToVocab(part, text)
+                }}
+                title="点击加入生词本"
+              >
+                {part}
+              </span>
+            )
+          }
+          return part
+        })}
+      </>
+    )
+  }
+
   const [currentScenario, setCurrentScenario] = useState<Scenario | null>(null)
   const [currentTurnIndex, setCurrentTurnIndex] = useState(0)
   const [revealedMessages, setRevealedMessages] = useState<number[]>([])
@@ -94,11 +135,11 @@ function PracticeContent() {
   const [showTranslation, setShowTranslation] = useState<number | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  
+
   // 音频播放状态
   const [isPlayingAudio, setIsPlayingAudio] = useState<number | null>(null)
   const [audioError, setAudioError] = useState<string | null>(null)
-  
+
   // 录音和语音识别状态
   const [isTranscribing, setIsTranscribing] = useState(false)
   const [transcribedText, setTranscribedText] = useState<string>('')
@@ -108,10 +149,10 @@ function PracticeContent() {
   const [realtimeText, setRealtimeText] = useState<string>('') // 实时转写文本
   const [inputMode, setInputMode] = useState<'voice' | 'text'>('voice') // 输入模式：语音或文字
   const [manualInputText, setManualInputText] = useState<string>('') // 手动输入的文字
-  
+
   // 录音相关
   const recognitionRef = useRef<any>(null)
-  
+
   // 防抖：追踪是否正在请求中
   const isFetchingRef = useRef(false)
   // 记录上一次请求的参数，避免重复请求
@@ -121,29 +162,29 @@ function PracticeContent() {
   const fetchScenario = async (forceRefresh = false) => {
     // 构建当前请求参数的唯一标识
     const currentParams = `${mode}-${level}-${topic}`
-    
+
     // 防抖：如果正在请求中，直接返回
     if (isFetchingRef.current) {
       console.log('fetchScenario: 请求正在进行中，跳过重复调用')
       return
     }
-    
+
     // 如果不是强制刷新，且参数没有变化，跳过请求
     if (!forceRefresh && lastFetchParamsRef.current === currentParams && currentScenario) {
       console.log('fetchScenario: 参数未变化且已有数据，跳过请求')
       return
     }
-    
+
     isFetchingRef.current = true
     lastFetchParamsRef.current = currentParams
-    
+
     setIsLoading(true)
     setError(null)
     setCurrentScenario(null)
-    
+
     try {
       let url: string
-      
+
       if (mode === 'custom' && topic) {
         // Mode B: 定向练习 (添加 level 参数)
         url = `/api/scenarios/custom?topic=${encodeURIComponent(topic)}&level=${level}`
@@ -151,13 +192,13 @@ function PracticeContent() {
         // Mode A: 随机探索
         url = `/api/scenarios/random?level=${level}`
       }
-      
+
       const response = await fetch(url)
-      
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ error: '未知错误' }))
         let errorMessage = errorData.error || `请求失败 (${response.status})`
-        
+
         // 根据状态码提供更友好的错误提示
         if (response.status === 401 || response.status === 403) {
           errorMessage = `API 认证失败: ${errorMessage}。请检查 API Key 是否正确配置。`
@@ -166,16 +207,16 @@ function PracticeContent() {
         } else if (response.status >= 500) {
           errorMessage = `服务器错误: ${errorMessage}。AI 服务暂时不可用，请稍后重试。`
         }
-        
+
         throw new Error(errorMessage)
       }
-      
+
       const data: Scenario = await response.json()
       setCurrentScenario(data)
     } catch (err) {
       console.error('Error fetching scenario:', err)
       let errorMessage = '加载场景失败'
-      
+
       if (err instanceof Error) {
         // 判断错误类型并给出更友好的提示
         if (err.message.includes('fetch') || err.message.includes('network') || err.message.includes('Network') || err.name === 'TypeError') {
@@ -186,7 +227,7 @@ function PracticeContent() {
           errorMessage = err.message
         }
       }
-      
+
       setError(errorMessage)
       // 不再使用备用场景，让用户看到错误并重试
     } finally {
@@ -206,7 +247,7 @@ function PracticeContent() {
       fetchScenario()
       return
     }
-    
+
     // 后续只有当参数真正变化时才调用
     const prevParams = initialParamsRef.current
     if (prevParams.mode !== mode || prevParams.level !== level || prevParams.topic !== topic) {
@@ -220,7 +261,7 @@ function PracticeContent() {
     // TTS functionality abandoned
     console.log('TTS functionality abandoned')
   }
-  
+
   // 浏览器内置语音合成作为备用方案
   const fallbackToSpeechSynthesis = (text: string, index: number) => {
     if ('speechSynthesis' in window) {
@@ -250,17 +291,17 @@ function PracticeContent() {
     try {
       const recognition = new SpeechRecognition()
       recognitionRef.current = recognition
-      
+
       recognition.lang = 'en-US' // 设置语言为英语
       recognition.continuous = true // 连续识别
       recognition.interimResults = true // 返回临时结果
-      
+
       recognition.onstart = () => {
         console.log('Speech recognition started')
         setIsRecording(true)
         setAudioError(null)
       }
-      
+
       recognition.onresult = (event: any) => {
         let finalTranscript = ''
         let interimTranscript = ''
@@ -278,7 +319,7 @@ function PracticeContent() {
         }
         setRealtimeText(interimTranscript)
       }
-      
+
       recognition.onerror = (event: any) => {
         console.error('Speech recognition error', event.error)
         if (event.error === 'not-allowed') {
@@ -294,21 +335,21 @@ function PracticeContent() {
           setAudioError(`语音识别错误: ${event.error}`)
         }
       }
-      
+
       recognition.onend = () => {
         console.log('Speech recognition ended')
         // 如果原本是正在录音状态而被动结束（比如静音超时），可以考虑自动重启
         // 但为了简单，这里直接设为结束状态
         if (isRecording) {
-           stopRecording()
+          stopRecording()
         }
       }
-      
+
       recognition.start()
-      
+
       setRealtimeText('')
       setTranscribedText('')
-      
+
     } catch (err) {
       console.error('Recording error:', err)
       setAudioError('启动语音识别失败')
@@ -321,14 +362,14 @@ function PracticeContent() {
       recognitionRef.current.stop()
       // recognitionRef.current = null // 在 onend 中处理或稍后置空
     }
-    
+
     setIsRecording(false)
-    
+
     // 合并文本并进入编辑模式
     setTranscribedText(prevTranscribed => {
       // 如果还有未合并的实时文本，合并进去
       const finalText = prevTranscribed + (realtimeText ? (prevTranscribed ? ' ' : '') + realtimeText : '')
-      
+
       // 延迟进入编辑模式
       setTimeout(() => {
         setEditedTranscription(finalText)
@@ -358,16 +399,16 @@ function PracticeContent() {
   const transcribeAudio = async (audioBlob: Blob) => {
     setIsTranscribing(true)
     setAudioError(null)
-    
+
     try {
       const formData = new FormData()
       formData.append('audio', audioBlob, 'recording.webm')
-      
+
       const response = await fetch('/api/stt', {
         method: 'POST',
         body: formData
       })
-      
+
       if (response.ok) {
         const data = await response.json()
         if (data.text) {
@@ -431,7 +472,7 @@ function PracticeContent() {
   // 提交并请求评分
   const handleEvaluate = async (text: string) => {
     if (!currentScenario) return
-    
+
     const currentMessage = currentScenario.messages[currentTurnIndex]
     if (!currentMessage.reference) return
 
@@ -490,7 +531,7 @@ function PracticeContent() {
 
   const handleNextTurn = () => {
     if (!currentScenario) return
-    
+
     if (currentTurnIndex < currentScenario.messages.length - 1) {
       setCurrentTurnIndex(currentTurnIndex + 1)
       setShowReference(false)
@@ -501,7 +542,7 @@ function PracticeContent() {
       setTranscribedText('')
       setIsEditingTranscription(false)
       setManualInputText('') // 重置手动输入
-      
+
       // Auto-reveal AI messages
       if (currentScenario.messages[currentTurnIndex + 1].role === 'ai') {
         setRevealedMessages([...revealedMessages, currentTurnIndex + 1])
@@ -642,7 +683,9 @@ function PracticeContent() {
                   </div>
                   <div className="flex-1 space-y-2">
                     <Card className="p-4 bg-card shadow-sm hover:shadow-md transition-shadow">
-                      <p className="text-foreground leading-relaxed">{message.english}</p>
+                      <p className="text-foreground leading-relaxed">
+                        {renderHighlightedText(message.english || '', currentScenario.keywords_pool)}
+                      </p>
                       {showTranslation === index && (
                         <p className="text-sm text-muted-foreground mt-2 pt-2 border-t animate-in fade-in slide-in-from-top-2">
                           {message.chinese}
@@ -672,20 +715,20 @@ function PracticeContent() {
                     <Card className="p-4 bg-accent/30 border-accent relative overflow-hidden">
                       <p className="text-sm text-muted-foreground mb-2">💡 参考中文：</p>
                       <p className="text-foreground font-medium mb-3 text-lg">{message.userPrompt}</p>
-                      
+
                       {/* Hint System */}
                       {index === currentTurnIndex && (
                         <div className="flex flex-wrap gap-2 items-center">
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
+                          <Button
+                            variant="ghost"
+                            size="sm"
                             className="h-6 text-xs text-amber-600 hover:text-amber-700 hover:bg-amber-100"
                             onClick={() => setShowHint(!showHint)}
                           >
                             <Sparkles className="w-3 h-3 mr-1" />
                             {showHint ? '隐藏提示' : '给我一点提示'}
                           </Button>
-                          
+
                           {showHint && message.reference?.keyPhrases && (
                             <div className="flex flex-wrap gap-2 animate-in fade-in zoom-in-95 duration-200">
                               {message.reference.keyPhrases.map((phrase, i) => (
@@ -886,7 +929,7 @@ function PracticeContent() {
                                 AI 智能点评
                               </h3>
                             </div>
-                            
+
                             <div className="p-4 space-y-4">
                               {/* 纠错与反馈 */}
                               <div className="space-y-2">
@@ -906,11 +949,10 @@ function PracticeContent() {
                                           key={i}
                                           onClick={() => handleAddToVocab(phrase, currentScenario?.scenario)}
                                           disabled={addingWords.has(phrase)}
-                                          className={`px-3 py-1 text-sm rounded-full border transition-all flex items-center gap-1.5 hover:scale-105 ${
-                                            isSaved 
-                                              ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-700' 
-                                              : 'bg-primary/10 text-primary border-primary/20 hover:bg-primary/20'
-                                          } ${addingWords.has(phrase) ? 'opacity-70 cursor-wait' : ''}`}
+                                          className={`px-3 py-1 text-sm rounded-full border transition-all flex items-center gap-1.5 hover:scale-105 ${isSaved
+                                            ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-700'
+                                            : 'bg-primary/10 text-primary border-primary/20 hover:bg-primary/20'
+                                            } ${addingWords.has(phrase) ? 'opacity-70 cursor-wait' : ''}`}
                                         >
                                           {addingWords.has(phrase) ? (
                                             <Loader2 className="w-3 h-3 animate-spin" />
@@ -928,9 +970,9 @@ function PracticeContent() {
                               {/* 操作按钮 (仅在当前回合且未自动显示时可操作) */}
                               {index === currentTurnIndex && (
                                 <div className="flex gap-3 pt-2">
-                                  <Button 
-                                    variant="outline" 
-                                    size="sm" 
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
                                     onClick={() => setShowReference(!showReference)}
                                     className="flex-1"
                                   >
@@ -950,36 +992,37 @@ function PracticeContent() {
                         <div className="space-y-3">
                           <div>
                             <p className="text-xs font-semibold text-primary mb-1">📝 参考答案</p>
-                            <p className="text-foreground leading-relaxed">{message.reference.answer}</p>
+                            <p className="text-foreground leading-relaxed">
+                              {renderHighlightedText(message.reference.answer, currentScenario.keywords_pool)}
+                            </p>
                           </div>
                           {message.reference.keyPhrases && message.reference.keyPhrases.length > 0 && (
-                          <div>
-                            <p className="text-xs font-semibold text-primary mb-2">✨ 关键短语 <span className="text-muted-foreground font-normal">(点击收藏)</span></p>
-                            <div className="flex flex-wrap gap-2">
-                              {message.reference.keyPhrases.map((phrase, i) => {
-                                const isSaved = isWordSaved(phrase)
-                                return (
-                                  <button
-                                    key={i}
-                                    onClick={() => handleAddToVocab(phrase, message.reference?.answer)}
-                                    disabled={addingWords.has(phrase)}
-                                    className={`px-3 py-1 text-sm rounded-full border transition-all flex items-center gap-1.5 hover:scale-105 ${
-                                      isSaved 
-                                        ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-700' 
+                            <div>
+                              <p className="text-xs font-semibold text-primary mb-2">✨ 关键短语 <span className="text-muted-foreground font-normal">(点击收藏)</span></p>
+                              <div className="flex flex-wrap gap-2">
+                                {message.reference.keyPhrases.map((phrase, i) => {
+                                  const isSaved = isWordSaved(phrase)
+                                  return (
+                                    <button
+                                      key={i}
+                                      onClick={() => handleAddToVocab(phrase, message.reference?.answer)}
+                                      disabled={addingWords.has(phrase)}
+                                      className={`px-3 py-1 text-sm rounded-full border transition-all flex items-center gap-1.5 hover:scale-105 ${isSaved
+                                        ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-700'
                                         : 'bg-primary/10 text-primary border-primary/20 hover:bg-primary/20'
-                                    } ${addingWords.has(phrase) ? 'opacity-70 cursor-wait' : ''}`}
-                                  >
-                                    {addingWords.has(phrase) ? (
-                                      <Loader2 className="w-3 h-3 animate-spin" />
-                                    ) : (
-                                      <Star className={`w-3 h-3 ${isSaved ? 'fill-amber-400 text-amber-400' : ''}`} />
-                                    )}
-                                    {phrase}
-                                  </button>
-                                )
-                              })}
+                                        } ${addingWords.has(phrase) ? 'opacity-70 cursor-wait' : ''}`}
+                                    >
+                                      {addingWords.has(phrase) ? (
+                                        <Loader2 className="w-3 h-3 animate-spin" />
+                                      ) : (
+                                        <Star className={`w-3 h-3 ${isSaved ? 'fill-amber-400 text-amber-400' : ''}`} />
+                                      )}
+                                      {phrase}
+                                    </button>
+                                  )
+                                })}
+                              </div>
                             </div>
-                          </div>
                           )}
                         </div>
                       </Card>
@@ -1009,9 +1052,9 @@ function PracticeContent() {
       {currentTurnIndex < currentScenario.messages.length - 1 && (
         <div className="border-t border-border bg-card p-4 sticky bottom-0">
           <div className="container mx-auto max-w-3xl flex justify-center">
-            <Button 
-              onClick={handleNextTurn} 
-              size="lg" 
+            <Button
+              onClick={handleNextTurn}
+              size="lg"
               className="rounded-full px-8"
               disabled={isUserTurn && !showReference && !userConfirmedText}
             >
