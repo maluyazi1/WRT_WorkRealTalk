@@ -1,0 +1,16 @@
+
+> my-project@0.1.0 dev
+> next dev
+
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://198.18.0.1:3000
+- Environments: .env.local
+
+✓ Starting...
+Creating turbopack project { dir: 'C:\\Users\\86188\\Desktop\\WRT', testMode: true }
+Failed to benchmark file I/O: 系统找不到指定的路径。 (os error 3)
+✓ Ready in 3.5s
+○ Compiling / ...
+ GET / 200 in 5.1s (compile: 4.9s, render: 132ms)
+ GET / 200 in 40ms (compile: 4ms, render: 36ms)
