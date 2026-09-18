@@ -92,3 +92,27 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* ===== 移动端适配 ===== */
+@layer base {
+  html {
+    /* 防止 iOS 横竖屏切换时字号被系统放大 */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    /* 移动端点按不出现灰色高亮块 */
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@layer utilities {
+  /*
+   * 安全区工具类（依赖 app/layout.tsx 的 viewportFit: 'cover'）
+   * 注意：只能与“不同方向”的 padding 搭配使用，例如 `px-4 pt-safe-4 pb-4`，
+   * 不要与 `p-4` / `py-4` 同时出现，否则 padding 覆盖顺序不确定。
+   */
+  /* 顶部安全区 + 基础内边距（刘海 / 灵动岛） */
+  .pt-safe-3 { padding-top: calc(0.75rem + env(safe-area-inset-top, 0px)); }
+  .pt-safe-4 { padding-top: calc(1rem + env(safe-area-inset-top, 0px)); }
+  /* 底部安全区 + 基础内边距（Home 指示条） */
+  .pb-safe-4 { padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px)); }
+}

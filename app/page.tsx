@@ -4,23 +4,33 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card } from '@/components/ui/card'
-import { MessageSquare, Sparkles, TrendingUp, Mic, BookOpen } from 'lucide-react'
+import { MessageSquare, Sparkles, TrendingUp, Mic, BookOpen, Menu } from 'lucide-react'
 import Link from 'next/link'
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet'
 
 export default function Page() {
   const [customTopic, setCustomTopic] = useState('')
+  const [menuOpen, setMenuOpen] = useState(false)
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       {/* Header */}
       <header className="border-b border-border/50 backdrop-blur-sm sticky top-0 z-50 bg-background/80">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="container mx-auto px-4 pb-4 pt-safe-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
               <MessageSquare className="w-5 h-5 text-primary-foreground" />
             </div>
             <h1 className="text-xl font-bold text-foreground">RealTalk</h1>
           </div>
+
+          {/* 桌面端导航 */}
           <nav className="hidden md:flex items-center gap-6">
             <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               Features
@@ -41,30 +51,73 @@ export default function Page() {
               </Button>
             </Link>
           </nav>
+
+          {/* 移动端菜单：md 以下原导航整体隐藏，会导致「AI 口语对练 / 生词本」入口丢失 */}
+          <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
+            <SheetTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="md:hidden h-11 w-11 rounded-full"
+                aria-label="打开菜单"
+              >
+                <Menu className="w-5 h-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[80%] max-w-xs">
+              <SheetHeader>
+                <SheetTitle>导航</SheetTitle>
+              </SheetHeader>
+              <nav className="mt-6 flex flex-col gap-2">
+                <Link href="/freetalk" onClick={() => setMenuOpen(false)}>
+                  <Button variant="outline" className="w-full justify-start gap-2 h-12 rounded-xl">
+                    <Mic className="w-4 h-4" />
+                    AI 口语对练
+                  </Button>
+                </Link>
+                <Link href="/vocabulary" onClick={() => setMenuOpen(false)}>
+                  <Button variant="ghost" className="w-full justify-start gap-2 h-12 rounded-xl">
+                    <BookOpen className="w-4 h-4" />
+                    生词本
+                  </Button>
+                </Link>
+                <a href="#features" onClick={() => setMenuOpen(false)}>
+                  <Button variant="ghost" className="w-full justify-start h-12 rounded-xl">
+                    功能特性
+                  </Button>
+                </a>
+                <a href="#how-it-works" onClick={() => setMenuOpen(false)}>
+                  <Button variant="ghost" className="w-full justify-start h-12 rounded-xl">
+                    学习流程
+                  </Button>
+                </a>
+              </nav>
+            </SheetContent>
+          </Sheet>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-16 md:py-24">
-        <div className="max-w-4xl mx-auto text-center space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+      <section className="container mx-auto px-4 py-10 md:py-24">
+        <div className="max-w-4xl mx-auto text-center space-y-6 sm:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
           <div className="inline-flex items-center gap-2 bg-accent/50 text-accent-foreground px-4 py-2 rounded-full text-sm font-medium backdrop-blur-sm border border-accent">
             <Sparkles className="w-4 h-4" />
             职场英语实战平台
           </div>
           
-          <h2 className="text-4xl md:text-6xl font-bold text-foreground leading-tight text-balance">
+          <h2 className="text-3xl sm:text-4xl md:text-6xl font-bold text-foreground leading-tight text-balance">
             在真实对话中
             <br />
             <span className="text-primary">即学即用</span>
           </h2>
           
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto text-balance">
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto text-balance">
             通过 AI 驱动的角色扮演对话，模拟真实职场情境，让你在实战中提升英语表达能力
           </p>
         </div>
 
         {/* Mode Selection */}
-        <div className="max-w-5xl mx-auto mt-16 space-y-12">
+        <div className="max-w-5xl mx-auto mt-10 md:mt-16 space-y-10 md:space-y-12">
           {/* Mode B: Custom Topic */}
           <div className="space-y-4 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-200">
             <h3 className="text-center text-sm font-medium text-muted-foreground uppercase tracking-wider">
@@ -81,7 +134,7 @@ export default function Page() {
                     className="h-12 text-base bg-background border-border"
                   />
                 </div>
-                <Link href={`/practice?mode=custom&topic=${encodeURIComponent(customTopic)}`}>
+                <Link href={`/practice?mode=custom&topic=${encodeURIComponent(customTopic)}`} className="w-full md:w-auto">
                   <Button 
                     size="lg" 
                     className="w-full md:w-auto h-12 px-8 rounded-full"
@@ -184,7 +237,7 @@ export default function Page() {
       </section>
 
       {/* How It Works */}
-      <section id="how-it-works" className="container mx-auto px-4 py-16">
+      <section id="how-it-works" className="container mx-auto px-4 py-12 md:py-16">
         <div className="max-w-4xl mx-auto">
           <h3 className="text-3xl md:text-4xl font-bold text-center mb-12 text-balance">
             学习流程
@@ -198,8 +251,8 @@ export default function Page() {
               { step: '5', title: '添加生词', description: '将不熟悉的单词或短语加入生词本，随时复习' },
               { step: '6', title: '口语交流', description: '和AI 口语老师进行互动，获得专业点评和改进建议' }
             ].map((item, index) => (
-              <div key={index} className="flex gap-6 items-start group">
-                <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xl font-bold flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+              <div key={index} className="flex gap-4 sm:gap-6 items-start group">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-lg sm:text-xl font-bold flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
                   {item.step}
                 </div>
                 <div className="flex-1 pt-1">
@@ -213,7 +266,7 @@ export default function Page() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="container mx-auto px-4 py-16 bg-muted/30">
+      <section id="features" className="container mx-auto px-4 py-12 md:py-16 bg-muted/30">
         <div className="max-w-5xl mx-auto">
           <h3 className="text-3xl md:text-4xl font-bold text-center mb-12 text-balance">
             为什么选择 RealTalk？
@@ -251,7 +304,7 @@ export default function Page() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border/50 mt-16">
+      <footer className="border-t border-border/50 mt-12 md:mt-16">
         <div className="container mx-auto px-4 py-8">
           <div className="text-center text-sm text-muted-foreground">
             <p>© 2024 RealTalk. 让英语学习更高效.</p>

@@ -1,5 +1,5 @@
 import React from "react"
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 
 import './globals.css'
@@ -13,13 +13,22 @@ export const metadata: Metadata = {
   generator: 'v0.app',
 }
 
+// 移动端适配：viewportFit: 'cover' 是 env(safe-area-inset-*) 生效的前提，
+// 缺少它时所有安全区样式都不会起作用（刘海屏 / 底部 Home 指示条）。
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: 'cover',
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="zh-CN">
       <body className="font-sans antialiased">{children}</body>
     </html>
   )

@@ -6,7 +6,7 @@ const DEEPSEEK_API_URL = 'https://api.deepseek.com/chat/completions'
 
 export async function POST(request: NextRequest) {
   try {
-    const { userText, referenceText, userPrompt, topic } = await request.json()
+    const { userText, referenceText, userPrompt, topic, conversationContext: bodyContext } = await request.json()
 
     if (!userText || !referenceText) {
       return NextResponse.json(
@@ -22,7 +22,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const conversationContext = request.headers.get('X-Conversation-Context') || '';
+    // 优先取请求体中的对话上下文，兼容旧的 header 传参方式
+    const conversationContext = bodyContext || request.headers.get('X-Conversation-Context') || '';
 
     const systemPrompt = `你是一位拥有10年经验的资深口语沟通教练。你的学生正在练习口语，你的任务是基于输入的所有数据，精准地评价学生的【实际回答】。
 

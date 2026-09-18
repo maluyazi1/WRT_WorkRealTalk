@@ -62,7 +62,7 @@ export default function VocabularyPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8">
+    <div className="min-h-dvh bg-background px-4 pb-4 pt-safe-4 md:p-8">
       <div className="max-w-6xl mx-auto space-y-8">
         
         {/* Header */}
@@ -74,8 +74,8 @@ export default function VocabularyPage() {
               </Button>
             </Link>
             <div>
-              <h1 className="text-3xl font-bold flex items-center gap-2">
-                <BookOpen className="w-8 h-8 text-primary" />
+              <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2">
+                <BookOpen className="w-7 h-7 sm:w-8 sm:h-8 text-primary" />
                 我的生词本
               </h1>
               <p className="text-muted-foreground mt-1">

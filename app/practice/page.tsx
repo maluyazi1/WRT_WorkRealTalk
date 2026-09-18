@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
-import { MessageSquare, Mic, Eye, Volume2, ArrowRight, Home, Sparkles, Loader2, Check, X, Edit3, MicOff, Star, BookOpen } from 'lucide-react'
+import { MessageSquare, Mic, Eye, ArrowRight, Home, Sparkles, Loader2, Check, X, Edit3, MicOff, Star } from 'lucide-react'
 import Link from 'next/link'
 import { useVocabulary } from '@/hooks/use-vocabulary'
 import { useToast } from '@/hooks/use-toast'
@@ -136,22 +136,23 @@ function PracticeContent() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // 音频播放状态
-  const [isPlayingAudio, setIsPlayingAudio] = useState<number | null>(null)
+  // 音频错误提示
   const [audioError, setAudioError] = useState<string | null>(null)
 
   // 录音和语音识别状态
   const [isTranscribing, setIsTranscribing] = useState(false)
-  const [transcribedText, setTranscribedText] = useState<string>('')
   const [isEditingTranscription, setIsEditingTranscription] = useState(false)
   const [editedTranscription, setEditedTranscription] = useState<string>('')
   const [userConfirmedText, setUserConfirmedText] = useState<string>('')
-  const [realtimeText, setRealtimeText] = useState<string>('') // 实时转写文本
+  const [recordingSeconds, setRecordingSeconds] = useState(0) // 录音计时（秒）
   const [inputMode, setInputMode] = useState<'voice' | 'text'>('voice') // 输入模式：语音或文字
   const [manualInputText, setManualInputText] = useState<string>('') // 手动输入的文字
 
-  // 录音相关
-  const recognitionRef = useRef<any>(null)
+  // MediaRecorder 录音相关
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
+  const streamRef = useRef<MediaStream | null>(null)
+  const audioChunksRef = useRef<Blob[]>([])
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   // 防抖：追踪是否正在请求中
   const isFetchingRef = useRef(false)
@@ -256,218 +257,153 @@ function PracticeContent() {
     }
   }, [mode, level, topic])
 
-  // 文字转语音 - 功能已移除
-  const playAudio = async (text: string, index: number) => {
-    // TTS functionality abandoned
-    console.log('TTS functionality abandoned')
-  }
-
-  // 浏览器内置语音合成作为备用方案
-  const fallbackToSpeechSynthesis = (text: string, index: number) => {
-    if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(text)
-      utterance.lang = 'en-US'
-      utterance.onend = () => setIsPlayingAudio(null)
-      utterance.onerror = () => {
-        setAudioError('语音播放失败')
-        setIsPlayingAudio(null)
-      }
-      window.speechSynthesis.speak(utterance)
-    } else {
-      setAudioError('您的浏览器不支持语音播放')
-      setIsPlayingAudio(null)
+  // 组件卸载时释放麦克风与定时器，避免录音残留
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current)
+      streamRef.current?.getTracks().forEach(track => track.stop())
     }
+  }, [])
+
+  // 录音资源清理：定时器、麦克风轨道、recorder 引用
+  const cleanupRecording = () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current)
+      timerRef.current = null
+    }
+    streamRef.current?.getTracks().forEach(track => track.stop())
+    streamRef.current = null
+    mediaRecorderRef.current = null
   }
 
-  // 开始录音 - 使用浏览器原生 SpeechRecognition
-  const startRecording = () => {
-    // 检查浏览器支持
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
-    if (!SpeechRecognition) {
-      setAudioError('您的浏览器不支持实时语音识别，请尝试使用 Chrome 浏览器')
+  // 挑选浏览器支持的录音编码
+  const pickAudioMimeType = () => {
+    if (typeof MediaRecorder === 'undefined' || !MediaRecorder.isTypeSupported) return ''
+    const candidates = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus', 'audio/mp4']
+    return candidates.find(type => MediaRecorder.isTypeSupported(type)) || ''
+  }
+
+  // 开始录音 - MediaRecorder 采集音频，交给服务端 DashScope 识别（国内可直连，不依赖 Google）
+  const startRecording = async () => {
+    if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === 'undefined') {
+      setAudioError('当前浏览器不支持录音，请切换到「手动输入」')
       return
     }
 
     try {
-      const recognition = new SpeechRecognition()
-      recognitionRef.current = recognition
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      streamRef.current = stream
+      audioChunksRef.current = []
 
-      recognition.lang = 'en-US' // 设置语言为英语
-      recognition.continuous = true // 连续识别
-      recognition.interimResults = true // 返回临时结果
+      const mimeType = pickAudioMimeType()
+      const recorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream)
+      mediaRecorderRef.current = recorder
 
-      recognition.onstart = () => {
-        console.log('Speech recognition started')
-        setIsRecording(true)
-        setAudioError(null)
+      recorder.ondataavailable = (event) => {
+        if (event.data && event.data.size > 0) audioChunksRef.current.push(event.data)
       }
 
-      recognition.onresult = (event: any) => {
-        let finalTranscript = ''
-        let interimTranscript = ''
-
-        for (let i = event.resultIndex; i < event.results.length; ++i) {
-          if (event.results[i].isFinal) {
-            finalTranscript += event.results[i][0].transcript
-          } else {
-            interimTranscript += event.results[i][0].transcript
-          }
-        }
-
-        if (finalTranscript) {
-          setTranscribedText(prev => prev + (prev ? ' ' : '') + finalTranscript)
-        }
-        setRealtimeText(interimTranscript)
+      recorder.onerror = () => {
+        setAudioError('录音过程出错，请重试')
+        setIsRecording(false)
+        cleanupRecording()
       }
 
-      recognition.onerror = (event: any) => {
-        console.error('Speech recognition error', event.error)
-        if (event.error === 'not-allowed') {
-          setAudioError('无法访问麦克风，请检查权限设置')
-        } else if (event.error === 'network') {
-          // 网络错误：Chrome 的 Web Speech API 需要连接 Google 服务器
-          setAudioError('语音识别网络错误：浏览器需要连接 Google 服务器。请检查网络或使用 VPN，也可以直接手动输入文字。')
-        } else if (event.error === 'no-speech') {
-          // 没说话不报错，忽略即可
-        } else if (event.error === 'aborted') {
-          // 用户主动停止，不需要提示
-        } else {
-          setAudioError(`语音识别错误: ${event.error}`)
+      recorder.onstop = () => {
+        // 去掉 codecs 参数，保证上传的 MIME 干净可解析
+        const cleanType = (recorder.mimeType || 'audio/webm').split(';')[0]
+        const blob = new Blob(audioChunksRef.current, { type: cleanType })
+        cleanupRecording()
+
+        if (blob.size < 1200) {
+          setAudioError('录音太短，请多说几句再停止')
+          return
         }
+        transcribeAudio(blob)
       }
 
-      recognition.onend = () => {
-        console.log('Speech recognition ended')
-        // 如果原本是正在录音状态而被动结束（比如静音超时），可以考虑自动重启
-        // 但为了简单，这里直接设为结束状态
-        if (isRecording) {
-          stopRecording()
-        }
-      }
-
-      recognition.start()
-
-      setRealtimeText('')
-      setTranscribedText('')
-
+      recorder.start()
+      setAudioError(null)
+      setIsRecording(true)
+      setRecordingSeconds(0)
+      timerRef.current = setInterval(() => setRecordingSeconds(prev => prev + 1), 1000)
     } catch (err) {
-      console.error('Recording error:', err)
-      setAudioError('启动语音识别失败')
+      cleanupRecording()
+      const name = (err as { name?: string })?.name
+      if (name === 'NotAllowedError') {
+        setAudioError('麦克风权限被拒绝，请在浏览器设置中允许访问')
+      } else if (name === 'NotFoundError') {
+        setAudioError('未检测到麦克风设备')
+      } else {
+        setAudioError('无法启动录音，请检查麦克风设备或切换到手动输入')
+      }
     }
   }
 
-  // 停止录音
+  // 停止录音（真正的上传识别在 recorder.onstop 中触发）
   const stopRecording = () => {
-    if (recognitionRef.current) {
-      recognitionRef.current.stop()
-      // recognitionRef.current = null // 在 onend 中处理或稍后置空
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      mediaRecorderRef.current.stop()
+    } else {
+      cleanupRecording()
     }
-
     setIsRecording(false)
-
-    // 合并文本并进入编辑模式
-    setTranscribedText(prevTranscribed => {
-      // 如果还有未合并的实时文本，合并进去
-      const finalText = prevTranscribed + (realtimeText ? (prevTranscribed ? ' ' : '') + realtimeText : '')
-
-      // 延迟进入编辑模式
-      setTimeout(() => {
-        setEditedTranscription(finalText)
-        if (finalText) {
-          setIsEditingTranscription(true)
-        }
-      }, 200)
-      return finalText
-    })
-    setRealtimeText('')
   }
 
   // 录音按钮处理
   const handleRecord = () => {
     if (isRecording) {
       stopRecording()
-    } else {
-      // 重置之前的状态
-      setTranscribedText('')
-      setUserConfirmedText('')
-      setIsEditingTranscription(false)
-      startRecording()
+      return
     }
+    // 重置之前的状态
+    setUserConfirmedText('')
+    setEditedTranscription('')
+    setIsEditingTranscription(false)
+    startRecording()
   }
 
-  // 语音转文字 - 使用通义千问 STT API
+  // 语音转文字 - 使用通义千问 Paraformer（服务端 /api/stt）
   const transcribeAudio = async (audioBlob: Blob) => {
     setIsTranscribing(true)
     setAudioError(null)
 
     try {
+      const extension = audioBlob.type.split('/')[1] || 'webm'
       const formData = new FormData()
-      formData.append('audio', audioBlob, 'recording.webm')
+      formData.append('audio', audioBlob, `recording.${extension}`)
 
       const response = await fetch('/api/stt', {
         method: 'POST',
         body: formData
       })
 
-      if (response.ok) {
-        const data = await response.json()
-        if (data.text) {
-          setTranscribedText(data.text)
-          setEditedTranscription(data.text)
-          setIsEditingTranscription(true)
-        } else {
-          setAudioError('语音识别未返回文字')
-        }
-      } else {
-        const errorData = await response.json()
-        console.error('STT Error:', errorData)
-        setAudioError(errorData.error || '语音识别失败')
+      const data = await response.json().catch(() => ({}) as { text?: string; error?: string })
+
+      if (!response.ok) {
+        console.error('STT Error:', data)
+        setAudioError(data.error || '语音识别失败，请重试或切换到「手动输入」')
+        return
       }
+
+      const text = (data.text || '').trim()
+      if (!text) {
+        setAudioError('没有识别到内容，请靠近麦克风重试')
+        return
+      }
+
+      setEditedTranscription(text)
+      setIsEditingTranscription(true)
     } catch (err) {
       console.error('Transcription error:', err)
-      setAudioError('语音识别服务出错')
+      setAudioError('语音识别服务出错，请重试或切换到「手动输入」')
     } finally {
       setIsTranscribing(false)
     }
   }
 
   const [historyEvaluations, setHistoryEvaluations] = useState<Record<number, any>>({}) // 新增：保存历史评分
-
-  // 新增：渲染 keyPhrases 表格
-  const renderKeyPhrasesTable = (keyPhrases: string[]) => {
-    return (
-      <table className="table-auto border-collapse border border-gray-300 w-full mt-4">
-        <thead>
-          <tr>
-            <th className="border border-gray-300 px-4 py-2">英文单词</th>
-            <th className="border border-gray-300 px-4 py-2">中文翻译</th>
-          </tr>
-        </thead>
-        <tbody>
-          {keyPhrases.map((phrase, index) => (
-            <tr key={index}>
-              <td className="border border-gray-300 px-4 py-2">{phrase}</td>
-              <td className="border border-gray-300 px-4 py-2">{/** 在此处插入中文翻译逻辑 */}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    )
-  }
-
-  // 在 PracticeContent 组件中渲染 keyPhrases 表格
-  const renderReference = (reference: Message['reference']) => {
-    if (!reference) return null
-
-    return (
-      <div className="mt-4">
-        <h3 className="text-lg font-semibold">参考答案</h3>
-        <p className="mb-2">{reference.answer}</p>
-        <h4 className="text-md font-medium">关键短语</h4>
-        {renderKeyPhrasesTable(reference.keyPhrases)}
-      </div>
-    )
-  }
+  const [userAnswers, setUserAnswers] = useState<Record<number, string>>({}) // 记录每轮实际作答，用于拼装对话上下文
 
   // 提交并请求评分
   const handleEvaluate = async (text: string) => {
@@ -479,6 +415,17 @@ function PracticeContent() {
     setIsEvaluating(true)
     setEvaluation(null)
 
+    // 记录本轮作答，并把此前的对话拼成上下文，供评分模型判断表达是否得体
+    const answersWithCurrent = { ...userAnswers, [currentTurnIndex]: text }
+    setUserAnswers(answersWithCurrent)
+
+    const conversationContext = currentScenario.messages
+      .slice(0, currentTurnIndex)
+      .map((msg, i) => msg.role === 'ai'
+        ? `AI: ${msg.english || ''}`
+        : `User: ${answersWithCurrent[i] || '(未作答)'}`)
+      .join('\n')
+
     try {
       const response = await fetch('/api/evaluate', {
         method: 'POST',
@@ -489,7 +436,8 @@ function PracticeContent() {
           userText: text,
           referenceText: currentMessage.reference.answer,
           userPrompt: currentMessage.userPrompt,
-          topic: currentScenario.title
+          topic: currentScenario.title,
+          conversationContext
         })
       })
 
@@ -515,14 +463,12 @@ function PracticeContent() {
   const confirmTranscription = () => {
     setUserConfirmedText(editedTranscription)
     setIsEditingTranscription(false)
-    setTranscribedText('')
     // 触发评分
     handleEvaluate(editedTranscription)
   }
 
   // 取消/重新录音
   const cancelTranscription = () => {
-    setTranscribedText('')
     setEditedTranscription('')
     setIsEditingTranscription(false)
     setEvaluation(null)
@@ -539,7 +485,6 @@ function PracticeContent() {
       setEvaluation(null) // Reset evaluation
       setIsEvaluating(false)
       setUserConfirmedText('')
-      setTranscribedText('')
       setIsEditingTranscription(false)
       setManualInputText('') // 重置手动输入
 
@@ -548,8 +493,11 @@ function PracticeContent() {
         setRevealedMessages([...revealedMessages, currentTurnIndex + 1])
       }
     } else {
-      // Scenario complete - could show completion or load next
-      alert('场景完成！')
+      // Scenario complete
+      toast({
+        title: '场景完成 🎉',
+        description: '本场景已练完，点击右上角「下一题」继续练习。',
+      })
     }
   }
 
@@ -561,12 +509,12 @@ function PracticeContent() {
     // 重置状态并重新获取场景
     setCurrentTurnIndex(0)
     setHistoryEvaluations({}) // Clear history
+    setUserAnswers({}) // Clear recorded answers
     setRevealedMessages([])
     setShowReference(false)
     setShowHint(false)
     setShowTranslation(null)
     setUserConfirmedText('')
-    setTranscribedText('')
     setIsEditingTranscription(false)
     setManualInputText('') // 重置手动输入
     setInputMode('voice') // 重置输入模式为语音
@@ -575,7 +523,7 @@ function PracticeContent() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4">
+      <div className="min-h-dvh bg-background flex flex-col items-center justify-center gap-4">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
         <div className="text-muted-foreground">正在生成场景...</div>
       </div>
@@ -584,7 +532,7 @@ function PracticeContent() {
 
   if (!currentScenario || !currentScenario.messages || !Array.isArray(currentScenario.messages) || currentScenario.messages.length === 0) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="min-h-dvh bg-background flex items-center justify-center p-4">
         <div className="bg-card rounded-2xl shadow-lg p-8 max-w-lg w-full text-center border">
           <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
             <X className="w-8 h-8 text-red-500" />
@@ -629,22 +577,22 @@ function PracticeContent() {
   const isUserTurn = currentMessage.role === 'user'
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-dvh bg-background flex flex-col">
       {/* Header */}
       <header className="border-b border-border bg-card sticky top-0 z-50 shadow-sm">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="container mx-auto px-4 pb-4 pt-safe-4 flex items-center justify-between">
+          <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
             <Link href="/">
-              <Button variant="ghost" size="icon" className="rounded-full">
+              <Button variant="ghost" size="icon" className="rounded-full flex-shrink-0">
                 <Home className="w-5 h-5" />
               </Button>
             </Link>
-            <div>
-              <h1 className="text-lg font-bold text-foreground">{currentScenario.title}</h1>
-              <p className="text-xs text-muted-foreground">{currentScenario.scenario}</p>
+            <div className="min-w-0">
+              <h1 className="text-base sm:text-lg font-bold text-foreground truncate">{currentScenario.title}</h1>
+              <p className="text-xs text-muted-foreground truncate">{currentScenario.scenario}</p>
             </div>
           </div>
-          <Button onClick={handleNewScenario} variant="outline" size="sm" className="rounded-full bg-transparent" disabled={isLoading}>
+          <Button onClick={handleNewScenario} variant="outline" size="sm" className="rounded-full bg-transparent flex-shrink-0" disabled={isLoading}>
             {isLoading ? (
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
             ) : (
@@ -673,12 +621,12 @@ function PracticeContent() {
 
       {/* Chat Area */}
       <div className="flex-1 overflow-y-auto">
-        <div className="container mx-auto px-4 py-8 max-w-3xl space-y-6">
+        <div className="container mx-auto px-3 sm:px-4 py-5 md:py-8 max-w-3xl space-y-5 md:space-y-6">
           {currentScenario.messages.slice(0, currentTurnIndex + 1).map((message, index) => {
             if (message.role === 'ai') {
               return (
-                <div key={index} className="flex gap-3 animate-in slide-in-from-left duration-500">
-                  <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
+                <div key={index} className="flex gap-2 sm:gap-3 animate-in slide-in-from-left duration-500">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
                     <MessageSquare className="w-5 h-5 text-primary-foreground" />
                   </div>
                   <div className="flex-1 space-y-2">
@@ -709,7 +657,7 @@ function PracticeContent() {
             } else {
               // User turn
               return (
-                <div key={index} className="flex gap-3 justify-end animate-in slide-in-from-right duration-500">
+                <div key={index} className="flex gap-2 sm:gap-3 justify-end animate-in slide-in-from-right duration-500">
                   <div className="flex-1 space-y-3">
                     {/* User Prompt */}
                     <Card className="p-4 bg-accent/30 border-accent relative overflow-hidden">
@@ -770,17 +718,17 @@ function PracticeContent() {
                         {/* 语音输入模式 */}
                         {inputMode === 'voice' && (
                           <>
-                            {/* 实时转写显示 */}
-                            {isRecording && (transcribedText || realtimeText) && (
-                              <Card className="p-4 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 animate-in fade-in">
-                                <p className="text-xs font-semibold text-blue-800 dark:text-blue-200 mb-2">🎙️ 实时转写</p>
-                                <p className="text-foreground leading-relaxed">
-                                  {transcribedText}
-                                  {realtimeText && (
-                                    <span className="text-muted-foreground italic">{realtimeText}</span>
-                                  )}
-                                  <span className="inline-block w-1 h-4 bg-blue-500 animate-pulse ml-1" />
-                                </p>
+                            {/* 录音中提示 + 计时 */}
+                            {isRecording && (
+                              <Card className="p-4 bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 animate-in fade-in">
+                                <div className="flex items-center gap-3">
+                                  <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
+                                  <p className="text-sm font-medium text-red-700 dark:text-red-300">正在录音…</p>
+                                  <span className="ml-auto text-sm font-mono tabular-nums text-muted-foreground">
+                                    {String(Math.floor(recordingSeconds / 60)).padStart(2, '0')}:
+                                    {String(recordingSeconds % 60).padStart(2, '0')}
+                                  </span>
+                                </div>
                               </Card>
                             )}
                             <div className="flex justify-end gap-2">
@@ -798,7 +746,7 @@ function PracticeContent() {
                                 ) : isRecording ? (
                                   <>
                                     <MicOff className="w-5 h-5 mr-2 animate-pulse" />
-                                    停止录音
+                                    停止并识别
                                   </>
                                 ) : (
                                   <>
@@ -809,7 +757,7 @@ function PracticeContent() {
                               </Button>
                             </div>
                             <p className="text-xs text-muted-foreground text-center">
-                              语音识别需要网络连接，如遇问题请切换到「手动输入」
+                              录音结束后自动识别，可先修改识别结果再提交 · 如遇问题可切换到「手动输入」
                             </p>
                           </>
                         )}
@@ -1038,7 +986,7 @@ function PracticeContent() {
                       </div>
                     )}
                   </div>
-                  <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center flex-shrink-0 text-2xl">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-secondary flex items-center justify-center flex-shrink-0 text-xl sm:text-2xl">
                     👤
                   </div>
                 </div>
@@ -1050,13 +998,16 @@ function PracticeContent() {
 
       {/* Bottom Action Bar */}
       {currentTurnIndex < currentScenario.messages.length - 1 && (
-        <div className="border-t border-border bg-card p-4 sticky bottom-0">
-          <div className="container mx-auto max-w-3xl flex justify-center">
+        <div className="border-t border-border bg-card px-4 pt-4 pb-safe-4 sticky bottom-0">
+          <div className="container mx-auto max-w-3xl flex flex-col items-center gap-2">
+            {isUserTurn && !userConfirmedText && (
+              <p className="text-xs text-muted-foreground">本轮尚未作答，可直接跳过</p>
+            )}
             <Button
               onClick={handleNextTurn}
               size="lg"
-              className="rounded-full px-8"
-              disabled={isUserTurn && !showReference && !userConfirmedText}
+              className="rounded-full px-8 w-full sm:w-auto"
+              disabled={isLoading}
             >
               继续对话
               <ArrowRight className="w-4 h-4 ml-2" />
@@ -1071,7 +1022,7 @@ function PracticeContent() {
 export default function PracticePage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-dvh bg-background flex items-center justify-center">
         <div className="animate-pulse text-muted-foreground">Loading...</div>
       </div>
     }>

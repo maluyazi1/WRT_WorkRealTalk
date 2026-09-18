@@ -36,25 +36,29 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams
     const level = (searchParams.get('level') || 'intermediate')
 
-    // step 1: 筛选符合难度的语料种子 (The Seed) from BigQuery
-    let pool = [];
+    // step 1: 在数据库侧按难度筛选并随机取一条（避免全表拉取到内存）
+    let rows: any[] = [];
     try {
       const query = `
         SELECT *
         FROM \`sturdy-lore-480006-e6.corpus_data.xhs_structured_corpus\`
+        WHERE level = @level
+        ORDER BY RAND()
+        LIMIT 1
       `;
-      // We process filtering in memory to avoid query complexity if dataset is small, 
-      // or we can query directly by level.
-      const [rows] = await bigquery.query({ query });
+      [rows] = await bigquery.query({ query, params: { level } });
 
-      const parsedRows = rows.map((row: any) => ({
-        ...row,
-        // Parse the example_json string back into an object
-        example: row.example_json ? JSON.parse(row.example_json) : null
-      }));
-
-      const validSeeds = parsedRows.filter((item: any) => item.level === level);
-      pool = validSeeds.length > 0 ? validSeeds : parsedRows;
+      // 该难度暂无匹配语料时，回退到全表随机一条，保证练习可用
+      if (rows.length === 0) {
+        [rows] = await bigquery.query({
+          query: `
+            SELECT *
+            FROM \`sturdy-lore-480006-e6.corpus_data.xhs_structured_corpus\`
+            ORDER BY RAND()
+            LIMIT 1
+          `
+        });
+      }
     } catch (bqError: any) {
       console.error("BigQuery fetch error:", bqError);
       return NextResponse.json({
@@ -63,12 +67,26 @@ export async function GET(request: NextRequest) {
       }, { status: 500 });
     }
 
-    if (pool.length === 0) {
+    if (rows.length === 0) {
       return NextResponse.json({ error: 'No corpus data available' }, { status: 500 });
     }
 
-    // step 2: 随机抽取一颗种子
-    const seed = pool[Math.floor(Math.random() * pool.length)];
+    // step 2: 数据库已随机取出一条，把 example_json 反序列化后作为种子
+    const rawSeed = rows[0];
+    let parsedExample: any = rawSeed.example ?? null;
+    if (!parsedExample && rawSeed.example_json) {
+      if (typeof rawSeed.example_json === 'string') {
+        try {
+          parsedExample = JSON.parse(rawSeed.example_json);
+        } catch (e) {
+          console.error('Failed to parse example_json:', e);
+          parsedExample = null;
+        }
+      } else {
+        parsedExample = rawSeed.example_json;
+      }
+    }
+    const seed = { ...rawSeed, example: parsedExample };
 
     // step 3: 直接返回语料数据（秒开模式） — 不再经过 AI 重写
     let scenarioData = seed.example || {};

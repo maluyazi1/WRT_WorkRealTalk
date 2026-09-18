@@ -358,34 +358,34 @@ export default function FreeTalkPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="h-dvh bg-background flex flex-col">
       {/* Header */}
       <header className="border-b border-border/50 backdrop-blur-sm sticky top-0 z-50 bg-background/80">
-        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <div className="container mx-auto px-4 pb-3 pt-safe-3 flex items-center justify-between">
+          <div className="flex items-center gap-3 min-w-0">
             <Link href="/">
-              <Button variant="ghost" size="icon" className="rounded-full">
+              <Button variant="ghost" size="icon" className="rounded-full flex-shrink-0">
                 <Home className="w-5 h-5" />
               </Button>
             </Link>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
                 <MessageSquare className="w-4 h-4 text-white" />
               </div>
-              <div>
-                <h1 className="text-lg font-bold text-foreground">AI 口语对练</h1>
-                <p className="text-xs text-muted-foreground">Free Talk · 润色 · 生词本</p>
+              <div className="min-w-0">
+                <h1 className="text-base sm:text-lg font-bold text-foreground truncate">AI 口语对练</h1>
+                <p className="text-xs text-muted-foreground truncate">Free Talk · 润色 · 生词本</p>
               </div>
             </div>
           </div>
           <Button 
             variant="outline" 
             size="sm" 
-            className="gap-2"
+            className="gap-2 flex-shrink-0"
             onClick={() => setShowVocabPanel(!showVocabPanel)}
           >
             <BookOpen className="w-4 h-4" />
-            生词本 ({vocabList.length})
+            <span className="hidden sm:inline">生词本</span> ({vocabList.length})
           </Button>
         </div>
       </header>
@@ -592,8 +592,8 @@ export default function FreeTalkPage() {
           </div>
 
           {/* Input Area */}
-          <div className="border-t border-border/50 p-4 bg-background">
-            <div className="max-w-3xl mx-auto flex gap-3 items-end">
+          <div className="border-t border-border/50 px-4 pt-4 pb-safe-4 bg-background">
+            <div className="max-w-3xl mx-auto flex gap-2 sm:gap-3 items-end">
               <div className="flex-1 relative">
                 <Textarea
                   value={inputText + (interimTranscript ? (inputText ? ' ' : '') + interimTranscript : '')}
@@ -651,8 +651,8 @@ export default function FreeTalkPage() {
 
         {/* Vocabulary Panel */}
         {showVocabPanel && (
-          <div className="w-80 border-l border-border bg-muted/30 flex flex-col">
-            <div className="p-4 border-b border-border flex items-center justify-between">
+          <div className="fixed inset-0 z-40 flex w-full flex-col bg-background md:static md:z-auto md:w-80 md:border-l md:border-border md:bg-muted/30">
+            <div className="px-4 pt-safe-4 pb-4 border-b border-border flex items-center justify-between">
               <h3 className="font-semibold flex items-center gap-2">
                 <BookOpen className="w-4 h-4" />
                 我的生词本
