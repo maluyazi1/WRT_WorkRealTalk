@@ -1,9 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-
-// 通义千问 API 配置（OpenAI 兼容模式）
-const QWEN_API_KEY = process.env.DASHSCOPE_API_KEY || process.env.QWEN_API_KEY || ''
-const QWEN_BASE_URL = 'https://dashscope.aliyuncs.com/compatible-mode/v1'
-const QWEN_API_URL = `${QWEN_BASE_URL}/chat/completions`
+import { pickLLMProvider, callLLM, type LLMMessage } from '@/lib/llm'
 
 // System Prompt for Free Talk Mode
 const SYSTEM_PROMPT = `从现在开始，你是一位 native English speaker（英语母语者）兼语言导师。
@@ -93,48 +89,37 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    if (!QWEN_API_KEY) {
+    const provider = pickLLMProvider()
+    if (!provider) {
       return NextResponse.json(
-        { error: 'API Key 未配置' },
+        { error: '未配置 DEEPSEEK_API_KEY 或 DASHSCOPE_API_KEY' },
         { status: 500 }
       )
     }
 
     // 构建消息数组
-    const messages: ChatMessage[] = [
+    const messages: LLMMessage[] = [
       { role: 'system', content: SYSTEM_PROMPT },
       ...history,
       { role: 'user', content: message }
     ]
 
-    // 调用 Qwen API
-    const response = await fetch(QWEN_API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${QWEN_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: 'qwen3-max',
-        messages,
-        temperature: 0.8,
-        top_p: 0.95,
-        max_tokens: 1024,
-        stream: false
-      })
+    const llm = await callLLM(provider, {
+      messages,
+      temperature: 0.8,
+      topP: 0.95,
+      maxTokens: 1024,
+      jsonMode: true,
     })
 
-    if (!response.ok) {
-      const errorText = await response.text()
-      console.error('Qwen API Error:', errorText)
+    if (!llm.ok) {
       return NextResponse.json(
-        { error: 'Failed to get response from AI' },
-        { status: 500 }
+        { error: llm.message, provider: llm.provider },
+        { status: llm.status }
       )
     }
 
-    const data = await response.json()
-    let text = data.choices?.[0]?.message?.content || ''
+    let text = llm.text
 
     // 清理可能的 Markdown 代码块标记
     text = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()

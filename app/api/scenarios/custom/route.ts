@@ -1,30 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { BigQuery } from '@google-cloud/bigquery'
+import { getSeedPool, getRandomSeeds } from '@/lib/corpus'
+import { pickLLMProvider, callLLM } from '@/lib/llm'
 
-// Initialize BigQuery client
-const initGoogleCredentials = () => {
-  if (!process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON) return undefined;
-  try {
-    const creds = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
-    if (creds.private_key) {
-      creds.private_key = creds.private_key.replace(/\\n/g, '\n');
-    }
-    return creds;
-  } catch (e) {
-    console.error("Failed to parse GOOGLE_APPLICATION_CREDENTIALS_JSON", e);
-    return undefined;
-  }
-};
-
-const bigquery = new BigQuery({
-  projectId: 'sturdy-lore-480006-e6',
-  credentials: initGoogleCredentials(),
-});
-
-// Qwen API 配置（OpenAI 兼容模式）
-const QWEN_API_KEY = process.env.DASHSCOPE_API_KEY || process.env.QWEN_API_KEY || ''
-const QWEN_BASE_URL = 'https://dashscope.aliyuncs.com/compatible-mode/v1'
-const QWEN_API_URL = `${QWEN_BASE_URL}/chat/completions`
+// 大模型调用统一走 lib/llm.ts（默认 DeepSeek，未配置时才回落 qwen3-max）。
 
 // 场景数据结构类型定义
 interface Message {
@@ -134,28 +112,33 @@ export async function GET(request: NextRequest) {
     }
 
     // step 1: 寻找种子语料辅助生成
+    // 经 lib/corpus.ts 抽象层读取，后端由 DATA_BACKEND 决定。
     let seedContext = "";
     try {
-      const query = `SELECT task_description, example_json, keywords_pool FROM \`sturdy-lore-480006-e6.corpus_data.xhs_structured_corpus\` LIMIT 50`;
-      const [rows] = await bigquery.query({ query });
+      // 按 topic 在【全量】语料中匹配（修复：原实现 LIMIT 50 既不排序也不筛选，
+      // 永远只在同一批数据里找，其余语料进不了候选集）
+      let seeds = await getSeedPool(topic, 1);
+      // 主题没命中时随机取一条作纯风格参考，保持原有兜底行为
+      if (!seeds.length) seeds = await getRandomSeeds(1);
 
-      const keywords = topic.split(/\s+/).filter(w => w.length > 1);
-      const matched = rows.filter((r: any) =>
-        keywords.some(kw => (r.task_description || "").toLowerCase().includes(kw.toLowerCase()))
-      );
-      const seed = matched.length > 0 ? matched[0] : rows[Math.floor(Math.random() * rows.length)];
-
+      const seed = seeds[0];
       if (seed) {
+        // 修复：原实现把 example_json 直接插值，JSON 类型列会输出 [object Object]。
+        // 这里显式挑选若干句实际语句拼接到 prompt。
+        const patterns = (seed.example?.messages || [])
+          .slice(0, 3)
+          .map((m: any) => (m.role === 'ai' ? m.english : m.reference?.answer))
+          .filter(Boolean);
+
         seedContext = `
 ### SEED CONTEXT (For inspiration):
 - Style Reference: ${seed.task_description}
-- Example Patterns: ${seed.example_json}
-- Featured Keywords: ${seed.keywords_pool?.join(", ")}
+- Example Patterns: ${patterns.join(" / ")}
+- Featured Keywords: ${(seed.keywords_pool || []).join(", ")}
         `;
       }
     } catch (e: any) {
       console.warn("Seed fetch skip", e);
-      // 可选：如果希望即便种子失败也要让前端知道详情，可以在这里记录或调整逻辑
     }
 
     const userPrompt = `User Topic: "${topic}"
@@ -164,46 +147,31 @@ ${seedContext}
 
 Generate a scenario following all system rules.`;
 
-    if (!QWEN_API_KEY) return NextResponse.json({ error: 'Missing API Key' }, { status: 500 })
-
-    const response = await fetch(QWEN_API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${QWEN_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: 'qwen3-max',
-        messages: [
-          { role: 'system', content: SYSTEM_PROMPT_CUSTOM },
-          { role: 'user', content: userPrompt }
-        ],
-        temperature: 1.0,
-        response_format: { type: 'json_object' }
-      })
-    })
-
-    if (!response.ok) {
-      const errorText = await response.text()
-      console.error('Qwen API Error:', errorText)
-
-      let errorMessage = 'AI 服务请求失败'
-      if (response.status === 401 || response.status === 403) {
-        errorMessage = 'API Key 无效或已过期，请检查 DASHSCOPE_API_KEY 配置'
-      } else if (response.status === 429) {
-        errorMessage = 'API 请求频率超限，请稍后重试'
-      } else if (response.status >= 500) {
-        errorMessage = 'AI 服务暂时不可用，请稍后重试'
-      }
-
+    const provider = pickLLMProvider()
+    if (!provider) {
       return NextResponse.json(
-        { error: errorMessage },
-        { status: response.status }
+        { error: 'Missing API Key', hint: '请配置 DEEPSEEK_API_KEY（推荐）或 DASHSCOPE_API_KEY' },
+        { status: 500 }
       )
     }
 
-    const data = await response.json()
-    let text = data.choices[0].message.content
+    const llm = await callLLM(provider, {
+      messages: [
+        { role: 'system', content: SYSTEM_PROMPT_CUSTOM },
+        { role: 'user', content: userPrompt }
+      ],
+      temperature: 1.0,
+      jsonMode: true,
+    })
+
+    if (!llm.ok) {
+      return NextResponse.json(
+        { error: llm.message, provider: llm.provider },
+        { status: llm.status }
+      )
+    }
+
+    let text = llm.text
 
     // 清理可能的 Markdown 代码块标记
     text = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()

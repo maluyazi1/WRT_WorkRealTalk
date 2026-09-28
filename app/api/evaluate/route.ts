@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-// 使用 DeepSeek 进行评分和纠错
-const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY || ''
-const DEEPSEEK_API_URL = 'https://api.deepseek.com/chat/completions'
+// 大模型调用统一走 lib/llm.ts（默认 DeepSeek，未配置时才回落 qwen3-max）
+import { pickLLMProvider, callLLM } from '@/lib/llm'
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,9 +14,10 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    if (!DEEPSEEK_API_KEY) {
+    const provider = pickLLMProvider()
+    if (!provider) {
       return NextResponse.json(
-        { error: '未配置 DEEPSEEK_API_KEY 环境变量' },
+        { error: '未配置 DEEPSEEK_API_KEY 或 DASHSCOPE_API_KEY 环境变量' },
         { status: 500 }
       )
     }
@@ -61,38 +61,27 @@ export async function POST(request: NextRequest) {
 
 请确保输出为 JSON 格式。`
 
-    const response = await fetch(DEEPSEEK_API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: 'deepseek-chat',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: `用户回答: "${userText}"` }
-        ],
-        temperature: 1.0,
-        response_format: { type: 'json_object' }
-      })
+    const result = await callLLM(provider, {
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: `用户回答: "${userText}"` }
+      ],
+      temperature: 1.0,
+      jsonMode: true,
     })
 
-    if (!response.ok) {
-      const errorData = await response.text()
-      console.error('DeepSeek API Error:', errorData)
+    if (!result.ok) {
       return NextResponse.json(
-        { error: '评分服务暂时不可用' },
-        { status: response.status }
+        { error: result.message, provider: result.provider },
+        { status: result.status }
       )
     }
 
-    const data = await response.json()
-    const content = data.choices[0].message.content
-    
+    const content = result.text
+
     try {
-      const result = JSON.parse(content)
-      return NextResponse.json(result)
+      const parsed = JSON.parse(content)
+      return NextResponse.json(parsed)
     } catch (e) {
       console.error('JSON Parse Error:', content)
       return NextResponse.json(

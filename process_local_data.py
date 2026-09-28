@@ -3,9 +3,14 @@
 不依赖 MediaCrawler 内部模块，可直接运行。
 
 用法：
-    python process_local_data.py
-    python process_local_data.py --dry-run   # 只 OCR+LLM, 不写入 BigQuery
-    python process_local_data.py --limit 5   # 只处理前5条
+    export ZHIPU_API_KEY=...
+    export DASHSCOPE_API_KEY=...
+    python process_local_data.py            # OCR + LLM + 写入 BigQuery
+    python process_local_data.py --dry-run  # 只 OCR+LLM, 不写入 BigQuery
+    python process_local_data.py --limit 5  # 只处理前5条
+
+注意：
+    密钥通过环境变量读取，不再硬编码在代码里（历史版本曾泄露过明文密钥）。
 """
 
 import os
@@ -32,8 +37,11 @@ IMAGES_DIR    = BASE_DIR / "MediaCrawler" / "data" / "xhs" / "images"
 PROGRESS_FILE = BASE_DIR / "data" / "processed_corpus_ids.txt"
 FAILED_FILE   = BASE_DIR / "data" / "failed_corpus_ids.txt"
 
-ZHIPU_API_KEY      = "aa934c3e68d6488f9c2ba01140a7d4fe.RoH3UTBlKIJU509d"
-DASHSCOPE_API_KEY  = "sk-e3f51358bd25481996c313991aa7af3c"
+# ⚠️ 安全约定：密钥一律从环境变量注入，禁止写回代码或提交到仓库。
+#    本文件曾在公开仓库中提交过明文密钥，那些密钥必须视为已泄露，请在控制台吊销并轮换。
+ZHIPU_API_KEY      = os.environ.get("ZHIPU_API_KEY", "")
+DASHSCOPE_API_KEY  = os.environ.get("DASHSCOPE_API_KEY", "") or os.environ.get("QWEN_API_KEY", "")
+
 QWEN_API_URL       = "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions"
 QWEN_MODEL         = "qwen-plus"   # 结构化生成用 qwen-plus 节省额度
 
@@ -368,6 +376,17 @@ async def main(dry_run: bool = False, limit: Optional[int] = None):
     log.info("XHS Corpus Pipeline — Local Data Mode")
     log.info(f"DRY-RUN: {dry_run} | LIMIT: {limit or 'all'}")
     log.info("=" * 60)
+
+    # 密钥自检：缺失时立刻退出，避免跑到一半才报鉴权错误
+    missing = [name for name, val in
+               (("ZHIPU_API_KEY", ZHIPU_API_KEY), ("DASHSCOPE_API_KEY", DASHSCOPE_API_KEY))
+               if not val]
+    if missing:
+        log.error("缺少环境变量: " + ", ".join(missing))
+        log.error("请先设置后再运行，例如:")
+        log.error('    export ZHIPU_API_KEY="..."')
+        log.error('    export DASHSCOPE_API_KEY="..."')
+        sys.exit(1)
 
     # 读取 JSON 数据
     if not DATA_JSON.exists():

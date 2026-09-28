@@ -1,9 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-
-// 通义千问 API 配置
-const QWEN_API_KEY = process.env.DASHSCOPE_API_KEY || process.env.QWEN_API_KEY || ''
-const QWEN_BASE_URL = 'https://dashscope.aliyuncs.com/compatible-mode/v1'
-const QWEN_API_URL = `${QWEN_BASE_URL}/chat/completions`
+import { pickLLMProvider, callLLM } from '@/lib/llm'
 
 const SYSTEM_PROMPT = `你是一个专业的英语词汇助手。请为用户提供的英语单词或短语提供详细的学习资料。
 必须返回纯 JSON 格式，包含以下字段：
@@ -31,31 +27,31 @@ export async function POST(request: NextRequest) {
       "example": "He wrote the word on the blackboard. 他在黑板上写下了这个单词。"
     }`
 
-    const payload = {
-      model: 'qwen3-max', // 或者使用 qwen-max
+    const provider = pickLLMProvider()
+    if (!provider) {
+      return NextResponse.json(
+        { error: '未配置 DEEPSEEK_API_KEY 或 DASHSCOPE_API_KEY' },
+        { status: 500 }
+      )
+    }
+    
+    const llm = await callLLM(provider, {
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
         { role: 'user', content: userPrompt }
       ],
-      response_format: { type: 'json_object' }
-    }
-
-    const response = await fetch(QWEN_API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${QWEN_API_KEY}`
-      },
-      body: JSON.stringify(payload)
+      jsonMode: true,
     })
 
-    if (!response.ok) {
-      throw new Error(`API request failed: ${response.statusText}`)
+    if (!llm.ok) {
+      return NextResponse.json(
+        { error: llm.message, provider: llm.provider },
+        { status: llm.status }
+      )
     }
 
-    const data = await response.json()
-    const content = data.choices[0].message.content
-    
+    const content = llm.text
+
     let result
     try {
       result = JSON.parse(content)

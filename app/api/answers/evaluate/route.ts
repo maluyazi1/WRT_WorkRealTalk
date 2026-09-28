@@ -1,9 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-
-// Qwen API 配置（OpenAI 兼容模式）
-const QWEN_API_KEY = process.env.DASHSCOPE_API_KEY || process.env.QWEN_API_KEY || ''
-const QWEN_BASE_URL = 'https://dashscope.aliyuncs.com/compatible-mode/v1'
-const QWEN_API_URL = `${QWEN_BASE_URL}/chat/completions`
+import { pickLLMProvider, callLLM } from '@/lib/llm'
 
 // 评估结果类型定义
 interface EvaluationResult {
@@ -61,9 +57,10 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    if (!QWEN_API_KEY) {
+    const provider = pickLLMProvider()
+    if (!provider) {
       return NextResponse.json(
-        { error: 'Qwen API Key 未配置' },
+        { error: '未配置 DEEPSEEK_API_KEY 或 DASHSCOPE_API_KEY' },
         { status: 500 }
       )
     }
@@ -79,37 +76,27 @@ ${userAnswer}
 
 请根据评估标准，提供详细的评分和反馈。严格按照 JSON 格式输出，不要添加任何额外文字或代码块标记。`
 
-    // 调用 Qwen-3-Max API（Chat Completions）
-    const response = await fetch(QWEN_API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${QWEN_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: 'qwen3-max',
-        messages: [
-          { role: 'system', content: SYSTEM_PROMPT_EVALUATE },
-          { role: 'user', content: evaluationPrompt }
-        ],
-        temperature: 0.5,
-        top_p: 0.9,
-        max_tokens: 1024,
-        stream: false
-      })
+    // 经 lib/llm.ts 调用（默认 DeepSeek；qwen3-max 免费额度已耗尽会稳定 403）
+    // 开启 jsonMode：本接口是严格 JSON.parse，不带兜底，必须保证返回体就是 JSON
+    const result = await callLLM(provider, {
+      messages: [
+        { role: 'system', content: SYSTEM_PROMPT_EVALUATE },
+        { role: 'user', content: evaluationPrompt }
+      ],
+      temperature: 0.5,
+      topP: 0.9,
+      maxTokens: 1024,
+      jsonMode: true,
     })
 
-    if (!response.ok) {
-      const errorText = await response.text()
-      console.error('Qwen API Error:', errorText)
+    if (!result.ok) {
       return NextResponse.json(
-        { error: 'Failed to evaluate answer with Qwen.' },
-        { status: 500 }
+        { error: result.message, provider: result.provider },
+        { status: result.status }
       )
     }
 
-    const data = await response.json()
-    let text = data.choices?.[0]?.message?.content || data.choices?.[0]?.text || ''
+    let text = result.text
 
     // 清理可能的 Markdown 代码块标记
     text = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()

@@ -15,3 +15,7 @@ node_modules/
 sturdy-lore-480006-e6-72d725e6eec7.json
 # Local documentation
 技术方案.md
+
+# 体检脚本报告（本地产物）
+corpus-doctor-report.txt
+bq-doctor-report.txt
