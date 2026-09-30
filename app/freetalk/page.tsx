@@ -4,23 +4,22 @@ import { useEffect, useState, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
-import { 
-  MessageSquare, 
-  Mic, 
-  MicOff, 
-  Send, 
-  Home, 
-  Loader2, 
-  Volume2, 
-  BookOpen,
-  ChevronDown,
-  ChevronUp,
-  Star,
-  X,
-  Sparkles,
-  Info,
-  Square
-} from 'lucide-react'
+import {
+  PixelIconMessageSquare,
+  PixelIconMic,
+  PixelIconSquare,
+  PixelIconSend,
+  PixelIconHome,
+  PixelIconVolume,
+  PixelIconBookOpen,
+  PixelIconChevronDown,
+  PixelIconChevronUp,
+  PixelIconStar,
+  PixelIconX,
+  PixelIconSparkles,
+  PixelIconInfo,
+} from '@/components/ui/pixel-icons'
+import { PixelWave } from '@/components/ui/pixel'
 import Link from 'next/link'
 import { useVocabulary, VocabItem } from '@/hooks/use-vocabulary'
 
@@ -360,31 +359,35 @@ export default function FreeTalkPage() {
   return (
     <div className="h-dvh bg-background flex flex-col">
       {/* Header */}
-      <header className="border-b border-border/50 backdrop-blur-sm sticky top-0 z-50 bg-background/80">
-        <div className="container mx-auto px-4 pb-3 pt-safe-3 flex items-center justify-between">
-          <div className="flex items-center gap-3 min-w-0">
+      <header className="sticky top-0 z-50 border-b-4 border-pixel-ink bg-pixel-paper">
+        <div className="container mx-auto flex items-center justify-between px-4 pb-3 pt-safe-3">
+          <div className="flex min-w-0 items-center gap-3">
             <Link href="/">
-              <Button variant="ghost" size="icon" className="rounded-full flex-shrink-0">
-                <Home className="w-5 h-5" />
+              <Button variant="ghost" size="icon" className="flex-shrink-0">
+                <PixelIconHome className="h-6 w-6" />
               </Button>
             </Link>
-            <div className="flex items-center gap-2 min-w-0">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
-                <MessageSquare className="w-4 h-4 text-white" />
+            <div className="flex min-w-0 items-center gap-2">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center border-2 border-pixel-ink bg-pixel-primary text-white">
+                <PixelIconMessageSquare className="h-5 w-5" />
               </div>
               <div className="min-w-0">
-                <h1 className="text-base sm:text-lg font-bold text-foreground truncate">AI 口语对练</h1>
-                <p className="text-xs text-muted-foreground truncate">Free Talk · 润色 · 生词本</p>
+                <h1 className="truncate text-base font-bold text-pixel-ink sm:text-lg">
+                  AI 口语对练
+                </h1>
+                <p className="px-mono truncate text-[10px] text-pixel-ink-dim">
+                  Free Talk · 润色 · 生词本
+                </p>
               </div>
             </div>
           </div>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="gap-2 flex-shrink-0"
+          <Button
+            variant="outline"
+            size="sm"
+            className="flex-shrink-0 gap-2"
             onClick={() => setShowVocabPanel(!showVocabPanel)}
           >
-            <BookOpen className="w-4 h-4" />
+            <PixelIconBookOpen className="h-5 w-5" />
             <span className="hidden sm:inline">生词本</span> ({vocabList.length})
           </Button>
         </div>
@@ -397,36 +400,36 @@ export default function FreeTalkPage() {
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             
             {/* 功能说明卡片 */}
-            <div className="mx-auto max-w-3xl bg-muted/40 border border-border/50 rounded-xl p-4 mb-6">
-              <h3 className="text-sm font-semibold mb-3 flex items-center gap-2 text-foreground/90">
-                <Sparkles className="w-4 h-4 text-amber-500" />
+            <div className="mx-auto mb-6 max-w-3xl border-[3px] border-pixel-ink bg-pixel-bg p-4 md:border-4">
+              <h3 className="px-font mb-3 flex items-center gap-2 text-[10px] text-pixel-ink">
+                <PixelIconSparkles className="h-4 w-4 text-pixel-warn" />
                 AI 助手功能说明
               </h3>
               <div className="grid gap-4 md:grid-cols-3">
                 <div className="space-y-1">
-                  <div className="text-xs font-medium flex items-center gap-1.5 text-foreground/80">
-                    <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
+                  <div className="flex items-center gap-1.5 text-xs font-medium text-pixel-ink">
+                    <span className="h-2.5 w-2.5 shrink-0 border-2 border-pixel-ink bg-pixel-warn" />
                     智能纠错
                   </div>
-                  <p className="text-[11px] text-muted-foreground leading-relaxed">
+                  <p className="text-[11px] leading-relaxed text-pixel-ink-dim">
                     AI 会自动检测语法错误，并提供地道的表达建议和详细解释。
                   </p>
                 </div>
                 <div className="space-y-1">
-                  <div className="text-xs font-medium flex items-center gap-1.5 text-foreground/80">
-                    <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                  <div className="flex items-center gap-1.5 text-xs font-medium text-pixel-ink">
+                    <span className="h-2.5 w-2.5 shrink-0 border-2 border-pixel-ink bg-pixel-accent" />
                     生词积累
                   </div>
-                  <p className="text-[11px] text-muted-foreground leading-relaxed">
+                  <p className="text-[11px] leading-relaxed text-pixel-ink-dim">
                     对话中出现的高级词汇会被自动提取，你可以一键加入生词本。
                   </p>
                 </div>
                 <div className="space-y-1">
-                  <div className="text-xs font-medium flex items-center gap-1.5 text-foreground/80">
-                    <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+                  <div className="flex items-center gap-1.5 text-xs font-medium text-pixel-ink">
+                    <span className="h-2.5 w-2.5 shrink-0 border-2 border-pixel-ink bg-pixel-success" />
                     发音反馈
                   </div>
-                  <p className="text-[11px] text-muted-foreground leading-relaxed">
+                  <p className="text-[11px] leading-relaxed text-pixel-ink-dim">
                     支持实时语音输入，AI 也会通过标准发音朗读回复内容。
                   </p>
                 </div>
@@ -439,72 +442,75 @@ export default function FreeTalkPage() {
                 className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div className={`max-w-[85%] md:max-w-[70%] space-y-2`}>
-                  {/* 主消息气泡 */}
+                  {/* 主消息气泡：直角 + 粗边 + 实心投影 */}
                   <div
-                    className={`rounded-2xl px-4 py-3 ${
+                    className={`px-shadow border-[3px] border-pixel-ink px-4 py-3 md:border-4 ${
                       message.role === 'user'
-                        ? 'bg-primary text-primary-foreground rounded-br-md'
-                        : 'bg-muted rounded-bl-md'
+                        ? 'bg-pixel-primary text-white'
+                        : 'bg-pixel-paper text-pixel-ink'
                     }`}
                   >
-                    <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
+                    <p className="whitespace-pre-wrap text-sm leading-relaxed">
+                      {message.content}
+                    </p>
                     {message.role === 'assistant' && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className={`mt-2 h-7 px-2 text-xs opacity-70 hover:opacity-100 transition-all ${
-                          playingId === message.id ? 'bg-primary/10 text-primary font-medium opacity-100' : ''
-                        }`}
+                      <button
                         onClick={() => playTTS(message.content, message.id)}
+                        className={`mt-2 inline-flex items-center gap-1 border-2 border-pixel-ink px-2 py-1 text-xs transition-colors ${
+                          playingId === message.id
+                            ? 'bg-pixel-highlight text-pixel-ink'
+                            : 'bg-pixel-bg text-pixel-ink hover:bg-pixel-highlight'
+                        }`}
                       >
                         {playingId === message.id ? (
                           <>
-                            <Square className="w-3 h-3 mr-1 fill-current" />
+                            <PixelIconSquare className="h-3.5 w-3.5" />
                             停止播放
                           </>
                         ) : (
                           <>
-                            <Volume2 className="w-3 h-3 mr-1" />
+                            <PixelIconVolume className="h-4 w-4" />
                             播放
                           </>
                         )}
-                      </Button>
+                      </button>
                     )}
                   </div>
 
                   {/* 纠错卡片 */}
                   {message.correction?.hasError && (
-                    <Card className="border-orange-200 dark:border-orange-800 bg-orange-50 dark:bg-orange-950/30 overflow-hidden">
+                    <Card className="overflow-hidden bg-pixel-paper p-0">
                       <button
-                        className="w-full px-4 py-2 flex items-center justify-between text-left hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors"
+                        className="flex w-full items-center justify-between px-4 py-2.5 text-left transition-colors hover:bg-pixel-warn"
                         onClick={() => toggleCardExpand(message.id, 'correction')}
                       >
-                        <span className="text-sm font-medium text-orange-700 dark:text-orange-300 flex items-center gap-2">
-                          ✏️ 表达纠正
+                        <span className="px-font flex items-center gap-2 text-[10px] text-pixel-ink">
+                          <PixelIconSparkles className="h-4 w-4 text-pixel-warn" />
+                          表达纠正
                         </span>
                         {expandedCards.has(`${message.id}-correction`) ? (
-                          <ChevronUp className="w-4 h-4 text-orange-600" />
+                          <PixelIconChevronUp className="h-5 w-5 text-pixel-ink" />
                         ) : (
-                          <ChevronDown className="w-4 h-4 text-orange-600" />
+                          <PixelIconChevronDown className="h-5 w-5 text-pixel-ink" />
                         )}
                       </button>
                       {expandedCards.has(`${message.id}-correction`) && (
-                        <div className="px-4 pb-3 space-y-2 text-sm">
+                        <div className="anim-rise space-y-2 border-t-2 border-pixel-ink px-4 py-3 text-sm">
                           <div>
-                            <span className="text-muted-foreground">你说的：</span>
-                            <span className="ml-2 text-red-600 dark:text-red-400 line-through">
+                            <span className="text-pixel-ink-dim">你说的：</span>
+                            <span className="ml-2 text-pixel-primary line-through">
                               {message.correction.userSaid}
                             </span>
                           </div>
                           <div>
-                            <span className="text-muted-foreground">更地道：</span>
-                            <span className="ml-2 text-green-600 dark:text-green-400 font-medium">
+                            <span className="text-pixel-ink-dim">更地道：</span>
+                            <span className="ml-2 font-medium text-pixel-success">
                               {message.correction.shouldSay}
                             </span>
                           </div>
                           {message.correction.explanation && (
-                            <p className="text-xs text-muted-foreground mt-1">
-                              💡 {message.correction.explanation}
+                            <p className="mt-1 text-xs text-pixel-ink-dim">
+                              {message.correction.explanation}
                             </p>
                           )}
                         </div>
@@ -514,64 +520,62 @@ export default function FreeTalkPage() {
 
                   {/* 生词卡片 */}
                   {message.vocabulary?.hasNewWord && (
-                    <Card className="border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/30 overflow-hidden">
+                    <Card className="overflow-hidden bg-pixel-paper p-0">
                       <button
-                        className="w-full px-4 py-2 flex items-center justify-between text-left hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors"
+                        className="flex w-full items-center justify-between px-4 py-2.5 text-left transition-colors hover:bg-pixel-accent hover:text-white"
                         onClick={() => toggleCardExpand(message.id, 'vocabulary')}
                       >
-                        <span className="text-sm font-medium text-blue-700 dark:text-blue-300 flex items-center gap-2">
-                          📚 新词汇: {message.vocabulary.word}
+                        <span className="px-font flex items-center gap-2 text-[10px] text-pixel-ink">
+                          <PixelIconBookOpen className="h-4 w-4 text-pixel-accent" />
+                          新词汇: {message.vocabulary.word}
                         </span>
                         {expandedCards.has(`${message.id}-vocabulary`) ? (
-                          <ChevronUp className="w-4 h-4 text-blue-600" />
+                          <PixelIconChevronUp className="h-5 w-5 text-pixel-ink" />
                         ) : (
-                          <ChevronDown className="w-4 h-4 text-blue-600" />
+                          <PixelIconChevronDown className="h-5 w-5 text-pixel-ink" />
                         )}
                       </button>
                       {expandedCards.has(`${message.id}-vocabulary`) && (
-                        <div className="px-4 pb-3 space-y-2 text-sm">
+                        <div className="anim-rise space-y-2 border-t-2 border-pixel-ink px-4 py-3 text-sm">
                           <div className="flex items-center gap-3">
-                            <span className="text-lg font-bold text-foreground">
+                            <span className="px-mono text-lg font-bold text-pixel-primary">
                               {message.vocabulary.word}
                             </span>
-                            <span className="text-muted-foreground">
+                            <span className="px-mono text-xs text-pixel-ink-dim">
                               {message.vocabulary.phonetic}
                             </span>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-6 w-6 p-0"
+                            <button
                               onClick={() => playTTS(message.vocabulary?.word || '')}
+                              aria-label="朗读单词"
+                              className="flex h-7 w-7 items-center justify-center border-2 border-pixel-ink bg-pixel-bg text-pixel-ink transition-colors hover:bg-pixel-highlight"
                             >
-                              <Volume2 className="w-3 h-3" />
-                            </Button>
+                              <PixelIconVolume className="h-4 w-4" />
+                            </button>
                           </div>
-                          <p className="text-foreground">{message.vocabulary.chinese}</p>
-                          <p className="text-muted-foreground italic">
-                            {message.vocabulary.englishExplanation}
-                          </p>
+                          <p className="text-pixel-ink">{message.vocabulary.chinese}</p>
+                          <p className="text-pixel-ink-dim">{message.vocabulary.englishExplanation}</p>
                           {message.vocabulary.example && (
-                            <p className="text-xs bg-white dark:bg-gray-800 rounded p-2 border">
-                              📝 {message.vocabulary.example}
+                            <p className="border-2 border-pixel-ink bg-pixel-bg px-2 py-1.5 text-xs text-pixel-ink">
+                              {message.vocabulary.example}
                             </p>
                           )}
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className={`mt-2 gap-1 text-xs transition-colors ${
-                              isWordSaved(message.vocabulary.word || '') 
-                                ? 'border-amber-400 bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400' 
-                                : ''
-                            }`}
+                          <button
                             onClick={() => addToVocabList(message.vocabulary!)}
+                            className={`mt-2 inline-flex items-center gap-1 border-[3px] border-pixel-ink px-2.5 py-1 text-xs transition-colors ${
+                              isWordSaved(message.vocabulary.word || '')
+                                ? 'bg-pixel-highlight text-pixel-ink'
+                                : 'bg-pixel-paper text-pixel-ink hover:bg-pixel-highlight'
+                            }`}
                           >
-                            <Star className={`w-3 h-3 ${
-                              isWordSaved(message.vocabulary.word || '') 
-                                ? 'fill-amber-400 text-amber-400' 
-                                : ''
-                            }`} />
+                            <PixelIconStar
+                              className={`h-4 w-4 ${
+                                isWordSaved(message.vocabulary.word || '')
+                                  ? 'text-pixel-warn'
+                                  : ''
+                              }`}
+                            />
                             {isWordSaved(message.vocabulary.word || '') ? '已收藏' : '加入生词本'}
-                          </Button>
+                          </button>
                         </div>
                       )}
                     </Card>
@@ -582,8 +586,15 @@ export default function FreeTalkPage() {
             
             {isLoading && (
               <div className="flex justify-start">
-                <div className="bg-muted rounded-2xl rounded-bl-md px-4 py-3">
-                  <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+                <div className="flex items-center gap-1.5 border-[3px] border-pixel-ink bg-pixel-paper px-4 py-3 md:border-4">
+                  {/* 像素加载：方块依次闪烁，不用旋转 spinner */}
+                  {[0, 1, 2].map((i) => (
+                    <span
+                      key={i}
+                      className="anim-blink h-3 w-3 border-2 border-pixel-ink bg-pixel-primary"
+                      style={{ animationDelay: `${i * 0.2}s` }}
+                    />
+                  ))}
                 </div>
               </div>
             )}
@@ -592,9 +603,9 @@ export default function FreeTalkPage() {
           </div>
 
           {/* Input Area */}
-          <div className="border-t border-border/50 px-4 pt-4 pb-safe-4 bg-background">
-            <div className="max-w-3xl mx-auto flex gap-2 sm:gap-3 items-end">
-              <div className="flex-1 relative">
+          <div className="border-t-4 border-pixel-ink bg-pixel-paper px-4 pt-4 pb-safe-4">
+            <div className="mx-auto flex max-w-3xl items-end gap-2 sm:gap-3">
+              <div className="relative flex-1">
                 <Textarea
                   value={inputText + (interimTranscript ? (inputText ? ' ' : '') + interimTranscript : '')}
                   onChange={(e) => {
@@ -609,41 +620,44 @@ export default function FreeTalkPage() {
                     }
                   }}
                   placeholder="Type in English or Chinese... (按 Enter 发送)"
-                  className={`min-h-[50px] max-h-[150px] resize-none pr-12 ${interimTranscript ? 'text-muted-foreground' : ''}`}
+                  className={`max-h-[150px] min-h-[50px] resize-none border-[3px] border-pixel-ink bg-pixel-paper pr-14 md:border-4 ${interimTranscript ? 'text-pixel-ink-dim' : ''}`}
                   rows={1}
                   readOnly={isRecording}
                 />
                 {isRecording && (
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                    <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                    <span className="text-xs text-red-500">识别中...</span>
+                  <div className="absolute right-3 top-1/2 flex -translate-y-1/2 items-center gap-1.5">
+                    <PixelWave count={3} className="h-4" />
+                    <span className="px-font text-[9px] text-pixel-primary">REC</span>
                   </div>
                 )}
               </div>
+              {/* 录音脉冲放外层，避免与按钮 hover 位移抢 transform */}
+              <div className={isRecording ? 'anim-pulse' : ''}>
+                <Button
+                  variant={isRecording ? 'destructive' : 'outline'}
+                  size="icon"
+                  className={`h-12 w-12 flex-shrink-0 ${isRecording ? 'bg-pixel-ink hover:bg-pixel-ink' : ''}`}
+                  onClick={toggleRecording}
+                  disabled={!speechSupported}
+                  title={speechSupported ? (isRecording ? '停止录音' : '开始语音输入') : '浏览器不支持语音识别'}
+                >
+                  {isRecording ? (
+                    <PixelIconSquare className="h-6 w-6" />
+                  ) : (
+                    <PixelIconMic className="h-6 w-6" />
+                  )}
+                </Button>
+              </div>
               <Button
-                variant={isRecording ? "destructive" : "outline"}
                 size="icon"
-                className={`h-12 w-12 rounded-full flex-shrink-0 ${isRecording ? 'animate-pulse' : ''}`}
-                onClick={toggleRecording}
-                disabled={!speechSupported}
-                title={speechSupported ? (isRecording ? '停止录音' : '开始语音输入') : '浏览器不支持语音识别'}
-              >
-                {isRecording ? (
-                  <MicOff className="w-5 h-5" />
-                ) : (
-                  <Mic className="w-5 h-5" />
-                )}
-              </Button>
-              <Button
-                size="icon"
-                className="h-12 w-12 rounded-full flex-shrink-0"
+                className="h-12 w-12 flex-shrink-0"
                 onClick={() => sendMessage(inputText)}
                 disabled={!inputText.trim() || isLoading}
               >
-                <Send className="w-5 h-5" />
+                <PixelIconSend className="h-6 w-6" />
               </Button>
             </div>
-            <p className="text-center text-xs text-muted-foreground mt-2">
+            <p className="px-mono mt-2 text-center text-[10px] text-pixel-ink-dim">
               支持中英文混合输入 · 实时语音识别 · 实时纠错
             </p>
           </div>
@@ -651,10 +665,10 @@ export default function FreeTalkPage() {
 
         {/* Vocabulary Panel */}
         {showVocabPanel && (
-          <div className="fixed inset-0 z-40 flex w-full flex-col bg-background md:static md:z-auto md:w-80 md:border-l md:border-border md:bg-muted/30">
-            <div className="px-4 pt-safe-4 pb-4 border-b border-border flex items-center justify-between">
-              <h3 className="font-semibold flex items-center gap-2">
-                <BookOpen className="w-4 h-4" />
+          <div className="fixed inset-0 z-40 flex w-full flex-col bg-pixel-bg md:static md:z-auto md:w-80 md:border-l-4 md:border-pixel-ink">
+            <div className="flex items-center justify-between border-b-4 border-pixel-ink bg-pixel-paper px-4 pb-4 pt-safe-4">
+              <h3 className="px-font flex items-center gap-2 text-[10px] text-pixel-ink">
+                <PixelIconBookOpen className="h-5 w-5 text-pixel-primary" />
                 我的生词本
               </h3>
               <Button
@@ -663,37 +677,38 @@ export default function FreeTalkPage() {
                 className="h-8 w-8"
                 onClick={() => setShowVocabPanel(false)}
               >
-                <X className="w-4 h-4" />
+                <PixelIconX className="h-5 w-5" />
               </Button>
             </div>
-            <div className="flex-1 overflow-y-auto p-4 space-y-3">
+            <div className="flex-1 space-y-3 overflow-y-auto p-4">
               {vocabList.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-8">
+                <p className="px-mono py-8 text-center text-xs text-pixel-ink-dim">
                   还没有收藏的生词
                   <br />
-                  对话中遇到新词会自动添加哦 ✨
+                  对话中遇到新词会自动添加哦
                 </p>
               ) : (
                 vocabList.map((item, index) => (
-                  <Card key={`${item.word}-${index}`} className="p-3 space-y-1">
+                  <Card key={`${item.word}-${index}`} className="space-y-1 bg-pixel-paper p-3">
                     <div className="flex items-start justify-between">
-                      <div>
-                        <span className="font-medium">{item.word}</span>
-                        <span className="text-xs text-muted-foreground ml-2">{item.phonetic}</span>
+                      <div className="min-w-0">
+                        <span className="px-mono font-bold text-pixel-primary">{item.word}</span>
+                        <span className="px-mono ml-2 text-[10px] text-pixel-ink-dim">
+                          {item.phonetic}
+                        </span>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-6 w-6 -mt-1 -mr-1"
+                      <button
                         onClick={() => removeWord(item.word)}
+                        aria-label={`删除 ${item.word}`}
+                        className="-mr-1 -mt-1 flex h-6 w-6 shrink-0 items-center justify-center border-2 border-pixel-ink bg-pixel-paper text-pixel-ink transition-colors hover:bg-pixel-primary hover:text-white"
                       >
-                        <X className="w-3 h-3" />
-                      </Button>
+                        <PixelIconX className="h-3.5 w-3.5" />
+                      </button>
                     </div>
-                    <p className="text-sm text-foreground">{item.chinese}</p>
-                    <p className="text-xs text-muted-foreground italic">{item.englishExplanation}</p>
+                    <p className="text-sm text-pixel-ink">{item.chinese}</p>
+                    <p className="text-xs text-pixel-ink-dim">{item.englishExplanation}</p>
                     {item.example && (
-                      <p className="text-xs text-muted-foreground bg-background rounded p-2 mt-1">
+                      <p className="mt-1 border-2 border-pixel-ink bg-pixel-bg px-2 py-1 text-xs text-pixel-ink">
                         {item.example}
                       </p>
                     )}

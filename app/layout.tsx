@@ -1,11 +1,7 @@
 import React from "react"
 import type { Metadata, Viewport } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
 
 import './globals.css'
-
-const _geist = Geist({ subsets: ['latin'] })
-const _geistMono = Geist_Mono({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'RealTalk - 职场英语实战',
@@ -29,7 +25,22 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-CN">
-      <body className="font-sans antialiased">{children}</body>
+      <head>
+        {/*
+          像素字体自托管并预加载：
+          不走 next/font/google，避免构建期与运行期依赖 fonts.googleapis.com
+          （国内访问不稳定，且会阻塞首屏渲染）
+        */}
+        <link
+          rel="preload"
+          href="/fonts/press-start-2p-latin.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+      </head>
+      {/* 不吃 antialiased：像素风需要硬边缘，字体平滑会把轮廓磨糊 */}
+      <body className="font-cn">{children}</body>
     </html>
   )
 }

@@ -5,6 +5,12 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
+import {
+  PixelBubble,
+  PixelStamp,
+  PixelWave,
+  useTypewriter,
+} from '@/components/ui/pixel'
 import { MessageSquare, Mic, Eye, ArrowRight, Home, Sparkles, Loader2, Check, X, Edit3, MicOff, Star } from 'lucide-react'
 import Link from 'next/link'
 import { useVocabulary } from '@/hooks/use-vocabulary'
@@ -26,6 +32,103 @@ interface Scenario {
   scenario: string
   messages: Message[]
   keywords_pool?: string[]
+}
+
+/* ============================================================
+   关键词高亮（纯函数，供气泡与参考答案共用）
+   ============================================================ */
+function highlightKeywords(
+  text: string,
+  keywords: string[],
+  onPick: (word: string) => void,
+) {
+  if (!text) return null
+  if (!keywords || keywords.length === 0) return text
+
+  // 将关键词按长度倒序排列，优先匹配长词
+  const sortedKeywords = [...keywords].sort((a, b) => b.length - a.length)
+  const pattern = sortedKeywords
+    .map((k) => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')) // 转义正则特殊字符
+    .join('|')
+
+  if (!pattern) return text
+  const regex = new RegExp(`(${pattern})`, 'gi')
+  const parts = text.split(regex)
+
+  return (
+    <>
+      {parts.map((part, i) => {
+        const isMatch = keywords.some((k) => k.toLowerCase() === part.toLowerCase())
+        if (isMatch) {
+          return (
+            <span
+              key={i}
+              // 像素高亮：黄底 + 墨色粗边，不用圆角与柔光
+              className="cursor-pointer border-2 border-pixel-ink bg-pixel-highlight px-1 text-pixel-ink transition-colors hover:bg-pixel-warn inline-block"
+              onClick={(e) => {
+                e.stopPropagation()
+                onPick(part)
+              }}
+              title="点击加入生词本"
+            >
+              {part}
+            </span>
+          )
+        }
+        return part
+      })}
+    </>
+  )
+}
+
+/* ============================================================
+   AI 气泡：逐字显示 + 像素尾巴
+   单独抽成组件是因为逐字显示需要 hook，不能写在 map 循环里。
+   ============================================================ */
+function AiMessageBubble({
+  message,
+  keywords,
+  showChinese,
+  onToggleTranslation,
+  renderHighlightedText,
+}: {
+  message: Message
+  keywords?: string[]
+  showChinese: boolean
+  onToggleTranslation: () => void
+  renderHighlightedText: (text: string, keywords?: string[]) => React.ReactNode
+}) {
+  const { shown, done } = useTypewriter(message.english || '')
+
+  return (
+    <div className="flex flex-col items-start gap-2">
+      <PixelBubble who="AI" side="left">
+        <p className="px-mono text-sm leading-relaxed md:text-base">
+          {renderHighlightedText(shown, keywords)}
+          {/* 光标只在逐字过程中闪烁，打完即消失 */}
+          {!done && (
+            <span className="anim-blink ml-0.5 inline-block h-4 w-2 translate-y-0.5 bg-pixel-highlight align-middle" />
+          )}
+        </p>
+        {showChinese && (
+          <p className="mt-2 border-t-2 border-pixel-ink pt-2 text-xs text-pixel-ink-dim">
+            {message.chinese}
+          </p>
+        )}
+      </PixelBubble>
+      <div className="flex gap-2">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-8 text-xs"
+          onClick={onToggleTranslation}
+        >
+          <Eye className="mr-1 h-3 w-3" />
+          {showChinese ? '隐藏' : '查看'}翻译
+        </Button>
+      </div>
+    </div>
+  )
 }
 
 function PracticeContent() {
@@ -84,43 +187,10 @@ function PracticeContent() {
     }
   }
 
-  // 新增：高亮关键词并支持点击收藏
+  // 高亮关键词并支持点击收藏
   const renderHighlightedText = (text: string, keywords: string[] = []) => {
-    if (!text) return ''
-    if (!keywords || keywords.length === 0) return text
-
-    // 将关键词按长度倒序排列，优先匹配长词
-    const sortedKeywords = [...keywords].sort((a, b) => b.length - a.length)
-    const pattern = sortedKeywords
-      .map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')) // 转义正则特殊字符
-      .join('|')
-
-    if (!pattern) return text
-    const regex = new RegExp(`(${pattern})`, 'gi')
-    const parts = text.split(regex)
-
-    return (
-      <>
-        {parts.map((part, i) => {
-          const isMatch = keywords.some(k => k.toLowerCase() === part.toLowerCase())
-          if (isMatch) {
-            return (
-              <span
-                key={i}
-                className="bg-amber-100 dark:bg-amber-900/40 text-amber-900 dark:text-amber-100 px-1 rounded cursor-pointer border-b border-amber-400 hover:bg-amber-200 dark:hover:bg-amber-800 transition-colors inline-block"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  handleAddToVocab(part, text)
-                }}
-                title="点击加入生词本"
-              >
-                {part}
-              </span>
-            )
-          }
-          return part
-        })}
-      </>
+    return highlightKeywords(text, keywords, (word) =>
+      handleAddToVocab(word, text),
     )
   }
 
@@ -523,22 +593,32 @@ function PracticeContent() {
 
   if (isLoading) {
     return (
-      <div className="min-h-dvh bg-background flex flex-col items-center justify-center gap-4">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-        <div className="text-muted-foreground">正在生成场景...</div>
+      <div className="flex min-h-dvh flex-col items-center justify-center gap-5 bg-background">
+        {/* 像素加载：方块依次闪烁，不用旋转 spinner */}
+        <div className="flex gap-2">
+          {[0, 1, 2].map((i) => (
+            <span
+              key={i}
+              className="anim-blink h-4 w-4 border-[3px] border-pixel-ink bg-pixel-primary"
+              style={{ animationDelay: `${i * 0.2}s` }}
+            />
+          ))}
+        </div>
+        <p className="px-font text-[10px] text-pixel-ink-dim">LOADING...</p>
       </div>
     )
   }
 
   if (!currentScenario || !currentScenario.messages || !Array.isArray(currentScenario.messages) || currentScenario.messages.length === 0) {
     return (
-      <div className="min-h-dvh bg-background flex items-center justify-center p-4">
-        <div className="bg-card rounded-2xl shadow-lg p-8 max-w-lg w-full text-center border">
-          <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-            <X className="w-8 h-8 text-red-500" />
+      <div className="flex min-h-dvh items-center justify-center bg-background p-4">
+        {/* 失败态：整卡震一次，配合红底图标块 */}
+        <div className="anim-shake w-full max-w-lg border-[3px] border-pixel-ink bg-pixel-paper p-6 text-center md:border-4 md:p-8 px-shadow">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center border-[3px] border-pixel-ink bg-pixel-primary text-white md:border-4">
+            <X className="h-8 w-8" />
           </div>
-          <h2 className="text-xl font-bold text-foreground mb-2">场景加载失败</h2>
-          <p className="text-muted-foreground mb-6 text-sm whitespace-pre-wrap">{error || '场景数据格式不正确，请重试'}</p>
+          <h2 className="px-font mb-3 text-xs text-pixel-ink">场景加载失败</h2>
+          <p className="mb-6 whitespace-pre-wrap text-sm text-pixel-ink-dim">{error || '场景数据格式不正确，请重试'}</p>
           <div className="space-y-3">
             <Button
               onClick={() => fetchScenario(true)}
@@ -558,8 +638,8 @@ function PracticeContent() {
                 返回首页
               </Button>
             </Link>
-            <div className="text-xs text-muted-foreground bg-muted rounded-lg p-3 text-left mt-4">
-              <p className="font-medium mb-1">常见解决方案：</p>
+            <div className="mt-4 border-[3px] border-pixel-ink bg-pixel-bg p-3 text-left text-xs text-pixel-ink-dim">
+              <p className="px-font mb-2 text-[9px] text-pixel-ink">常见解决方案</p>
               <ul className="list-disc list-inside space-y-1">
                 <li>检查网络连接是否正常</li>
                 <li>如果使用代理，请确保代理设置正确</li>
@@ -579,11 +659,11 @@ function PracticeContent() {
   return (
     <div className="min-h-dvh bg-background flex flex-col">
       {/* Header */}
-      <header className="border-b border-border bg-card sticky top-0 z-50 shadow-sm">
-        <div className="container mx-auto px-4 pb-4 pt-safe-4 flex items-center justify-between">
-          <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
+      <header className="sticky top-0 z-50 border-b-4 border-pixel-ink bg-pixel-paper">
+        <div className="container mx-auto flex items-center justify-between px-4 pb-4 pt-safe-4">
+          <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-4">
             <Link href="/">
-              <Button variant="ghost" size="icon" className="rounded-full flex-shrink-0">
+              <Button variant="ghost" size="icon" className="flex-shrink-0">
                 <Home className="w-5 h-5" />
               </Button>
             </Link>
@@ -592,7 +672,7 @@ function PracticeContent() {
               <p className="text-xs text-muted-foreground truncate">{currentScenario.scenario}</p>
             </div>
           </div>
-          <Button onClick={handleNewScenario} variant="outline" size="sm" className="rounded-full bg-transparent flex-shrink-0" disabled={isLoading}>
+          <Button onClick={handleNewScenario} variant="outline" size="sm" className="flex-shrink-0" disabled={isLoading}>
             {isLoading ? (
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
             ) : (
@@ -602,18 +682,22 @@ function PracticeContent() {
           </Button>
         </div>
         {vocabList.length > 0 && (
-          <div className="bg-amber-50 dark:bg-amber-900/20 text-amber-800 dark:text-amber-200 text-xs text-center py-1 flex items-center justify-center gap-2">
-            <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-            已收藏 {vocabList.length} 个短语，前往 <Link href="/freetalk" className="underline font-medium">AI 口语对练</Link> 查看生词本
+          <div className="flex items-center justify-center gap-2 border-b-[3px] border-pixel-ink bg-pixel-highlight py-1.5 text-center text-xs text-pixel-ink">
+            <Star className="h-3 w-3 fill-pixel-warn text-pixel-warn" />
+            已收藏 {vocabList.length} 个短语，前往{' '}
+            <Link href="/freetalk" className="font-medium underline">
+              AI 口语对练
+            </Link>{' '}
+            查看生词本
           </div>
         )}
         {error && (
-          <div className="bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200 text-xs text-center py-1">
+          <div className="border-b-[3px] border-pixel-ink bg-pixel-warn py-1.5 text-center text-xs text-pixel-ink">
             {error}
           </div>
         )}
         {audioError && (
-          <div className="bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 text-xs text-center py-1">
+          <div className="anim-shake border-b-[3px] border-pixel-ink bg-pixel-primary py-1.5 text-center text-xs text-white">
             {audioError}
           </div>
         )}
@@ -625,44 +709,36 @@ function PracticeContent() {
           {currentScenario.messages.slice(0, currentTurnIndex + 1).map((message, index) => {
             if (message.role === 'ai') {
               return (
-                <div key={index} className="flex gap-2 sm:gap-3 animate-in slide-in-from-left duration-500">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
-                    <MessageSquare className="w-5 h-5 text-primary-foreground" />
+                <div key={index} className="flex items-end gap-2 sm:gap-3">
+                  {/* 头像：方形 + 粗边框，像素风不用圆形 */}
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center border-[3px] border-pixel-ink bg-pixel-accent text-white sm:h-10 sm:w-10">
+                    <MessageSquare className="h-4 w-4 sm:h-5 sm:w-5" />
                   </div>
-                  <div className="flex-1 space-y-2">
-                    <Card className="p-4 bg-card shadow-sm hover:shadow-md transition-shadow">
-                      <p className="text-foreground leading-relaxed">
-                        {renderHighlightedText(message.english || '', currentScenario.keywords_pool)}
-                      </p>
-                      {showTranslation === index && (
-                        <p className="text-sm text-muted-foreground mt-2 pt-2 border-t animate-in fade-in slide-in-from-top-2">
-                          {message.chinese}
-                        </p>
-                      )}
-                    </Card>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 text-xs"
-                        onClick={() => setShowTranslation(showTranslation === index ? null : index)}
-                      >
-                        <Eye className="w-3 h-3 mr-1" />
-                        {showTranslation === index ? '隐藏' : '查看'}翻译
-                      </Button>
-                    </div>
-                  </div>
+                  <AiMessageBubble
+                    message={message}
+                    keywords={currentScenario.keywords_pool}
+                    showChinese={showTranslation === index}
+                    onToggleTranslation={() =>
+                      setShowTranslation(showTranslation === index ? null : index)
+                    }
+                    renderHighlightedText={renderHighlightedText}
+                  />
                 </div>
               )
             } else {
               // User turn
               return (
-                <div key={index} className="flex gap-2 sm:gap-3 justify-end animate-in slide-in-from-right duration-500">
+                <div key={index} className="flex justify-end gap-2 sm:gap-3">
                   <div className="flex-1 space-y-3">
                     {/* User Prompt */}
-                    <Card className="p-4 bg-accent/30 border-accent relative overflow-hidden">
-                      <p className="text-sm text-muted-foreground mb-2">💡 参考中文：</p>
-                      <p className="text-foreground font-medium mb-3 text-lg">{message.userPrompt}</p>
+                    {/* 任务卡：像素卷轴，黄底 + 粗边 */}
+                    <Card className="bg-pixel-highlight p-4">
+                      <p className="px-font mb-2 text-[9px] text-pixel-ink">
+                        你要表达
+                      </p>
+                      <p className="mb-3 text-lg font-medium leading-snug text-pixel-ink">
+                        {message.userPrompt}
+                      </p>
 
                       {/* Hint System */}
                       {index === currentTurnIndex && (
@@ -670,7 +746,7 @@ function PracticeContent() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="h-6 text-xs text-amber-600 hover:text-amber-700 hover:bg-amber-100"
+                            className="h-8 border-2 border-pixel-ink bg-pixel-paper text-xs text-pixel-ink hover:bg-pixel-warn"
                             onClick={() => setShowHint(!showHint)}
                           >
                             <Sparkles className="w-3 h-3 mr-1" />
@@ -678,9 +754,9 @@ function PracticeContent() {
                           </Button>
 
                           {showHint && message.reference?.keyPhrases && (
-                            <div className="flex flex-wrap gap-2 animate-in fade-in zoom-in-95 duration-200">
+                            <div className="flex flex-wrap gap-2">
                               {message.reference.keyPhrases.map((phrase, i) => (
-                                <span key={i} className="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
+                                <span key={i} className="anim-pop px-font border-2 border-pixel-ink bg-pixel-paper px-2 py-1 text-[9px] text-pixel-ink">
                                   {phrase}
                                 </span>
                               ))}
@@ -694,11 +770,11 @@ function PracticeContent() {
                     {index === currentTurnIndex && !isEditingTranscription && !userConfirmedText && (
                       <div className="space-y-3">
                         {/* 输入模式切换按钮 */}
-                        <div className="flex justify-center gap-2 bg-muted/50 p-1 rounded-full w-fit mx-auto">
+                        <div className="mx-auto flex w-fit justify-center gap-2 border-[3px] border-pixel-ink bg-pixel-bg p-1 md:border-4">
                           <Button
                             variant={inputMode === 'voice' ? 'default' : 'ghost'}
                             size="sm"
-                            className="rounded-full h-8 px-4"
+                            className="h-9 px-4"
                             onClick={() => setInputMode('voice')}
                           >
                             <Mic className="w-4 h-4 mr-1" />
@@ -707,7 +783,7 @@ function PracticeContent() {
                           <Button
                             variant={inputMode === 'text' ? 'default' : 'ghost'}
                             size="sm"
-                            className="rounded-full h-8 px-4"
+                            className="h-9 px-4"
                             onClick={() => setInputMode('text')}
                           >
                             <Edit3 className="w-4 h-4 mr-1" />
@@ -718,43 +794,51 @@ function PracticeContent() {
                         {/* 语音输入模式 */}
                         {inputMode === 'voice' && (
                           <>
-                            {/* 录音中提示 + 计时 */}
+                            {/* 录音中：像素 HUD + 音波柱 + 计时 */}
                             {isRecording && (
-                              <Card className="p-4 bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 animate-in fade-in">
-                                <div className="flex items-center gap-3">
-                                  <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
-                                  <p className="text-sm font-medium text-red-700 dark:text-red-300">正在录音…</p>
-                                  <span className="ml-auto text-sm font-mono tabular-nums text-muted-foreground">
-                                    {String(Math.floor(recordingSeconds / 60)).padStart(2, '0')}:
-                                    {String(recordingSeconds % 60).padStart(2, '0')}
-                                  </span>
-                                </div>
-                              </Card>
+                              <div className="px-shadow-sm flex items-center gap-3 border-[3px] border-pixel-ink bg-pixel-primary px-3 py-2.5 text-white md:border-4">
+                                <PixelWave />
+                                <span className="px-font text-[10px]">REC</span>
+                                <span className="px-mono ml-auto text-sm tabular-nums">
+                                  {String(Math.floor(recordingSeconds / 60)).padStart(2, '0')}
+                                  :
+                                  {String(recordingSeconds % 60).padStart(2, '0')}
+                                </span>
+                              </div>
                             )}
                             <div className="flex justify-end gap-2">
-                              <Button
-                                onClick={handleRecord}
-                                size="lg"
-                                className={`rounded-full ${isRecording ? 'bg-destructive hover:bg-destructive/90' : ''}`}
-                                disabled={isTranscribing}
+                              {/*
+                                待机浮动 / 录音脉冲放在外层 wrapper：
+                                循环动画与按钮 hover 位移都占用 transform，
+                                挂在同一元素上会互相覆盖。
+                              */}
+                              <div
+                                className={`inline-flex ${isRecording ? 'anim-pulse' : 'anim-float'}`}
                               >
-                                {isTranscribing ? (
-                                  <>
-                                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                                    识别中...
-                                  </>
-                                ) : isRecording ? (
-                                  <>
-                                    <MicOff className="w-5 h-5 mr-2 animate-pulse" />
-                                    停止并识别
-                                  </>
-                                ) : (
-                                  <>
-                                    <Mic className="w-5 h-5 mr-2" />
-                                    点击录音
-                                  </>
-                                )}
-                              </Button>
+                                <Button
+                                  onClick={handleRecord}
+                                  size="lg"
+                                  className={isRecording ? 'bg-pixel-ink hover:bg-pixel-ink' : ''}
+                                  disabled={isTranscribing}
+                                >
+                                  {isTranscribing ? (
+                                    <>
+                                      <Loader2 className="anim-blink mr-2 h-5 w-5" />
+                                      识别中...
+                                    </>
+                                  ) : isRecording ? (
+                                    <>
+                                      <MicOff className="mr-2 h-5 w-5" />
+                                      停止并识别
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Mic className="mr-2 h-5 w-5" />
+                                      点击录音
+                                    </>
+                                  )}
+                                </Button>
+                              </div>
                             </div>
                             <p className="text-xs text-muted-foreground text-center">
                               录音结束后自动识别，可先修改识别结果再提交 · 如遇问题可切换到「手动输入」
@@ -764,12 +848,12 @@ function PracticeContent() {
 
                         {/* 手动输入模式 */}
                         {inputMode === 'text' && (
-                          <Card className="p-4 bg-muted/30 border animate-in fade-in">
+                          <Card className="bg-pixel-paper p-4">
                             <div className="space-y-3">
                               <Textarea
                                 value={manualInputText}
                                 onChange={(e) => setManualInputText(e.target.value)}
-                                className="min-h-[80px] bg-white dark:bg-gray-800"
+                                className="min-h-[80px] border-[3px] border-pixel-ink bg-pixel-paper"
                                 placeholder="请用英文输入您的回答..."
                               />
                               <div className="flex justify-end gap-2">
@@ -777,7 +861,6 @@ function PracticeContent() {
                                   variant="outline"
                                   size="sm"
                                   onClick={() => setManualInputText('')}
-                                  className="rounded-full"
                                   disabled={!manualInputText.trim()}
                                 >
                                   <X className="w-4 h-4 mr-1" />
@@ -792,8 +875,6 @@ function PracticeContent() {
                                       setManualInputText('')
                                     }
                                   }}
-                                  className="rounded-full"
-                                  disabled={!manualInputText.trim()}
                                 >
                                   <Check className="w-4 h-4 mr-1" />
                                   提交答案
@@ -807,18 +888,18 @@ function PracticeContent() {
 
                     {/* 语音识别结果编辑界面 */}
                     {index === currentTurnIndex && isEditingTranscription && (
-                      <Card className="p-4 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 animate-in slide-in-from-bottom-4">
+                      <Card className="bg-pixel-paper p-4">
                         <div className="space-y-3">
                           <div className="flex items-center gap-2">
-                            <Edit3 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                            <p className="text-sm font-semibold text-blue-800 dark:text-blue-200">
-                              请确认或修改您的回答
+                            <Edit3 className="h-4 w-4 text-pixel-ink" />
+                            <p className="px-font text-[10px] text-pixel-ink">
+                              确认你的回答
                             </p>
                           </div>
                           <Textarea
                             value={editedTranscription}
                             onChange={(e) => setEditedTranscription(e.target.value)}
-                            className="min-h-[80px] bg-white dark:bg-gray-800"
+                            className="min-h-[80px] border-[3px] border-pixel-ink bg-pixel-paper"
                             placeholder="您的回答..."
                           />
                           <div className="flex justify-end gap-2">
@@ -826,7 +907,6 @@ function PracticeContent() {
                               variant="outline"
                               size="sm"
                               onClick={cancelTranscription}
-                              className="rounded-full"
                             >
                               <X className="w-4 h-4 mr-1" />
                               重新录音
@@ -834,7 +914,6 @@ function PracticeContent() {
                             <Button
                               size="sm"
                               onClick={confirmTranscription}
-                              className="rounded-full"
                               disabled={!editedTranscription.trim()}
                             >
                               <Check className="w-4 h-4 mr-1" />
@@ -847,48 +926,64 @@ function PracticeContent() {
 
                     {/* 用户已确认的回答 & 评分反馈 */}
                     {index === currentTurnIndex && userConfirmedText && (
-                      <div className="space-y-4 animate-in slide-in-from-bottom-4">
+                      <div className="anim-rise space-y-4">
                         {/* 1. 用户的实际回答 */}
-                        <Card className="p-4 bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800">
-                          <div className="space-y-2">
-                            <p className="text-xs font-semibold text-green-800 dark:text-green-200 flex items-center">
-                              <Mic className="w-3 h-3 mr-1" /> 您的回答
+                        <Card className="bg-pixel-paper p-4">
+                          <div className="flex flex-col gap-2">
+                            <PixelStamp kind="warn">YOU</PixelStamp>
+                            <p className="px-mono text-sm font-medium leading-relaxed">
+                              {userConfirmedText}
                             </p>
-                            <p className="text-foreground leading-relaxed font-medium">{userConfirmedText}</p>
                           </div>
                         </Card>
 
                         {/* 2. AI 评价加载中 */}
                         {isEvaluating && (
-                          <Card className="p-6 bg-card border-dashed">
-                            <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
-                              <Loader2 className="w-6 h-6 animate-spin text-primary" />
-                              <p className="text-sm">AI 正在分析您的口语表现...</p>
+                          <Card className="bg-pixel-paper p-6">
+                            <div className="flex flex-col items-center justify-center gap-3 text-pixel-ink-dim">
+                              {/* 像素加载：方块闪烁，不用 spinner 旋转 */}
+                              <div className="flex gap-1.5">
+                                {[0, 1, 2].map((i) => (
+                                  <span
+                                    key={i}
+                                    className="anim-blink h-3 w-3 border-2 border-pixel-ink bg-pixel-primary"
+                                    style={{ animationDelay: `${i * 0.2}s` }}
+                                  />
+                                ))}
+                              </div>
+                              <p className="px-font text-[10px]">ANALYZING...</p>
                             </div>
                           </Card>
                         )}
 
                         {/* 3. AI 评价结果 */}
                         {!isEvaluating && (evaluation || historyEvaluations[index]) && (
-                          <Card className="p-0 overflow-hidden bg-card border-primary/20 shadow-sm">
-                            <div className="p-4 bg-primary/5 border-b border-primary/10 flex justify-between items-center">
-                              <h3 className="font-semibold text-primary flex items-center">
-                                <Sparkles className="w-4 h-4 mr-2" />
-                                AI 智能点评
+                          <Card className="bg-pixel-paper p-0">
+                            <div className="flex items-center justify-between gap-2 border-b-[3px] border-pixel-ink bg-pixel-highlight px-3 py-2.5 md:border-b-4">
+                              <h3 className="px-font flex items-center text-[10px] text-pixel-ink">
+                                <Sparkles className="mr-2 h-4 w-4" />
+                                AI REVIEW
                               </h3>
+                              <PixelStamp kind="warn">REVIEW</PixelStamp>
                             </div>
 
-                            <div className="p-4 space-y-4">
+                            <div className="space-y-4 p-4">
                               {/* 纠错与反馈 */}
                               <div className="space-y-2">
-                                <p className="text-sm font-medium text-muted-foreground">🎯 点评与建议</p>
-                                <p className="text-sm">{(evaluation || historyEvaluations[index]).feedback}</p>
+                                <p className="px-font text-[9px] text-pixel-ink-dim">
+                                  点评与建议
+                                </p>
+                                <p className="text-sm leading-relaxed">
+                                  {(evaluation || historyEvaluations[index]).feedback}
+                                </p>
                               </div>
 
                               {/* 更多表达方式 */}
                               {(evaluation || historyEvaluations[index]).alternative_expressions && (evaluation || historyEvaluations[index]).alternative_expressions.length > 0 && (
                                 <div className="space-y-2">
-                                  <p className="text-sm font-medium text-muted-foreground">✨ 其他地道说法 <span className="text-xs text-muted-foreground font-normal">(点击收藏)</span></p>
+                                  <p className="px-font text-[9px] text-pixel-ink-dim">
+                                    其他地道说法 · 点击收藏
+                                  </p>
                                   <div className="flex flex-wrap gap-2">
                                     {(evaluation || historyEvaluations[index]).alternative_expressions.map((phrase: string, i: number) => {
                                       const isSaved = isWordSaved(phrase)
@@ -897,15 +992,15 @@ function PracticeContent() {
                                           key={i}
                                           onClick={() => handleAddToVocab(phrase, currentScenario?.scenario)}
                                           disabled={addingWords.has(phrase)}
-                                          className={`px-3 py-1 text-sm rounded-full border transition-all flex items-center gap-1.5 hover:scale-105 ${isSaved
-                                            ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-700'
-                                            : 'bg-primary/10 text-primary border-primary/20 hover:bg-primary/20'
-                                            } ${addingWords.has(phrase) ? 'opacity-70 cursor-wait' : ''}`}
+                                          className={`px-shadow-sm flex items-center gap-1.5 border-[3px] border-pixel-ink px-2.5 py-1 text-xs transition-colors ${isSaved
+                                            ? 'bg-pixel-highlight text-pixel-ink'
+                                            : 'bg-pixel-paper text-pixel-ink hover:bg-pixel-highlight'
+                                            } ${addingWords.has(phrase) ? 'cursor-wait opacity-70' : ''}`}
                                         >
                                           {addingWords.has(phrase) ? (
-                                            <Loader2 className="w-3 h-3 animate-spin" />
+                                            <Loader2 className="h-3 w-3 animate-spin" />
                                           ) : (
-                                            <Star className={`w-3 h-3 ${isSaved ? 'fill-amber-400 text-amber-400' : ''}`} />
+                                            <Star className={`h-3 w-3 ${isSaved ? 'fill-pixel-warn text-pixel-warn' : ''}`} />
                                           )}
                                           {phrase}
                                         </button>
@@ -936,17 +1031,19 @@ function PracticeContent() {
 
                     {/* Reference Answer - 历史记录中始终显示，或当前回合点击显示 */}
                     {(showReference || index < currentTurnIndex) && message.reference && (
-                      <Card className="p-4 bg-primary/5 border-primary/20 animate-in slide-in-from-bottom-4">
+                      <Card className="bg-pixel-paper p-4">
                         <div className="space-y-3">
                           <div>
-                            <p className="text-xs font-semibold text-primary mb-1">📝 参考答案</p>
-                            <p className="text-foreground leading-relaxed">
+                            <PixelStamp kind="good">ANSWER</PixelStamp>
+                            <p className="px-mono mt-3 text-sm leading-relaxed">
                               {renderHighlightedText(message.reference.answer, currentScenario.keywords_pool)}
                             </p>
                           </div>
                           {message.reference.keyPhrases && message.reference.keyPhrases.length > 0 && (
                             <div>
-                              <p className="text-xs font-semibold text-primary mb-2">✨ 关键短语 <span className="text-muted-foreground font-normal">(点击收藏)</span></p>
+                              <p className="px-font mb-2 text-[9px] text-pixel-ink-dim">
+                                关键短语 · 点击收藏
+                              </p>
                               <div className="flex flex-wrap gap-2">
                                 {message.reference.keyPhrases.map((phrase, i) => {
                                   const isSaved = isWordSaved(phrase)
@@ -955,15 +1052,15 @@ function PracticeContent() {
                                       key={i}
                                       onClick={() => handleAddToVocab(phrase, message.reference?.answer)}
                                       disabled={addingWords.has(phrase)}
-                                      className={`px-3 py-1 text-sm rounded-full border transition-all flex items-center gap-1.5 hover:scale-105 ${isSaved
-                                        ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-700'
-                                        : 'bg-primary/10 text-primary border-primary/20 hover:bg-primary/20'
-                                        } ${addingWords.has(phrase) ? 'opacity-70 cursor-wait' : ''}`}
+                                      className={`px-shadow-sm flex items-center gap-1.5 border-[3px] border-pixel-ink px-2.5 py-1 text-xs transition-colors ${isSaved
+                                        ? 'bg-pixel-highlight text-pixel-ink'
+                                        : 'bg-pixel-paper text-pixel-ink hover:bg-pixel-highlight'
+                                        } ${addingWords.has(phrase) ? 'cursor-wait opacity-70' : ''}`}
                                     >
                                       {addingWords.has(phrase) ? (
-                                        <Loader2 className="w-3 h-3 animate-spin" />
+                                        <Loader2 className="h-3 w-3 animate-spin" />
                                       ) : (
-                                        <Star className={`w-3 h-3 ${isSaved ? 'fill-amber-400 text-amber-400' : ''}`} />
+                                        <Star className={`h-3 w-3 ${isSaved ? 'fill-pixel-warn text-pixel-warn' : ''}`} />
                                       )}
                                       {phrase}
                                     </button>
@@ -979,14 +1076,15 @@ function PracticeContent() {
                     {/* Reveal Button */}
                     {index === currentTurnIndex && !showReference && !(evaluation || historyEvaluations[index]) && (
                       <div className="flex justify-end">
-                        <Button onClick={handleRevealReference} variant="outline" className="rounded-full bg-transparent">
+                        <Button onClick={handleRevealReference} variant="outline">
                           <Eye className="w-4 h-4 mr-2" />
                           查看参考回答
                         </Button>
                       </div>
                     )}
                   </div>
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-secondary flex items-center justify-center flex-shrink-0 text-xl sm:text-2xl">
+                  {/* 头像：方形 + 粗边框，不用圆形 */}
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center border-[3px] border-pixel-ink bg-pixel-bg text-base sm:h-10 sm:w-10 sm:text-xl">
                     👤
                   </div>
                 </div>
@@ -998,20 +1096,24 @@ function PracticeContent() {
 
       {/* Bottom Action Bar */}
       {currentTurnIndex < currentScenario.messages.length - 1 && (
-        <div className="border-t border-border bg-card px-4 pt-4 pb-safe-4 sticky bottom-0">
-          <div className="container mx-auto max-w-3xl flex flex-col items-center gap-2">
+        <div className="sticky bottom-0 border-t-4 border-pixel-ink bg-pixel-paper px-4 pt-4 pb-safe-4">
+          <div className="container mx-auto flex max-w-3xl flex-col items-center gap-2">
             {isUserTurn && !userConfirmedText && (
-              <p className="text-xs text-muted-foreground">本轮尚未作答，可直接跳过</p>
+              <p className="px-font text-[9px] text-pixel-ink-dim">
+                本轮尚未作答，可直接跳过
+              </p>
             )}
-            <Button
-              onClick={handleNextTurn}
-              size="lg"
-              className="rounded-full px-8 w-full sm:w-auto"
-              disabled={isLoading}
-            >
-              继续对话
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
+            <div className="anim-float w-full sm:w-auto">
+              <Button
+                onClick={handleNextTurn}
+                size="lg"
+                className="w-full px-8 sm:w-auto"
+                disabled={isLoading}
+              >
+                继续对话
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </div>
           </div>
         </div>
       )}

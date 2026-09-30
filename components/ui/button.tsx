@@ -5,25 +5,36 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
+  [
+    // px-btn 提供位移与投影（含 hover 弹起 / active 挤压拉伸 / 移动端降档）
+    'px-btn',
+    'inline-flex items-center justify-center gap-2 whitespace-nowrap',
+    // 直角 + 粗轮廓线；移动端降到 3px，小屏上 4px 边框太吃宽度
+    'border-[3px] md:border-4 border-pixel-ink',
+    'text-sm font-semibold',
+    'focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring focus-visible:ring-offset-2',
+    'disabled:pointer-events-none disabled:bg-pixel-ink-dim disabled:text-pixel-paper',
+    '[&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
+  ],
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-        destructive:
-          'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+        // 按钮文字多为中文，刻意不套像素字体——Press Start 2P 无中文字形，
+        // 会让中文回退到不可控的等宽字体，牺牲可读性
+        default: 'bg-pixel-primary text-white hover:bg-[#d65c5c]',
+        destructive: 'bg-pixel-primary text-white hover:bg-[#a83a3a]',
         outline:
-          'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
-        secondary:
-          'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-        ghost: 'hover:bg-accent hover:text-accent-foreground',
+          'bg-pixel-paper text-pixel-ink hover:bg-pixel-highlight',
+        secondary: 'bg-pixel-bg text-pixel-ink hover:bg-pixel-highlight',
+        ghost: 'bg-transparent text-pixel-ink hover:bg-pixel-highlight',
         link: 'text-primary underline-offset-4 hover:underline',
       },
       size: {
-        default: 'h-10 px-4 py-2',
-        sm: 'h-9 rounded-md px-3',
-        lg: 'h-11 rounded-md px-8',
-        icon: 'h-10 w-10',
+        // 触控目标 ≥ 44px
+        default: 'h-11 px-5 py-3',
+        sm: 'h-9 px-3',
+        lg: 'h-12 px-8 text-base',
+        icon: 'h-11 w-11',
       },
     },
     defaultVariants: {

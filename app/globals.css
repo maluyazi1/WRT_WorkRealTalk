@@ -2,85 +2,134 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
+/* ============================================================
+   像素复古风 · 自托管字体
+   ------------------------------------------------------------
+   不使用 fonts.googleapis.com：国内访问不稳定，且会阻塞首屏。
+   latin 子集仅 12KB，直接打包进 public/fonts/。
+   加载失败时回退到等宽字体，界面结构不受影响。
+   ============================================================ */
+@font-face {
+  font-family: 'Press Start 2P';
+  src: url('/fonts/press-start-2p-latin.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+@layer base {
+  :root {
+    /* ---- 字体栈 ---- */
+    --font-pixel: 'Press Start 2P', 'Courier New', ui-monospace, monospace;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas,
+      'Liberation Mono', monospace;
+    /* 中文刻意用系统无衬线：像素中文字体会明显牺牲长文本可读性 */
+    --font-cn: -apple-system, BlinkMacSystemFont, 'PingFang SC',
+      'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+
+    /* ---- 像素原色（供工具类直接使用 hex） ---- */
+    --px-ink: #2c1810;
+    --px-ink-dim: #6b5e51;
+    --px-paper: #fff8e7;
+    --px-bg: #f0e6d2;
+    --px-shadow: #3e2723;
+    --px-primary: #c84c4c;
+    --px-success: #4a9c6d;
+    --px-warn: #e6a23c;
+    --px-accent: #4c7ac8;
+    --px-highlight: #f0e040;
+
+    /* ---- 轮廓与投影尺寸（移动端会降档） ---- */
+    --px-border: 4px;
+    --px-shadow-offset: 6px;
+    --px-shadow-hover: 12px;
+    --px-shake: 4px;
   }
 }
 
 @layer base {
   :root {
-    --background: 220 20% 98%;
-    --foreground: 220 15% 15%;
-    --card: 0 0% 100%;
-    --card-foreground: 220 15% 15%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 15% 15%;
-    --primary: 150 60% 50%;
+    /* ===== 像素复古风调色板 ===== */
+    --background: 40 50% 88%; /* #F0E6D2 羊皮纸 */
+    --foreground: 17 47% 12%; /* #2C1810 墨 */
+
+    --card: 42 100% 95%; /* #FFF8E7 稿纸 */
+    --card-foreground: 17 47% 12%;
+
+    --popover: 42 100% 95%;
+    --popover-foreground: 17 47% 12%;
+
+    --primary: 0 53% 54%; /* #C84C4C */
     --primary-foreground: 0 0% 100%;
-    --secondary: 200 25% 90%;
-    --secondary-foreground: 220 15% 15%;
-    --muted: 220 15% 95%;
-    --muted-foreground: 220 10% 45%;
-    --accent: 280 70% 92%;
-    --accent-foreground: 280 60% 40%;
-    --destructive: 0 72% 51%;
+
+    --secondary: 40 50% 88%;
+    --secondary-foreground: 17 47% 12%;
+
+    --muted: 38 30% 82%;
+    --muted-foreground: 30 14% 37%; /* #6B5E51 */
+
+    --accent: 55 85% 60%; /* #F0E040 高亮黄，用于 hover */
+    --accent-foreground: 17 47% 12%;
+
+    --destructive: 0 53% 54%;
     --destructive-foreground: 0 0% 100%;
-    --border: 220 15% 88%;
-    --input: 220 15% 88%;
-    --ring: 150 60% 50%;
-    --chart-1: 150 60% 50%;
-    --chart-2: 200 55% 55%;
-    --chart-3: 280 60% 65%;
-    --chart-4: 340 65% 60%;
-    --chart-5: 40 70% 60%;
-    --radius: 1rem;
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 220 15% 15%;
-    --sidebar-primary: 150 60% 50%;
+
+    --border: 17 47% 12%; /* 墨色边框，像素风的关键 */
+    --input: 17 47% 12%;
+    --ring: 0 53% 54%;
+
+    --chart-1: 0 53% 54%;
+    --chart-2: 218 53% 54%;
+    --chart-3: 146 36% 45%;
+    --chart-4: 36 77% 57%;
+    --chart-5: 55 85% 60%;
+
+    /* 像素风无圆角 */
+    --radius: 0;
+
+    --sidebar-background: 42 100% 95%;
+    --sidebar-foreground: 17 47% 12%;
+    --sidebar-primary: 0 53% 54%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 15% 95%;
-    --sidebar-accent-foreground: 220 15% 15%;
-    --sidebar-border: 220 15% 88%;
-    --sidebar-ring: 150 60% 50%;
+    --sidebar-accent: 55 85% 60%;
+    --sidebar-accent-foreground: 17 47% 12%;
+    --sidebar-border: 17 47% 12%;
+    --sidebar-ring: 0 53% 54%;
   }
+
   .dark {
-    --background: 220 20% 10%;
-    --foreground: 220 10% 95%;
-    --card: 220 20% 12%;
-    --card-foreground: 220 10% 95%;
-    --popover: 220 20% 12%;
-    --popover-foreground: 220 10% 95%;
-    --primary: 150 60% 50%;
+    --background: 340 15% 12%;
+    --foreground: 40 50% 88%;
+    --card: 340 15% 16%;
+    --card-foreground: 40 50% 88%;
+    --popover: 340 15% 16%;
+    --popover-foreground: 40 50% 88%;
+    --primary: 0 53% 54%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 220 15% 18%;
-    --secondary-foreground: 220 10% 95%;
-    --muted: 220 15% 18%;
-    --muted-foreground: 220 10% 60%;
-    --accent: 280 50% 25%;
-    --accent-foreground: 280 60% 85%;
-    --destructive: 0 62% 40%;
+    --secondary: 340 15% 20%;
+    --secondary-foreground: 40 50% 88%;
+    --muted: 340 15% 20%;
+    --muted-foreground: 30 14% 60%;
+    --accent: 55 85% 60%;
+    --accent-foreground: 17 47% 12%;
+    --destructive: 0 53% 44%;
     --destructive-foreground: 0 0% 100%;
-    --border: 220 15% 20%;
-    --input: 220 15% 20%;
-    --ring: 150 60% 50%;
-    --chart-1: 150 60% 50%;
-    --chart-2: 200 55% 55%;
-    --chart-3: 280 60% 65%;
-    --chart-4: 340 65% 60%;
-    --chart-5: 40 70% 60%;
-    --sidebar-background: 220 20% 12%;
-    --sidebar-foreground: 220 10% 95%;
-    --sidebar-primary: 150 60% 50%;
+    --border: 17 47% 12%;
+    --input: 17 47% 12%;
+    --ring: 0 53% 54%;
+    --chart-1: 0 53% 54%;
+    --chart-2: 218 53% 54%;
+    --chart-3: 146 36% 45%;
+    --chart-4: 36 77% 57%;
+    --chart-5: 55 85% 60%;
+    --sidebar-background: 340 15% 16%;
+    --sidebar-foreground: 40 50% 88%;
+    --sidebar-primary: 0 53% 54%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 15% 18%;
-    --sidebar-accent-foreground: 220 10% 95%;
-    --sidebar-border: 220 15% 20%;
-    --sidebar-ring: 150 60% 50%;
+    --sidebar-accent: 55 85% 60%;
+    --sidebar-accent-foreground: 17 47% 12%;
+    --sidebar-border: 17 47% 12%;
+    --sidebar-ring: 0 53% 54%;
   }
 }
 
@@ -90,6 +139,280 @@ body {
   }
   body {
     @apply bg-background text-foreground;
+    /* 中文正文用系统无衬线；像素字体只给短标签用 */
+    font-family: var(--font-cn);
+    /* 像素质感：禁用字体平滑，让边缘更硬 */
+    -webkit-font-smoothing: none;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* ============================================================
+   像素工具类
+   ------------------------------------------------------------
+   刻意不写进 @layer utilities：Tailwind 会 tree-shake 掉当前未被引用
+   的工具类，而这些都是设计系统的可复用资产，必须始终可用。
+   ============================================================ */
+  /* 粗轮廓：用多方向 box-shadow 拼，不依赖图片 */
+  .px-border-2 {
+    box-shadow:
+      0 -2px 0 0 var(--px-ink), 0 2px 0 0 var(--px-ink),
+      -2px 0 0 0 var(--px-ink), 2px 0 0 0 var(--px-ink),
+      -2px -2px 0 0 var(--px-ink), 2px -2px 0 0 var(--px-ink),
+      -2px 2px 0 0 var(--px-ink), 2px 2px 0 0 var(--px-ink);
+  }
+  .px-border-4 {
+    box-shadow:
+      0 -4px 0 0 var(--px-ink), 0 4px 0 0 var(--px-ink),
+      -4px 0 0 0 var(--px-ink), 4px 0 0 0 var(--px-ink),
+      -4px -4px 0 0 var(--px-ink), 4px -4px 0 0 var(--px-ink),
+      -4px 4px 0 0 var(--px-ink), 4px 4px 0 0 var(--px-ink);
+  }
+
+  /* 实心偏移投影（非模糊） */
+  .px-shadow {
+    box-shadow: var(--px-shadow-offset) var(--px-shadow-offset) 0 0
+      var(--px-shadow);
+  }
+  .px-shadow-sm {
+    box-shadow: 3px 3px 0 0 var(--px-shadow);
+  }
+
+  /* 点阵质感，用于区分层次 / 模拟半透明 */
+  .px-dither {
+    background-image: repeating-linear-gradient(
+      45deg,
+      var(--px-d1, #6b5e51) 0 2px,
+      var(--px-d2, #f0e6d2) 2px 4px
+    );
+  }
+
+  /* 像素标签字体（只用于短标签，长段落会糊） */
+  .px-font {
+    font-family: var(--font-pixel);
+    letter-spacing: 0.04em;
+    line-height: 1.6;
+  }
+  .px-mono {
+    font-family: var(--font-mono);
+  }
+
+/* ============================================================
+   动画系统
+   ------------------------------------------------------------
+   全部 steps() 模拟逐帧；只动 transform / opacity，不动布局属性。
+   同样不写进 @layer utilities，原因同上：需保证随时可复用。
+   ============================================================ */
+  @keyframes px-float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-3px);
+    }
+  }
+  @keyframes px-pop {
+    0% {
+      transform: scale(0) rotate(-12deg);
+    }
+    70% {
+      transform: scale(1.15) rotate(4deg);
+    }
+    100% {
+      transform: scale(1) rotate(0);
+    }
+  }
+  @keyframes px-shake {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    20% {
+      transform: translateX(calc(var(--px-shake) * -1));
+    }
+    40% {
+      transform: translateX(var(--px-shake));
+    }
+    60% {
+      transform: translateX(calc(var(--px-shake) * -1));
+    }
+    80% {
+      transform: translateX(var(--px-shake));
+    }
+  }
+  @keyframes px-blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
+  @keyframes px-rise {
+    0% {
+      transform: translateY(12px);
+      opacity: 0;
+    }
+    70% {
+      transform: translateY(-3px);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  @keyframes px-pulse {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.08);
+    }
+  }
+  @keyframes px-bar {
+    0%,
+    100% {
+      transform: scaleY(0.25);
+    }
+    50% {
+      transform: scaleY(1);
+    }
+  }
+  @keyframes px-stamp {
+    0% {
+      transform: scale(2.2) rotate(-12deg);
+      opacity: 0;
+    }
+    60% {
+      transform: scale(0.9) rotate(4deg);
+      opacity: 1;
+    }
+    /* 收尾保留固定倾斜，模拟手工盖章（fill-mode both 会锁住这一帧） */
+    100% {
+      transform: scale(1) rotate(-4deg);
+      opacity: 1;
+    }
+  }
+  @keyframes px-burst {
+    0% {
+      transform: translate(0, 0) scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(var(--tx), var(--ty)) scale(0);
+      opacity: 0;
+    }
+  }
+
+  .anim-float {
+    animation: px-float 2.4s steps(4) infinite;
+  }
+  .anim-pop {
+    animation: px-pop 0.32s steps(3) both;
+  }
+  .anim-shake {
+    animation: px-shake 0.36s steps(2) 2;
+  }
+  .anim-blink {
+    animation: px-blink 0.8s steps(2) infinite;
+  }
+  .anim-pulse {
+    animation: px-pulse 1.2s steps(2) infinite;
+  }
+  .anim-bar {
+    animation: px-bar 0.9s steps(3) infinite;
+  }
+  /* 卡片入场：从下方弹入，逐帧 */
+  .anim-rise {
+    animation: px-rise 0.28s steps(3) both;
+  }
+  .anim-stamp {
+    animation: px-stamp 0.32s steps(3) both;
+  }
+  .anim-burst {
+    animation: px-burst 0.4s steps(5) forwards;
+  }
+
+/* ============================================================
+   组件状态：按钮 / 卡片
+   ------------------------------------------------------------
+   位移与投影写在 CSS 里而非全部塞进 cva，是因为移动端降档需要
+   用媒体查询覆盖 hover / active 的具体数值。
+   ============================================================ */
+@layer components {
+  .px-btn {
+    transition-property: transform, box-shadow;
+    transition-duration: 0.12s;
+    transition-timing-function: steps(2);
+    box-shadow: var(--px-shadow-offset) var(--px-shadow-offset) 0 0
+      var(--px-shadow);
+  }
+  .px-btn:hover:not(:disabled) {
+    transform: translateY(-4px);
+    box-shadow: var(--px-shadow-offset) var(--px-shadow-hover) 0 0
+      var(--px-shadow);
+  }
+  /* 挤压拉伸：横向撑开、纵向压扁 */
+  .px-btn:active:not(:disabled) {
+    transform: translateY(4px) scaleX(1.06) scaleY(0.94);
+    box-shadow: 2px 2px 0 0 var(--px-shadow);
+  }
+  .px-btn:disabled {
+    box-shadow: 2px 2px 0 0 var(--px-shadow);
+  }
+
+  .px-card {
+    transition-property: transform, box-shadow;
+    transition-duration: 0.14s;
+    transition-timing-function: steps(2);
+    box-shadow: var(--px-shadow-offset) var(--px-shadow-offset) 0 0
+      var(--px-shadow);
+  }
+  .px-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: var(--px-shadow-offset) 10px 0 0 var(--px-shadow);
+  }
+}
+
+/* ============================================================
+   移动端降档：粗边框在小屏上很吃宽度（4px 边框 + 6px 投影
+   左右合计 20px），375px 屏上会明显拥挤。
+   ============================================================ */
+@layer base {
+  @media (max-width: 767px) {
+    :root {
+      --px-shadow-offset: 4px;
+      --px-shadow-hover: 8px;
+      --px-shake: 2px;
+    }
+    .px-border-4 {
+      box-shadow:
+        0 -3px 0 0 var(--px-ink), 0 3px 0 0 var(--px-ink),
+        -3px 0 0 0 var(--px-ink), 3px 0 0 0 var(--px-ink),
+        -3px -3px 0 0 var(--px-ink), 3px -3px 0 0 var(--px-ink),
+        -3px 3px 0 0 var(--px-ink), 3px 3px 0 0 var(--px-ink);
+    }
+    /* 小屏抖动体感放大，减到 1 次 */
+    .anim-shake {
+      animation: px-shake 0.3s steps(2) 1;
+    }
+  }
+}
+
+/* ============================================================
+   减弱动效：系统开启后停止全部动画，功能不受影响
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
@@ -111,8 +434,14 @@ body {
    * 不要与 `p-4` / `py-4` 同时出现，否则 padding 覆盖顺序不确定。
    */
   /* 顶部安全区 + 基础内边距（刘海 / 灵动岛） */
-  .pt-safe-3 { padding-top: calc(0.75rem + env(safe-area-inset-top, 0px)); }
-  .pt-safe-4 { padding-top: calc(1rem + env(safe-area-inset-top, 0px)); }
+  .pt-safe-3 {
+    padding-top: calc(0.75rem + env(safe-area-inset-top, 0px));
+  }
+  .pt-safe-4 {
+    padding-top: calc(1rem + env(safe-area-inset-top, 0px));
+  }
   /* 底部安全区 + 基础内边距（Home 指示条） */
-  .pb-safe-4 { padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px)); }
+  .pb-safe-4 {
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+  }
 }
